@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:studio-example:studio-core:schema:v1:document-source",
+  "title": "DocumentSource v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "sourceId", "fileId", "etag", "contentHash", "mimeType", "ingestedAt", "classification"],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "sourceId": {"type": "string", "format": "uuid"},
+    "fileId": {"type": "string", "minLength": 1, "maxLength": 255},
+    "etag": {"type": "string", "minLength": 1, "maxLength": 255},
+    "contentHash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "mimeType": {"type": "string", "minLength": 1, "maxLength": 255},
+    "ingestedAt": {"type": "string", "format": "date-time"},
+    "classification": {"enum": ["internal", "confidential", "restricted"]},
+    "pageCount": {"type": "integer", "minimum": 0},
+    "metadata": {"type": "object"}
+  }
+}

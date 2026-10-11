@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RAG Locale</title>
+  <style>
+    :root {
+      --blue: #00457c;
+      --sky: #0082c9;
+      --bg: #f3f6f8;
+      --panel: #ffffff;
+      --border: #d8e2ea;
+      --text: #172b3a;
+      --muted: #607789;
+      --ok: #1f7a3f;
+      --warn: #8a5b00;
+      --danger: #a02727;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    header {
+      height: 56px;
+      background: var(--blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+    }
+    header h1 {
+      font-size: 18px;
+      font-weight: 650;
+      margin: 0;
+      letter-spacing: 0;
+    }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
+    .header-actions button { padding: 7px 11px; background: white; color: var(--blue); font-size: 12px; }
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #c9d4dc;
+    }
+    .dot.ok { background: #43c06a; }
+    .dot.bad { background: #e06b6b; }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 22px;
+      display: grid;
+      grid-template-columns: minmax(360px, 0.85fr) minmax(420px, 1.15fr);
+      gap: 18px;
+    }
+    section {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      min-width: 0;
+    }
+    .panel-head {
+      border-bottom: 1px solid var(--border);
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+    .panel-head h2 {
+      font-size: 15px;
+      margin: 0;
+    }
+    .panel-body { padding: 16px; }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    textarea, input, select {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 11px;
+      font: inherit;
+      color: var(--text);
+      background: white;
+    }
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 120px;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .full-row {
+      margin-top: 12px;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    button {
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--sky);
+      color: white;
+    }
+    button.secondary {
+      background: #e9f1f6;
+      color: var(--blue);
+    }
+    button:disabled {
+      opacity: .55;
+      cursor: wait;
+    }
+    .answer {
+      white-space: pre-wrap;
+      line-height: 1.5;
+      min-height: 210px;
+    }
+    .meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .source {
+      border-top: 1px solid var(--border);
+      padding: 12px 16px;
+    }
+    .source strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+    .source p {
+      margin: 0;
+      color: #31485a;
+      line-height: 1.45;
+      font-size: 13px;
+    }
+    .source .source-label {
+      color: var(--blue);
+    }
+    .source .source-path {
+      margin-top: 6px;
+      color: var(--muted);
+      word-break: break-word;
+    }
+    .notice {
+      background: #fff8e8;
+      color: var(--warn);
+      border: 1px solid #f1dfaa;
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      font-size: 13px;
+    }
+    .source-picker {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #f8fbfd;
+      padding: 10px;
+    }
+    .source-picker-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .source-picker-head label {
+      margin: 0;
+    }
+    .source-picker-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .source-picker-actions button {
+      padding: 6px 9px;
+      font-size: 12px;
+    }
+    .source-picker-list {
+      display: grid;
+      gap: 6px;
+      max-height: 190px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+    .source-choice {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr);
+      gap: 8px;
+      align-items: start;
+      padding: 7px 8px;
+      border: 1px solid #e2ebf1;
+      border-radius: 6px;
+      background: white;
+    }
+    .source-choice input {
+      width: 16px;
+      height: 16px;
+      margin: 2px 0 0;
+      padding: 0;
+    }
+    .source-choice-name {
+      font-size: 13px;
+      font-weight: 650;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+    .source-choice-meta {
+      display: block;
+      margin-top: 2px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .admin-panel { grid-column: 1 / -1; display: none; }
+    .admin-grid { display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap: 12px; }
+    .admin-list { margin-top: 16px; display: grid; gap: 8px; }
+    .admin-item { border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    .admin-item button { padding: 7px 10px; font-size: 12px; }
+    .danger { background: #f9eaea; color: var(--danger); }
+    @media (max-width: 880px) {
+      main { grid-template-columns: 1fr; padding: 14px; }
+      header { padding: 0 14px; }
+      .grid { grid-template-columns: 1fr; }
+      .admin-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>RAG Locale</h1>
+    <div class="header-actions">
+      <button id="manageNotebookBtn" type="button" style="display:none">Gestisci notebook</button>
+      <div class="status"><span id="appVersion">notebook-admin-v3</span><span id="statusDot" class="dot"></span><span id="statusText">controllo...</span></div>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <div class="panel-head">
+        <h2>Domanda</h2>
+        <span class="meta" id="factoryRun"></span>
+      </div>
+      <div class="panel-body">
+        <div class="notice">Il motore RAG gira nel cloud dello Studio e resta disponibile da qualsiasi computer collegato a Nextcloud.</div>
+        <div class="full-row">
+          <label for="notebook">Notebook</label>
+          <select id="notebook">
+            <option value="">caricamento...</option>
+          </select>
+        </div>
+        <div class="full-row source-picker">
+          <div class="source-picker-head">
+            <label>Fonti della raccolta</label>
+            <div class="source-picker-actions">
+              <span id="sourceCount" class="meta">0 fonti</span>
+              <button id="selectAllSources" class="secondary" type="button">Tutte</button>
+              <button id="clearSources" class="secondary" type="button">Nessuna</button>
+            </div>
+          </div>
+          <div id="sourcePicker" class="source-picker-list">
+            <span class="meta">Seleziona un notebook.</span>
+          </div>
+        </div>
+        <label for="query">Testo domanda</label>
+        <textarea id="query" placeholder="Scrivi qui la tua domanda"></textarea>
+        <div class="full-row">
+          <div>
+            <label for="model">Modello</label>
+            <select id="model">
+              <option value="qwen2.5:7b-instruct">qwen2.5:7b-instruct</option>
+            </select>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="askBtn">Rispondi</button>
+          <button id="retrieveBtn" class="secondary" title="Recupera le fonti pertinenti senza generare una risposta">Mostra fonti</button>
+          <button id="digestBtn" class="secondary">Digerisci notebook</button>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="panel-head">
+        <h2>Risultato</h2>
+        <span class="meta" id="elapsed"></span>
+      </div>
+      <div class="panel-body">
+        <div id="answer" class="answer">Pronto.</div>
+      </div>
+      <div id="sources"></div>
+    </section>
+
+    <section id="adminPanel" class="admin-panel">
+      <div class="panel-head">
+        <h2>Gestione notebook</h2>
+        <span class="meta">Solo amministratori RAG</span>
+      </div>
+      <div class="panel-body">
+        <div class="notice">La disattivazione non elimina mai i documenti originali. Claude è consentito soltanto per notebook L2 o L3.</div>
+        <div class="admin-grid">
+          <div><label for="adminName">Nome tecnico</label><input id="adminName" placeholder="es. procedure-studio"></div>
+          <div><label for="adminFolder">Cartella Nextcloud</label><select id="adminFolder"><option value="">Caricamento...</option></select></div>
+          <div><label for="adminClass">Riservatezza</label><select id="adminClass"><option value="L0">L0 - strettamente riservato</option><option value="L1">L1 - riservato cliente</option><option value="L2">L2 - interno Studio</option><option value="L3">L3 - pubblico/condivisibile</option></select></div>
+          <div><label for="adminChunk">Dimensione chunk</label><input id="adminChunk" type="number" min="800" max="4000" value="1600"></div>
+        </div>
+        <div class="full-row">
+          <label for="newFolderName">Oppure crea una nuova cartella Nextcloud</label>
+          <div style="display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:10px">
+            <input id="newFolderName" placeholder="es. Procedure antiriciclaggio">
+            <button id="createFolderBtn" class="secondary" type="button">Crea cartella</button>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="saveNotebookBtn" type="button">Salva notebook</button>
+          <label style="display:flex;align-items:center;gap:8px;margin:0;text-transform:none"><input id="adminCloud" type="checkbox" style="width:auto"> Consenti Claude (solo L2/L3)</label>
+          <span id="adminMessage" class="meta"></span>
+        </div>
+        <div id="adminNotebookList" class="admin-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let sessionExpired = false;
+    let recoveringSession = false;
+    const sessionNotice = document.createElement('div');
+    sessionNotice.hidden = true;
+    sessionNotice.setAttribute('role', 'alert');
+    sessionNotice.style.cssText = 'padding:16px;margin:16px;border:1px solid #d99b30;border-radius:12px;background:#fff5db;color:#172033';
+    const sessionMessage = document.createElement('span');
+    sessionMessage.textContent = 'La sessione Nextcloud è scaduta o assente. La domanda resta in questa pagina. ';
+    const loginLink = document.createElement('a');
+    loginLink.textContent = 'Accedi a Nextcloud';
+    loginLink.href = '/index.php/login?redirect_url=' + encodeURIComponent('/studio-apps/rag-locale/index.html');
+    loginLink.target = '_blank';
+    loginLink.rel = 'noopener';
+    const resumeButton = document.createElement('button');
+    resumeButton.textContent = 'Ho effettuato l’accesso: riprova';
+    resumeButton.style.marginLeft = '12px';
+    sessionNotice.append(sessionMessage, loginLink, resumeButton);
+    document.querySelector('main').prepend(sessionNotice);
+    async function resumeSession() {
+      if (!sessionExpired || recoveringSession) return;
+      recoveringSession = true;
+      try {
+        await fetchJson(apiUrl('/api/notebooks'));
+        const selectedNotebook = notebookSelect.value;
+        await loadNotebooks();
+        if ([...notebookSelect.options].some(option => option.value === selectedNotebook)) notebookSelect.value = selectedNotebook;
+        await loadModels();
+        await loadSources();
+        await status();
+      } catch (_) { /* The login notice remains available. */ }
+      finally { recoveringSession = false; }
+    }
+    resumeButton.addEventListener('click', resumeSession);
+    window.addEventListener('focus', resumeSession);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) resumeSession(); });
+    const API = '/studio-rag-api';
+    const apiUrl = (path, params = '') => `${API}?route=${encodeURIComponent(path)}${params ? `&${params}` : ''}`;
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const factoryRun = document.getElementById('factoryRun');
+    const answer = document.getElementById('answer');
+    const sources = document.getElementById('sources');
+    const elapsed = document.getElementById('elapsed');
+    const askBtn = document.getElementById('askBtn');
+    const retrieveBtn = document.getElementById('retrieveBtn');
+    const digestBtn = document.getElementById('digestBtn');
+    const manageNotebookBtn = document.getElementById('manageNotebookBtn');
+    const notebookSelect = document.getElementById('notebook');
+    const modelSelect = document.getElementById('model');
+    const sourcePicker = document.getElementById('sourcePicker');
+    const sourceCount = document.getElementById('sourceCount');
+    const selectAllSourcesBtn = document.getElementById('selectAllSources');
+    const clearSourcesBtn = document.getElementById('clearSources');
+    const adminPanel = document.getElementById('adminPanel');
+    const adminName = document.getElementById('adminName');
+    const adminFolder = document.getElementById('adminFolder');
+    const adminClass = document.getElementById('adminClass');
+    const adminChunk = document.getElementById('adminChunk');
+    const adminCloud = document.getElementById('adminCloud');
+    const saveNotebookBtn = document.getElementById('saveNotebookBtn');
+    const adminMessage = document.getElementById('adminMessage');
+    const adminNotebookList = document.getElementById('adminNotebookList');
+    const newFolderName = document.getElementById('newFolderName');
+    const createFolderBtn = document.getElementById('createFolderBtn');
+    let notebookItems = [];
+
+    function setBusy(busy) {
+      const missingNotebook = !notebookSelect.value;
+      askBtn.disabled = busy || missingNotebook;
+      retrieveBtn.disabled = busy || missingNotebook;
+      digestBtn.disabled = busy || missingNotebook;
+    }
+
+    function showSources(items) {
+      sources.innerHTML = '';
+      for (const [index, item] of (items || []).entries()) {
+        const node = document.createElement('div');
+        node.className = 'source';
+        const documentName = item.original_filename || item.source_name || '-';
+        const pageText = item.page_number ? ` | <b>Pagina:</b> ${escapeHtml(String(item.page_number))}` : '';
+        node.innerHTML = `<strong class="source-label">${escapeHtml(item.label || item.source_name || '')}</strong>
+          <p><b>Documento:</b> ${escapeHtml(documentName)}${pageText}</p>
+          <p><b>Sezione:</b> ${escapeHtml(item.section || '-')} | <b>Frammento:</b> ${escapeHtml(String(item.chunk_order ?? '-'))} | <b>Score:</b> ${escapeHtml(String(item.score ?? ''))}</p>
+          <p>${escapeHtml(item.snippet || '')}</p>
+          `;
+        sources.appendChild(node);
+      }
+    }
+
+    function selectedSourcePaths() {
+      return Array.from(sourcePicker.querySelectorAll('input[type="checkbox"]:checked')).flatMap(input => {
+        try {
+          const paths = JSON.parse(input.dataset.sourceTokens || '[]');
+          return Array.isArray(paths) ? paths : [];
+        } catch (err) {
+          return input.value ? [input.value] : [];
+        }
+      });
+    }
+
+    function setSourceChecks(checked) {
+      sourcePicker.querySelectorAll('input[type="checkbox"]').forEach(input => {
+        input.checked = checked;
+      });
+      updateSourceCount();
+    }
+
+    function updateSourceCount() {
+      const all = sourcePicker.querySelectorAll('input[type="checkbox"]');
+      const checked = sourcePicker.querySelectorAll('input[type="checkbox"]:checked');
+      sourceCount.textContent = `${checked.length} selezionate su ${all.length}`;
+    }
+
+    function renderSourcePicker(items) {
+      sourcePicker.innerHTML = '';
+      if (!items?.length) {
+        sourcePicker.innerHTML = '<span class="meta">Nessuna fonte indicizzata per questa raccolta.</span>';
+        updateSourceCount();
+        return;
+      }
+      for (const item of items) {
+        const label = document.createElement('label');
+        label.className = 'source-choice';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.value = item.source_token || '';
+        input.dataset.sourceTokens = JSON.stringify(item.source_tokens || [item.source_token].filter(Boolean));
+        input.checked = true;
+        input.addEventListener('change', updateSourceCount);
+        const body = document.createElement('span');
+        const name = document.createElement('span');
+        name.className = 'source-choice-name';
+        name.textContent = item.source_name || 'Fonte';
+        const meta = document.createElement('span');
+        meta.className = 'source-choice-meta';
+        const derivedCount = item.derived_files?.length || 0;
+        meta.textContent = `${item.chunks || 0} frammenti indicizzati${derivedCount ? ` da ${derivedCount} file tecnici` : ''}`;
+        body.appendChild(name);
+        body.appendChild(meta);
+        label.appendChild(input);
+        label.appendChild(body);
+        sourcePicker.appendChild(label);
+      }
+      updateSourceCount();
+    }
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    }
+
+    function localServerError(err) {
+      if (err.status === 401 || err.status === 403) return err.message;
+      return [
+        'Non riesco a raggiungere il server RAG cloud.',
+        '',
+        'Controlli rapidi:',
+        '1. Il server RAG cloud deve essere avviato nel server Nextcloud.',
+        '2. La sessione Nextcloud deve essere attiva e autorizzata al RAG.',
+        '3. Se il problema persiste, aggiorna la pagina con Ctrl+F5.',
+        '',
+        `Dettaglio tecnico: ${err.message || err}`
+      ].join('\n');
+    }
+
+    async function fetchJson(url, options = {}) {
+      const res = await fetch(url, {
+        cache: 'no-store',
+        credentials: 'same-origin',
+        ...options
+      });
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        const message = res.status === 401
+          ? 'Accesso Nextcloud richiesto: usa il pulsante di accesso e poi riprendi da questa pagina.'
+          : res.status === 403
+            ? (payload.error || 'Questo utente non è autorizzato al RAG.')
+            : (payload.error || 'Servizio RAG temporaneamente non disponibile (HTTP ' + res.status + ').');
+        if (res.status === 401) { sessionExpired = true; sessionNotice.hidden = false; }
+        const error = new Error(message);
+        error.status = res.status;
+        throw error;
+      }
+      sessionExpired = false;
+      sessionNotice.hidden = true;
+      const text = await res.text();
+      const contentType = res.headers.get('content-type') || '';
+      try {
+        return JSON.parse(text);
+      } catch (err) {
+        throw new Error([
+          `URL: ${url}`,
+          `HTTP: ${res.status}`,
+          `Content-Type: ${contentType}`,
+          `Risposta: ${text.slice(0, 120).replace(/\s+/g, ' ')}`
+        ].join(' | '));
+      }
+    }
+
+    async function loadNotebooks() {
+      try {
+        const data = await fetchJson(apiUrl('/api/notebooks'));
+        if (!data.ok) throw new Error(data.error || 'Impossibile caricare i notebook');
+        digestBtn.style.display = data.access?.can_digest ? '' : 'none';
+        manageNotebookBtn.style.display = data.access?.can_digest ? '' : 'none';
+        adminPanel.style.display = data.access?.can_digest ? 'block' : 'none';
+        notebookItems = data.notebooks || [];
+        notebookSelect.innerHTML = '<option value="">Seleziona notebook...</option>';
+        for (const item of data.notebooks || []) {
+          const option = document.createElement('option');
+          option.value = item.name;
+          const state = item.factory_available ? 'factory disponibile' : 'indice locale';
+          option.textContent = `${item.name} - ${state}`;
+          notebookSelect.appendChild(option);
+        }
+        if (data.access?.can_digest) renderAdminNotebooks();
+        setBusy(false);
+      } catch (err) {
+        notebookSelect.innerHTML = '';
+        const option = document.createElement('option');
+        option.value = '';
+        option.textContent = err.status === 401 ? 'accesso Nextcloud richiesto' : err.status === 403 ? 'utente non autorizzato' : 'servizio RAG temporaneamente non disponibile';
+        notebookSelect.appendChild(option);
+        setBusy(false);
+        throw err;
+      }
+    }
+
+    async function loadModels() {
+      try {
+        const notebook = encodeURIComponent(notebookSelect.value || '');
+        const data = await fetchJson(apiUrl('/api/models', notebook ? `notebook=${notebook}` : ''));
+        if (!data.ok || !data.models?.length) return;
+        modelSelect.innerHTML = '';
+        for (const item of data.models) {
+          const option = document.createElement('option');
+          option.value = item.name;
+          const label = item.label || item.name;
+          option.textContent = item.default ? `${label} - predefinito` : label;
+          if (item.default) option.selected = true;
+          modelSelect.appendChild(option);
+        }
+      } catch (err) {
+        // Se l'elenco modelli non risponde, resta disponibile il modello predefinito.
+      }
+    }
+
+    async function loadAdminFolders() {
+      if (adminPanel.style.display === 'none') return;
+      const data = await fetchJson(apiUrl('/api/admin/folders'));
+      adminFolder.innerHTML = '<option value="">Seleziona cartella...</option>';
+      for (const item of data.folders || []) {
+        const option = document.createElement('option');
+        option.value = item.id;
+        option.textContent = item.name;
+        adminFolder.appendChild(option);
+      }
+    }
+
+    async function createAdminFolder() {
+      const folderName = newFolderName.value.trim();
+      if (!folderName) throw new Error('Inserisci il nome della nuova cartella.');
+      createFolderBtn.disabled = true;
+      adminMessage.textContent = 'Creazione cartella Nextcloud...';
+      try {
+        const data = await fetchJson(apiUrl('/api/admin/folder/create'), {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json', 'X-Studio-RAG': '1'},
+          body: JSON.stringify({folder_name: folderName})
+        });
+        if (!data.ok) throw new Error(data.error || 'Creazione cartella non riuscita');
+        await loadAdminFolders();
+        adminFolder.value = data.folder_id;
+        newFolderName.value = '';
+        adminMessage.textContent = data.created ? 'Cartella creata e selezionata. Completa le impostazioni del notebook.' : 'La cartella esisteva già ed è stata selezionata.';
+      } finally {
+        createFolderBtn.disabled = false;
+      }
+    }
+
+    function renderAdminNotebooks() {
+      adminNotebookList.innerHTML = '';
+      for (const item of notebookItems) {
+        const row = document.createElement('div');
+        row.className = 'admin-item';
+        const info = document.createElement('div');
+        const activeVersion = item.active_index_version_id ? item.active_index_version_id.slice(0, 28) : 'nessun indice attivo';
+        const stateLabel = item.pipeline_state === 'updating' ? 'aggiornamento in corso (indice attivo disponibile)' : (item.pipeline_state || 'inizializzazione');
+        const migrationLabel = item.bluegreen_state === 'enabled_no_rollback' ? 'blue/green abilitato — rollback non ancora disponibile' : (item.rollback_available ? 'rollback disponibile' : 'indice in inizializzazione');
+        const job = item.current_job;
+        const jobLabel = job && job.state === 'running' ? ` · job ${job.job_id} · ${job.phase} ${job.progress_percent || 0}%` : (job?.state === 'failed' ? ` · ultimo job fallito: ${job.error?.message || 'errore non specificato'}` : '');
+        info.innerHTML = `<strong>${escapeHtml(item.name)}</strong><div class="meta">${escapeHtml(item.classification || 'L0')} · ${item.indexed_sources || 0} fonti · ${escapeHtml(stateLabel)} · ${escapeHtml(migrationLabel)} · attivo: ${escapeHtml(activeVersion)}${escapeHtml(jobLabel)} · Claude ${item.cloud_allowed ? 'consentito' : 'vietato'}</div>`;
+        const actions = document.createElement('div');
+        const edit = document.createElement('button');
+        edit.className = 'secondary';
+        edit.textContent = 'Modifica';
+        edit.disabled = !item.editable;
+        edit.title = item.editable ? '' : 'Notebook storico con cartella esterna: modifica non disponibile qui';
+        edit.onclick = () => {
+          adminName.value = item.name;
+          adminClass.value = item.classification || 'L0';
+          adminChunk.value = item.chunk_size || 1600;
+          adminCloud.checked = !!item.cloud_allowed;
+          const folderName = (item.folder_id || '').trim();
+          if (folderName) adminFolder.value = folderName;
+          adminMessage.textContent = 'Modifica le impostazioni e premi Salva notebook.';
+        };
+        const disable = document.createElement('button');
+        disable.className = 'danger';
+        disable.textContent = 'Disattiva';
+        disable.onclick = () => disableNotebook(item.name);
+        const rollback = document.createElement('button');
+        rollback.className = 'secondary';
+        rollback.textContent = 'Ripristina indice precedente';
+        rollback.disabled = !item.rollback_available || item.pipeline_state === 'updating';
+        rollback.title = item.rollback_available ? 'Scambia atomicamente indice attivo e precedente' : 'Nessuna versione precedente disponibile';
+        rollback.onclick = () => rollbackNotebookIndex(item.name);
+        actions.append(edit, rollback, disable);
+        row.append(info, actions);
+        adminNotebookList.appendChild(row);
+      }
+    }
+
+    async function rollbackNotebookIndex(name) {
+      if (!confirm(`Ripristinare la versione precedente dell'indice di ${name}? I documenti non saranno modificati.`)) return;
+      adminMessage.textContent = 'Rollback atomico in corso...';
+      const data = await fetchJson(apiUrl('/api/admin/index/rollback'), {
+        method: 'POST', headers: {'Content-Type': 'application/json', 'X-Studio-RAG': '1'}, body: JSON.stringify({notebook: name})
+      });
+      if (!data.ok) throw new Error(data.error || 'Rollback non riuscito');
+      adminMessage.textContent = `Indice precedente ripristinato per ${name}.`;
+      await loadNotebooks();
+      notebookSelect.value = name;
+      await Promise.all([loadSources(), status()]);
+    }
+
+    async function saveNotebook() {
+      adminMessage.textContent = 'Salvataggio...';
+      const data = await fetchJson(apiUrl('/api/admin/notebook/save'), {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-Studio-RAG': '1'},
+        body: JSON.stringify({name: adminName.value.trim(), folder_id: adminFolder.value, classification: adminClass.value, chunk_size: Number(adminChunk.value), cloud_allowed: adminCloud.checked})
+      });
+      if (!data.ok) throw new Error(data.error || 'Salvataggio non riuscito');
+      adminMessage.textContent = data.created ? 'Notebook creato. Avvia ora la digestione.' : 'Impostazioni aggiornate.';
+      await loadNotebooks();
+      notebookSelect.value = data.name;
+      await Promise.all([loadSources(), loadModels(), status()]);
+    }
+
+    async function disableNotebook(name) {
+      if (!confirm(`Disattivare ${name}? I documenti originali non saranno eliminati.`)) return;
+      const data = await fetchJson(apiUrl('/api/admin/notebook/disable'), {
+        method: 'POST', headers: {'Content-Type': 'application/json', 'X-Studio-RAG': '1'}, body: JSON.stringify({notebook: name})
+      });
+      if (!data.ok) throw new Error(data.error || 'Disattivazione non riuscita');
+      adminMessage.textContent = `${name} disattivato; documenti originali conservati.`;
+      await loadNotebooks();
+    }
+
+    async function loadSources() {
+      if (!notebookSelect.value) {
+        sourcePicker.innerHTML = '<span class="meta">Seleziona un notebook.</span>';
+        return;
+      }
+      sourcePicker.innerHTML = '<span class="meta">Carico fonti...</span>';
+      try {
+        const notebook = encodeURIComponent(notebookSelect.value || '');
+        const data = await fetchJson(apiUrl('/api/sources', `notebook=${notebook}&factory=false`));
+        if (!data.ok) throw new Error(data.error || 'Impossibile caricare le fonti');
+        renderSourcePicker(data.sources || []);
+      } catch (err) {
+        sourcePicker.innerHTML = `<span class="meta">${escapeHtml(err.message || 'Fonti non disponibili')}</span>`;
+      }
+    }
+
+    async function status() {
+      if (!notebookSelect.value) {
+        statusDot.className = 'dot ok';
+        statusText.textContent = sessionExpired ? 'accesso Nextcloud richiesto' : 'scegli notebook';
+        factoryRun.textContent = '';
+        setBusy(false);
+        return;
+      }
+      try {
+        const notebook = encodeURIComponent(notebookSelect.value || '');
+        const url = notebook ? apiUrl('/api/status', `notebook=${notebook}`) : apiUrl('/api/status');
+        const data = await fetchJson(url);
+        statusDot.className = `dot ${data.ok && data.ollama_available ? 'ok' : 'bad'}`;
+        const pipeline = data.pipeline_state === 'updating' ? 'indice in aggiornamento, versione attiva disponibile' : `indice ${data.pipeline_state || 'non disponibile'}`;
+        statusText.textContent = data.ollama_available ? `server pronto · ${pipeline}` : 'Ollama non pronto';
+        factoryRun.textContent = data.factory_run ? data.factory_run.split('\\').pop() : '';
+      } catch (err) {
+        statusDot.className = 'dot bad';
+        statusText.textContent = err.status === 401 ? 'accesso Nextcloud richiesto' : err.status === 403 ? 'utente non autorizzato' : 'servizio temporaneamente non raggiungibile';
+        factoryRun.textContent = '';
+      }
+    }
+
+    async function call(path) {
+      if (!notebookSelect.value) {
+        answer.textContent = 'Seleziona prima il notebook su cui vuoi lavorare.';
+        setBusy(false);
+        return;
+      }
+      setBusy(true);
+      elapsed.textContent = '';
+      answer.textContent = path === '/api/ask' ? 'Sto interrogando il RAG cloud...' : 'Cerco le fonti pertinenti...';
+      sources.innerHTML = '';
+      try {
+        const payload = {
+          query: document.getElementById('query').value,
+          notebook: notebookSelect.value,
+          model: modelSelect.value,
+          top_k: 8,
+          factory: false,
+          source_tokens: selectedSourcePaths()
+        };
+        const data = await fetchJson(apiUrl(path), {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json', 'X-Studio-RAG': '1'},
+          body: JSON.stringify(payload)
+        });
+        if (!data.ok) {
+          if (data.hits?.length) {
+            answer.textContent = `${data.error || 'Il modello non ha generato una risposta.'}\n\nFonti recuperate sotto.`;
+            showSources(data.hits);
+            return;
+          }
+          throw new Error(data.error || 'Errore RAG');
+        }
+        answer.textContent = data.answer || 'Fonti recuperate.';
+        elapsed.textContent = data.elapsed_seconds ? `${data.elapsed_seconds}s` : '';
+        showSources(data.hits);
+      } catch (err) {
+        answer.textContent = localServerError(err);
+      } finally {
+        setBusy(false);
+        status();
+      }
+    }
+
+    async function digestNotebook() {
+      if (!notebookSelect.value) {
+        answer.textContent = 'Seleziona prima il notebook da digerire.';
+        setBusy(false);
+        return;
+      }
+      setBusy(true);
+      elapsed.textContent = '';
+      sources.innerHTML = '';
+      answer.textContent = 'Sto digerendo il notebook selezionato...';
+      try {
+        const data = await fetchJson(apiUrl('/api/digest'), {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json', 'X-Studio-RAG': '1'},
+          body: JSON.stringify({
+            notebook: notebookSelect.value,
+            rebuild_index: true
+          })
+        });
+        if (!data.ok) throw new Error(data.error || 'Digestione non riuscita');
+        if (data.coalesced) {
+          const job = data.job || {};
+          answer.textContent = `Aggiornamento già in corso.\nJob: ${job.job_id || 'in corso'}\nFase: ${job.phase || 'elaborazione'}\nAvanzamento: ${job.progress_percent || 0}%`;
+          await loadNotebooks();
+          return;
+        }
+        const copied = (data.copied || []).map(path => `- ${path.split('/').pop()}`).join('\n') || '- nessun file';
+        answer.textContent = [
+          `Notebook digerito: ${data.notebook}`,
+          '',
+          `File originali letti: ${data.files_seen}`,
+          `Output prodotti: ${data.produced_count}`,
+          `File rielaborati: ${data.digested_count ?? data.produced_count}`,
+          `File invariati riusati: ${data.reused_count ?? 0}`,
+          `Fonti eliminate: ${data.removed_count ?? 0}`,
+          `Errori: ${(data.errors || []).length}`,
+          data.index ? `Indice aggiornato: ${data.index}` : '',
+          data.job?.job_id ? `Job completato: ${data.job.job_id}` : '',
+          '',
+          'File generati:',
+          copied
+        ].filter(Boolean).join('\n');
+        elapsed.textContent = data.elapsed_seconds ? `${data.elapsed_seconds}s` : '';
+        await loadNotebooks();
+        notebookSelect.value = data.notebook;
+        await loadSources();
+      } catch (err) {
+        answer.textContent = localServerError(err);
+      } finally {
+        setBusy(false);
+        status();
+      }
+    }
+
+    askBtn.addEventListener('click', () => call('/api/ask'));
+    retrieveBtn.addEventListener('click', () => call('/api/retrieve'));
+    digestBtn.addEventListener('click', digestNotebook);
+    manageNotebookBtn.addEventListener('click', () => {
+      adminPanel.style.display = 'block';
+      requestAnimationFrame(() => adminPanel.scrollIntoView({behavior: 'smooth', block: 'start'}));
+    });
+    selectAllSourcesBtn.addEventListener('click', () => setSourceChecks(true));
+    clearSourcesBtn.addEventListener('click', () => setSourceChecks(false));
+    notebookSelect.addEventListener('change', () => {
+      setBusy(false);
+      status();
+      loadSources();
+      loadModels();
+    });
+    adminClass.addEventListener('change', () => {
+      if (!['L2', 'L3'].includes(adminClass.value)) adminCloud.checked = false;
+      adminCloud.disabled = !['L2', 'L3'].includes(adminClass.value);
+    });
+    saveNotebookBtn.addEventListener('click', () => saveNotebook().catch(err => { adminMessage.textContent = err.message || String(err); }));
+    createFolderBtn.addEventListener('click', () => createAdminFolder().catch(err => { adminMessage.textContent = err.message || String(err); }));
+    Promise.allSettled([loadNotebooks(), loadModels()]).then(async () => {
+      await loadAdminFolders();
+      await status();
+      await loadSources();
+    }).catch(err => {
+      answer.textContent = localServerError(err);
+      status();
+    });
+  </script>
+</body>
+</html>
+
+

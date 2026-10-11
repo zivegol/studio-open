@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Visualizzatore documento</title>
+  <style>
+    :root{--blue:#00457c;--sky:#0082c9;--bg:#f2f6f9;--line:#dce6ed;--text:#1a2b3c;--muted:#637287}
+    *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 18px;background:var(--blue);color:#fff}h1{margin:0;font-size:18px}.actions{display:flex;gap:8px;flex-wrap:wrap}
+    a,button{border:0;border-radius:7px;padding:9px 13px;background:var(--sky);color:#fff;text-decoration:none;font-weight:700;cursor:pointer}.secondary{background:#e8eef6;color:var(--text)}
+    main{height:calc(100vh - 62px);padding:14px}.panel{height:100%;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:10px}.message{padding:28px;color:var(--muted)}
+    iframe{width:100%;height:100%;border:0}.toolbar{position:sticky;top:0;display:flex;gap:10px;align-items:center;padding:10px;background:#fff;border-bottom:1px solid var(--line)}input{flex:1;min-width:160px;padding:9px;border:1px solid var(--line);border-radius:7px}
+    table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{position:sticky;top:55px;background:#f8fafc;color:var(--muted)}td.value{text-align:right;font-variant-numeric:tabular-nums;font-weight:650}.muted{color:var(--muted);font-size:12px}
+    @media(max-width:700px){header{align-items:flex-start;flex-direction:column}main{height:calc(100vh - 105px);padding:7px}th:nth-child(3),td:nth-child(3){display:none}}
+  </style>
+</head>
+<body>
+  <header><h1 id="title">Caricamento documento…</h1><div class="actions"><a id="download" download>Scarica originale</a><button class="secondary" onclick="window.close()">Chiudi</button></div></header>
+  <main><div class="panel" id="viewer"><div class="message">Apertura del documento…</div></div></main>
+<script src="../bilanci-analytics/xlsx.full.min.js"></script>
+<script>
+const params=new URLSearchParams(location.search),clientId=params.get('clientId')||'',documentSourceId=params.get('documentSourceId')||'';
+const rawUrl=`/studio-core-api?op=dossier-document&clientId=${encodeURIComponent(clientId)}&documentSourceId=${encodeURIComponent(documentSourceId)}&preview=1`;
+const q=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+q('#download').href=rawUrl.replace('&preview=1','')+'&download=1';
+function xmlTable(text){
+  const xml=new DOMParser().parseFromString(text,'application/xml');
+  if(xml.querySelector('parsererror'))throw new Error('XBRL non leggibile');
+  let facts=[...xml.querySelectorAll('[contextRef]')].map(el=>({
+    voce:(el.localName||el.nodeName).replace(/([a-z])([A-Z])/g,'$1 $2'),
+    valore:(el.textContent||'').trim(),contesto:el.getAttribute('contextRef')||'',unita:el.getAttribute('unitRef')||''
+  })).filter(x=>x.valore);
+  const isXbrl=facts.length>0;
+  if(!isXbrl)facts=[...xml.querySelectorAll('*')].filter(el=>!el.children.length&&(el.textContent||'').trim()).map(el=>({
+    voce:(el.localName||el.nodeName).replace(/([a-z])([A-Z])/g,'$1 $2'),valore:(el.textContent||'').trim(),
+    contesto:el.parentElement?(el.parentElement.localName||el.parentElement.nodeName):'',unita:''
+  }));
+  const rows=facts.map((x,i)=>`<tr data-search="${esc((x.voce+' '+x.valore+' '+x.contesto).toLowerCase())}"><td>${esc(x.voce)}</td><td class="value">${esc(x.valore)}</td><td><span class="muted">${esc(x.contesto)}${x.unita?' · '+esc(x.unita):''}</span></td></tr>`).join('');
+  q('#viewer').innerHTML=`<div class="toolbar"><input id="search" placeholder="Cerca voce o valore"><span class="muted">${facts.length} valori ${isXbrl?'XBRL':'XML'}</span></div><table><thead><tr><th>Voce</th><th style="text-align:right">Valore</th><th>Contesto</th></tr></thead><tbody>${rows}</tbody></table>`;
+  q('#search').addEventListener('input',e=>{const term=e.target.value.toLowerCase().trim();document.querySelectorAll('tbody tr').forEach(r=>r.hidden=term&&!r.dataset.search.includes(term))});
+}
+function excelViewer(buffer){
+  if(!window.XLSX)throw new Error('Visualizzatore Excel non disponibile');
+  const workbook=XLSX.read(buffer,{type:'array',cellDates:true}),names=workbook.SheetNames;
+  q('#viewer').innerHTML=`<div class="toolbar"><label>Foglio <select id="sheet">${names.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('')}</select></label><input id="search" placeholder="Cerca nel foglio"><span id="sheetInfo" class="muted"></span></div><div id="sheetTable"></div>`;
+  const render=()=>{
+    const name=q('#sheet').value,all=XLSX.utils.sheet_to_json(workbook.Sheets[name],{header:1,raw:false,defval:''}),rows=all.slice(0,2000),width=Math.min(100,Math.max(0,...rows.map(r=>r.length)));
+    const body=rows.map((r,i)=>`<tr data-search="${esc(r.join(' ').toLowerCase())}">${Array.from({length:width},(_,j)=>`<${i===0?'th':'td'}>${esc(r[j]??'')}</${i===0?'th':'td'}>`).join('')}</tr>`).join('');
+    q('#sheetTable').innerHTML=`<table><tbody>${body}</tbody></table>`;q('#sheetInfo').textContent=`${all.length} righe${all.length>2000?' · mostrate le prime 2.000':''}`;q('#search').value='';
+  };
+  q('#sheet').addEventListener('change',render);q('#search').addEventListener('input',e=>{const term=e.target.value.toLowerCase().trim();document.querySelectorAll('#sheetTable tr').forEach(r=>r.hidden=term&&!r.dataset.search.includes(term))});render();
+}
+async function init(){
+  if(!clientId||!documentSourceId)throw new Error('Riferimento documento mancante');
+  const response=await fetch(rawUrl,{credentials:'include'});if(!response.ok)throw new Error(response.status===401?'Accesso Nextcloud richiesto':`Documento non disponibile (HTTP ${response.status})`);
+  const name=decodeURIComponent(response.headers.get('X-Studio-Filename')||'Documento');q('#title').textContent=name;document.title=name;
+  const type=(response.headers.get('Content-Type')||'').toLowerCase(),lower=name.toLowerCase();
+  if(type.includes('pdf')||lower.endsWith('.pdf')){q('#viewer').innerHTML=`<iframe title="${esc(name)}" src="${esc(rawUrl)}"></iframe>`;return}
+  if(type.startsWith('image/')){const blob=await response.blob(),url=URL.createObjectURL(blob);q('#viewer').innerHTML=`<div style="text-align:center;padding:14px"><img src="${url}" alt="${esc(name)}" style="max-width:100%;height:auto"></div>`;return}
+  if(lower.endsWith('.xbrl')||lower.endsWith('.xml')||type.includes('xml')){xmlTable(await response.text());return}
+  if(lower.endsWith('.xlsx')){excelViewer(await response.arrayBuffer());return}
+  q('#viewer').innerHTML='<div class="message"><h2>Anteprima non disponibile</h2><p>Questo formato non è visualizzabile direttamente nel browser. Usa “Scarica originale” per aprirlo con l’applicazione appropriata.</p></div>';
+}
+init().catch(e=>{q('#viewer').innerHTML=`<div class="message"><h2>Impossibile aprire il documento</h2><p>${esc(e.message)}</p></div>`});
+</script>
+</body>
+</html>

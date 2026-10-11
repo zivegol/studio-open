@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatore Mutui</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #f7f6f2; --surface: #fff; --border: #e2e0d8; --border-strong: #c8c5ba;
+            --text: #1a1917; --text-muted: #6b6860; --text-faint: #9c9a94;
+            --blue: #1e3a5f; --blue-light: #2e6da4; --blue-bg: #e6eef7; --blue-mid: #b8d0e8;
+            --green: #1d6a45; --green-bg: #e8f4ee;
+            --amber: #8a4000; --amber-bg: #fdf0e4;
+            --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
+        }
+        body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem; }
+        .layout { max-width: 1100px; margin: 0 auto; }
+        header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+        header h1 { font-family: var(--mono); font-size: 18px; font-weight: 500; }
+        .back-link { font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-decoration: none; }
+        .back-link:hover { color: var(--blue-light); }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem; margin-bottom: 1rem; }
+        .card-title { font-family: var(--mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 1.25rem; }
+
+        /* Scenari affiancati */
+        .scenari-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1rem; }
+        @media (max-width: 640px) { .scenari-grid { grid-template-columns: 1fr; } }
+
+        .scenario-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: 6px; padding: 1.25rem; }
+        .scenario-card.s1 { border-top: 3px solid var(--blue-light); }
+        .scenario-card.s2 { border-top: 3px solid var(--amber); }
+        .scenario-label { font-family: var(--mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+        .scenario-card.s1 .scenario-label { color: var(--blue-light); }
+        .scenario-card.s2 .scenario-label { color: var(--amber); }
+
+        .field-group { margin-bottom: 1rem; }
+        .field-group label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 5px; }
+        .field-row { display: flex; gap: 8px; align-items: center; }
+        .field-row input { flex: 1; padding: 8px 10px; border: 1px solid var(--border-strong); border-radius: 4px; font-family: var(--mono); font-size: 14px; background: var(--bg); color: var(--text); }
+        .field-row input:focus { outline: none; border-color: var(--blue-light); }
+        .field-unit { font-family: var(--mono); font-size: 12px; color: var(--text-faint); white-space: nowrap; }
+
+        .fields-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        /* Bottone calcola */
+        .btn-calc { width: 100%; padding: 12px; background: var(--blue); color: #fff; border: none; border-radius: 5px; font-family: var(--mono); font-size: 14px; font-weight: 500; letter-spacing: 0.03em; cursor: pointer; transition: opacity 0.15s; margin-top: 0.5rem; }
+        .btn-calc:hover { opacity: 0.88; }
+
+        /* Riepilogo KPI */
+        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.25rem; }
+        @media (max-width: 640px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+        .kpi { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 10px 14px; text-align: center; }
+        .kpi-val { font-family: var(--mono); font-size: 18px; font-weight: 500; }
+        .kpi-lbl { font-size: 11px; color: var(--text-faint); margin-top: 3px; }
+        .kpi.s1 .kpi-val { color: var(--blue-light); }
+        .kpi.s2 .kpi-val { color: var(--amber); }
+        .kpi.diff .kpi-val { color: var(--green); }
+        .kpi.diff-neg .kpi-val { color: #8a0000; }
+
+        /* Confronto riepilogo */
+        .confronto-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .confronto-table th { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); padding: 8px 12px; border-bottom: 1px solid var(--border); text-align: right; }
+        .confronto-table th:first-child { text-align: left; }
+        .confronto-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); text-align: right; font-family: var(--mono); font-size: 13px; }
+        .confronto-table td:first-child { text-align: left; color: var(--text-muted); font-family: var(--sans); font-size: 13px; }
+        .confronto-table tr:last-child td { border-bottom: none; }
+        .confronto-table .s1-col { color: var(--blue-light); }
+        .confronto-table .s2-col { color: var(--amber); }
+        .confronto-table .diff-col { color: var(--green); font-weight: 500; }
+        .confronto-table .diff-neg { color: #8a0000; font-weight: 500; }
+        .confronto-table tr:hover td { background: var(--bg); }
+
+        /* Tabs piano */
+        .tab-row { display: flex; gap: 6px; margin-bottom: 1rem; }
+        .tab-btn { font-family: var(--mono); font-size: 12px; padding: 6px 14px; border: 1px solid var(--border-strong); border-radius: 4px; background: var(--bg); cursor: pointer; color: var(--text-muted); transition: all 0.15s; }
+        .tab-btn.active.s1 { border-color: var(--blue-light); background: var(--blue-bg); color: var(--blue-light); }
+        .tab-btn.active.s2 { border-color: var(--amber); background: var(--amber-bg); color: var(--amber); }
+        .tab-btn:hover { border-color: var(--border-strong); color: var(--text); }
+
+        /* Piano ammortamento */
+        .piano-wrap { overflow-x: auto; max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: 4px; }
+        .piano-table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: var(--mono); }
+        .piano-table thead th { position: sticky; top: 0; background: #f0ede6; padding: 7px 10px; text-align: right; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid var(--border); white-space: nowrap; z-index: 1; }
+        .piano-table thead th:first-child { text-align: center; }
+        .piano-table td { padding: 5px 10px; border-bottom: 1px solid var(--border); text-align: right; color: var(--text); }
+        .piano-table td:first-child { text-align: center; color: var(--text-muted); }
+        .piano-table tr:nth-child(even) td { background: #faf9f6; }
+        .piano-table tr:last-child td { border-bottom: none; font-weight: 500; background: var(--blue-bg); }
+        .piano-table .yr-row td { background: #eef3f8; font-weight: 500; color: var(--blue); }
+
+        /* Export */
+        .export-row { display: flex; gap: 10px; margin-top: 1rem; flex-wrap: wrap; }
+        .btn-export { padding: 8px 16px; border: 1px solid var(--border-strong); border-radius: 4px; background: var(--bg); font-family: var(--mono); font-size: 12px; cursor: pointer; color: var(--text-muted); transition: all 0.15s; }
+        .btn-export:hover { border-color: var(--blue-light); color: var(--blue-light); }
+
+        .hidden { display: none; }
+
+        /* Grafico barre */
+        .chart-wrap { margin-top: 1rem; }
+        .chart-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-family: var(--mono); font-size: 11px; }
+        .chart-label { width: 80px; text-align: right; color: var(--text-muted); white-space: nowrap; }
+        .chart-bar-bg { flex: 1; height: 20px; background: var(--border); border-radius: 2px; overflow: hidden; }
+        .chart-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+        .chart-bar-fill.cap { background: var(--blue-light); }
+        .chart-bar-fill.int { background: var(--amber); }
+        .chart-val { width: 90px; color: var(--text-muted); }
+        .chart-legend { display: flex; gap: 16px; margin-bottom: 10px; font-size: 12px; }
+        .chart-legend span { display: flex; align-items: center; gap: 6px; }
+        .chart-legend .dot { width: 10px; height: 10px; border-radius: 2px; }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <header>
+        <h1>Calcolatore Mutui</h1>
+        <a class="back-link" href="../dashboard.html">← App di Studio</a>
+    </header>
+
+    <!-- INPUT SCENARI -->
+    <div class="card">
+        <div class="card-title">Parametri — ammortamento francese (rata costante)</div>
+        <div class="scenari-grid">
+
+            <!-- Scenario 1 -->
+            <div class="scenario-card s1">
+                <div class="scenario-label">Scenario A</div>
+                <div class="field-group">
+                    <label>Importo mutuo</label>
+                    <div class="field-row">
+                        <input type="number" id="s1_capitale" value="200000" min="1000" step="1000">
+                        <span class="field-unit">€</span>
+                    </div>
+                </div>
+                <div class="fields-2col">
+                    <div class="field-group">
+                        <label>Tasso annuo</label>
+                        <div class="field-row">
+                            <input type="number" id="s1_tasso" value="3.50" min="0.01" max="30" step="0.05">
+                            <span class="field-unit">%</span>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>Durata</label>
+                        <div class="field-row">
+                            <input type="number" id="s1_anni" value="20" min="1" max="40" step="1">
+                            <span class="field-unit">anni</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label>Data prima rata</label>
+                    <div class="field-row">
+                        <input type="month" id="s1_data" value="2025-07">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 2 -->
+            <div class="scenario-card s2">
+                <div class="scenario-label">Scenario B</div>
+                <div class="field-group">
+                    <label>Importo mutuo</label>
+                    <div class="field-row">
+                        <input type="number" id="s2_capitale" value="200000" min="1000" step="1000">
+                        <span class="field-unit">€</span>
+                    </div>
+                </div>
+                <div class="fields-2col">
+                    <div class="field-group">
+                        <label>Tasso annuo</label>
+                        <div class="field-row">
+                            <input type="number" id="s2_tasso" value="4.20" min="0.01" max="30" step="0.05">
+                            <span class="field-unit">%</span>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>Durata</label>
+                        <div class="field-row">
+                            <input type="number" id="s2_anni" value="25" min="1" max="40" step="1">
+                            <span class="field-unit">anni</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label>Data prima rata</label>
+                    <div class="field-row">
+                        <input type="month" id="s2_data" value="2025-07">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn-calc" onclick="calcola()">Calcola</button>
+    </div>
+
+    <!-- CONFRONTO RIEPILOGO -->
+    <div class="card hidden" id="risultatiCard">
+        <div class="card-title">Confronto scenari</div>
+        <table class="confronto-table" id="confrontoTable"></table>
+
+        <!-- Grafico interessi nel tempo -->
+        <div style="margin-top:1.5rem;">
+            <div class="card-title">Composizione rata annuale — interessi vs capitale</div>
+            <div class="chart-legend">
+                <span><div class="dot" style="background:var(--blue-light)"></div> Quota capitale</span>
+                <span><div class="dot" style="background:var(--amber)"></div> Quota interessi</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+                <div>
+                    <div style="font-family:var(--mono);font-size:11px;color:var(--blue-light);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">Scenario A</div>
+                    <div class="chart-wrap" id="chartS1"></div>
+                </div>
+                <div>
+                    <div style="font-family:var(--mono);font-size:11px;color:var(--amber);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em;">Scenario B</div>
+                    <div class="chart-wrap" id="chartS2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIANO AMMORTAMENTO -->
+    <div class="card hidden" id="pianoCard">
+        <div class="card-title">Piano di ammortamento</div>
+        <div class="tab-row">
+            <button class="tab-btn active s1" id="tabS1" onclick="showPiano('s1')">Scenario A</button>
+            <button class="tab-btn s2" id="tabS2" onclick="showPiano('s2')">Scenario B</button>
+        </div>
+        <div id="pianoS1Container"></div>
+        <div id="pianoS2Container" class="hidden"></div>
+        <div class="export-row">
+            <button class="btn-export" onclick="exportExcel('s1')">📥 Esporta Scenario A in Excel</button>
+            <button class="btn-export" onclick="exportExcel('s2')">📥 Esporta Scenario B in Excel</button>
+            <button class="btn-export" onclick="exportExcel('both')">📥 Esporta entrambi in Excel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let pianoS1 = [], pianoS2 = [];
+let paramsS1 = {}, paramsS2 = {};
+
+function fmt(n, dec) {
+    return n.toLocaleString('it-IT', { minimumFractionDigits: dec ?? 2, maximumFractionDigits: dec ?? 2 });
+}
+
+function calcMutuo(capitale, tassoAnnuo, anni, dataInizio) {
+    const r = tassoAnnuo / 100 / 12;
+    const n = anni * 12;
+    const rata = r === 0 ? capitale / n : capitale * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+
+    let saldo = capitale;
+    const piano = [];
+    let [anno, mese] = dataInizio.split('-').map(Number);
+
+    for (let i = 1; i <= n; i++) {
+        const interessi = saldo * r;
+        const cap = rata - interessi;
+        saldo -= cap;
+        if (saldo < 0.005) saldo = 0;
+
+        const label = String(anno) + '-' + String(mese).padStart(2, '0');
+        piano.push({ num: i, data: label, anno, mese, rata, cap, interessi, saldo });
+
+        mese++;
+        if (mese > 12) { mese = 1; anno++; }
+    }
+
+    const totInteressi = piano.reduce((a, r) => a + r.interessi, 0);
+    const totPagato = rata * n;
+    return { rata, piano, totInteressi, totPagato, n };
+}
+
+function calcola() {
+    const get = id => parseFloat(document.getElementById(id).value);
+
+    paramsS1 = { capitale: get('s1_capitale'), tasso: get('s1_tasso'), anni: get('s1_anni'), data: document.getElementById('s1_data').value };
+    paramsS2 = { capitale: get('s2_capitale'), tasso: get('s2_tasso'), anni: get('s2_anni'), data: document.getElementById('s2_data').value };
+
+    const r1 = calcMutuo(paramsS1.capitale, paramsS1.tasso, paramsS1.anni, paramsS1.data);
+    const r2 = calcMutuo(paramsS2.capitale, paramsS2.tasso, paramsS2.anni, paramsS2.data);
+    pianoS1 = r1.piano;
+    pianoS2 = r2.piano;
+
+    // Confronto table
+    const rows = [
+        ['Importo mutuo', r1, r2, v => '€ ' + fmt(v.capitale ?? paramsS1.capitale)],
+        ['Tasso annuo', r1, r2, (v, i) => fmt(i === 0 ? paramsS1.tasso : paramsS2.tasso, 2) + ' %'],
+        ['Durata', r1, r2, (v, i) => (i === 0 ? paramsS1.anni : paramsS2.anni) + ' anni (' + v.n + ' rate)'],
+        ['Rata mensile', r1, r2, v => '€ ' + fmt(v.rata)],
+        ['Totale interessi', r1, r2, v => '€ ' + fmt(v.totInteressi)],
+        ['Totale pagato', r1, r2, v => '€ ' + fmt(v.totPagato)],
+        ['Costo del denaro', r1, r2, v => fmt(v.totInteressi / (v.rata * v.n) * 100, 1) + ' %'],
+    ];
+
+    let tHtml = `<thead><tr>
+        <th></th>
+        <th style="color:var(--blue-light)">Scenario A</th>
+        <th style="color:var(--amber)">Scenario B</th>
+        <th>Differenza</th>
+    </tr></thead><tbody>`;
+
+    const diffLabels = ['', '', '', 'Rata mensile', 'Totale interessi', 'Totale pagato', ''];
+    const diffVals = [null, null, null,
+        r2.rata - r1.rata,
+        r2.totInteressi - r1.totInteressi,
+        r2.totPagato - r1.totPagato,
+        null
+    ];
+
+    rows.forEach(([label, res1, res2, fmt_fn], idx) => {
+        const diff = diffVals[idx];
+        let diffHtml = '—';
+        if (diff !== null) {
+            const cls = diff > 0 ? 'diff-neg' : 'diff-col';
+            const sign = diff > 0 ? '+' : '';
+            diffHtml = `<span class="${cls}">${sign}€ ${fmt(Math.abs(diff))}</span>`;
+        }
+        tHtml += `<tr>
+            <td>${label}</td>
+            <td class="s1-col">${fmt_fn(res1, 0)}</td>
+            <td class="s2-col">${fmt_fn(res2, 1)}</td>
+            <td>${diffHtml}</td>
+        </tr>`;
+    });
+    tHtml += '</tbody>';
+    document.getElementById('confrontoTable').innerHTML = tHtml;
+
+    // Grafici
+    renderChart('chartS1', pianoS1, paramsS1.anni);
+    renderChart('chartS2', pianoS2, paramsS2.anni);
+
+    // Piani
+    renderPiano('pianoS1Container', pianoS1, 's1');
+    renderPiano('pianoS2Container', pianoS2, 's2');
+
+    document.getElementById('risultatiCard').classList.remove('hidden');
+    document.getElementById('pianoCard').classList.remove('hidden');
+}
+
+function renderChart(containerId, piano, anni) {
+    // Aggrega per anno
+    const anni_map = {};
+    for (const r of piano) {
+        if (!anni_map[r.anno]) anni_map[r.anno] = { cap: 0, int: 0 };
+        anni_map[r.anno].cap += r.cap;
+        anni_map[r.anno].int += r.interessi;
+    }
+    const maxVal = Math.max(...Object.values(anni_map).map(v => v.cap + v.int));
+    let html = '';
+    for (const [anno, v] of Object.entries(anni_map)) {
+        const capPct = (v.cap / maxVal * 100).toFixed(1);
+        const intPct = (v.int / maxVal * 100).toFixed(1);
+        html += `<div class="chart-bar-row">
+            <span class="chart-label">${anno}</span>
+            <div class="chart-bar-bg">
+                <div style="display:flex;height:100%">
+                    <div class="chart-bar-fill cap" style="width:${capPct}%"></div>
+                    <div class="chart-bar-fill int" style="width:${intPct}%"></div>
+                </div>
+            </div>
+            <span class="chart-val">€ ${fmt(v.cap + v.int, 0)}</span>
+        </div>`;
+    }
+    document.getElementById(containerId).innerHTML = html;
+}
+
+function renderPiano(containerId, piano, scenario) {
+    let html = `<div class="piano-wrap"><table class="piano-table">
+        <thead><tr>
+            <th>N°</th><th>Data</th><th>Rata</th><th>Quota capitale</th><th>Quota interessi</th><th>Debito residuo</th>
+        </tr></thead><tbody>`;
+
+    let prevAnno = null;
+    for (const r of piano) {
+        if (r.anno !== prevAnno && prevAnno !== null) {
+            // Riga riepilogo anno
+            const annoRows = piano.filter(x => x.anno === prevAnno);
+            const totCap = annoRows.reduce((a, x) => a + x.cap, 0);
+            const totInt = annoRows.reduce((a, x) => a + x.interessi, 0);
+            const totRata = annoRows.reduce((a, x) => a + x.rata, 0);
+            html += `<tr class="yr-row">
+                <td colspan="2">Totale ${prevAnno}</td>
+                <td>€ ${fmt(totRata)}</td>
+                <td>€ ${fmt(totCap)}</td>
+                <td>€ ${fmt(totInt)}</td>
+                <td></td>
+            </tr>`;
+        }
+        prevAnno = r.anno;
+        html += `<tr>
+            <td>${r.num}</td>
+            <td>${r.data}</td>
+            <td>€ ${fmt(r.rata)}</td>
+            <td>€ ${fmt(r.cap)}</td>
+            <td>€ ${fmt(r.interessi)}</td>
+            <td>€ ${fmt(r.saldo)}</td>
+        </tr>`;
+    }
+    // Totale finale
+    const totCap = piano.reduce((a, x) => a + x.cap, 0);
+    const totInt = piano.reduce((a, x) => a + x.interessi, 0);
+    const totRata = piano.reduce((a, x) => a + x.rata, 0);
+    html += `<tr>
+        <td colspan="2">TOTALE</td>
+        <td>€ ${fmt(totRata)}</td>
+        <td>€ ${fmt(totCap)}</td>
+        <td>€ ${fmt(totInt)}</td>
+        <td>€ 0,00</td>
+    </tr>`;
+    html += '</tbody></table></div>';
+    document.getElementById(containerId).innerHTML = html;
+}
+
+function showPiano(s) {
+    document.getElementById('pianoS1Container').classList.toggle('hidden', s !== 's1');
+    document.getElementById('pianoS2Container').classList.toggle('hidden', s !== 's2');
+    document.getElementById('tabS1').classList.toggle('active', s === 's1');
+    document.getElementById('tabS2').classList.toggle('active', s === 's2');
+    document.getElementById('tabS1').classList.toggle('s1', s === 's1');
+    document.getElementById('tabS2').classList.toggle('s2', s === 's2');
+}
+
+function pianoToAoa(piano, params, label) {
+    const rows = [
+        [label],
+        ['Capitale: € ' + fmt(params.capitale) + '  |  Tasso: ' + params.tasso + '%  |  Durata: ' + params.anni + ' anni'],
+        [],
+        ['N°', 'Data', 'Rata (€)', 'Quota capitale (€)', 'Quota interessi (€)', 'Debito residuo (€)']
+    ];
+    let prevAnno = null;
+    for (const r of piano) {
+        if (r.anno !== prevAnno && prevAnno !== null) {
+            const annoRows = piano.filter(x => x.anno === prevAnno);
+            rows.push([
+                'Totale ' + prevAnno, '',
+                annoRows.reduce((a, x) => a + x.rata, 0),
+                annoRows.reduce((a, x) => a + x.cap, 0),
+                annoRows.reduce((a, x) => a + x.interessi, 0),
+                ''
+            ]);
+        }
+        prevAnno = r.anno;
+        rows.push([r.num, r.data, r.rata, r.cap, r.interessi, r.saldo]);
+    }
+    rows.push([
+        'TOTALE', '',
+        piano.reduce((a, x) => a + x.rata, 0),
+        piano.reduce((a, x) => a + x.cap, 0),
+        piano.reduce((a, x) => a + x.interessi, 0),
+        0
+    ]);
+    return rows;
+}
+
+function exportExcel(which) {
+    const wb = XLSX.utils.book_new();
+    if (which === 's1' || which === 'both') {
+        const ws = XLSX.utils.aoa_to_sheet(pianoToAoa(pianoS1, paramsS1, 'Scenario A'));
+        ws['!cols'] = [8,12,16,18,18,18].map(w => ({ wch: w }));
+        XLSX.utils.book_append_sheet(wb, ws, 'Scenario A');
+    }
+    if (which === 's2' || which === 'both') {
+        const ws = XLSX.utils.aoa_to_sheet(pianoToAoa(pianoS2, paramsS2, 'Scenario B'));
+        ws['!cols'] = [8,12,16,18,18,18].map(w => ({ wch: w }));
+        XLSX.utils.book_append_sheet(wb, ws, 'Scenario B');
+    }
+    XLSX.writeFile(wb, 'piano_ammortamento.xlsx');
+}
+
+// Calcola subito al caricamento
+window.addEventListener('load', calcola);
+</script>
+</body>
+</html>

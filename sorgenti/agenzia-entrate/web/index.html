@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Cassetto Studio · studio-example</title>
+  <link rel="stylesheet" href="official.css?v=2">
+<link rel="stylesheet" href="workspace.css?v=1">
+</head>
+<body>
+
+<aside><a href="../dashboard.html" class="brand">studio-example</a><p class="brand-sub">CASSETTO STUDIO / 2.0</p><nav>
+<a href="#overview">Scrivania</a><a href="#cliente">Clienti</a><a href="#deleghe">Deleghe</a>
+<p class="nav-caption">Consultazione</p><a href="#cassetto">Documenti fiscali</a><a href="#f24">Versamenti F24</a><a href="#fatture">Fatture elettroniche</a><a href="#archivio">Archivio Nextcloud</a>
+<p class="nav-caption">Servizi e controllo</p><a href="#cu">CU massivo · API</a><a href="#verifiche">Verifiche anagrafiche</a><a href="#operations">Operazioni</a><a href="#audit">Registro attività</a><a href="#entratel">Connessioni</a>
+</nav></aside>
+
+<main>
+  <header>
+    <div>
+      <small>SCRIVANIA FISCALE DELLO STUDIO</small>
+      <h1 id="workspace-title">La scrivania fiscale</h1>
+      <p class="muted" style="margin:4px 0 0">Un unico spazio per consultare, acquisire e ritrovare i documenti dello studio.</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span id="entratel-badge" class="badge badge-gray">○ Non collegato</span>
+      <a class="button secondary" href="https://telematici.agenziaentrate.gov.it/" target="_blank" rel="noopener noreferrer">Apri Portale Agenzia ↗</a>
+    </div>
+  </header>
+<div class="context-bar"><div><small>CLIENTE ATTIVO</small><strong id="workspace-client">Seleziona un cliente per iniziare</strong></div><a href="#cliente">Scegli cliente →</a></div>
+<section id="overview"><span class="section-kicker">Spazio di lavoro</span><h2>Documenti, senza perdere il filo.</h2><p class="lead">Scegli il cliente una volta. Accedi ai servizi, controlla gli esiti e conserva i documenti nel suo archivio Nextcloud.</p><div class="dashboard-grid"><a class="dash-card" href="#cassetto"><span class="eyebrow">01 / Documenti</span><strong>Il cassetto del cliente</strong><p>Tipologie e annualità disponibili sul portale.</p><span class="go">Apri servizio →</span></a><a class="dash-card" href="#f24"><span class="eyebrow">02 / Versamenti</span><strong>F24 e quietanze</strong><p>Consulta modelli, tributi e documenti archiviati.</p><span class="go">Apri servizio →</span></a><a class="dash-card" href="#cu"><span class="eyebrow">03 / API ufficiali</span><strong>Certificazioni uniche</strong><p>Richieste massive, protocolli ed esiti del servizio.</p><span class="go">Apri servizio →</span></a><a class="dash-card" href="#verifiche"><span class="eyebrow">04 / Anagrafica</span><strong>Codici fiscali e partite IVA</strong><p>Usa il collegamento API già configurato.</p><span class="go">Apri servizio →</span></a><a class="dash-card" href="#archivio"><span class="eyebrow">05 / Nextcloud</span><strong>Archivio documentale</strong><p>Ritrova i PDF acquisiti per il cliente selezionato.</p><span class="go">Apri servizio →</span></a><a class="dash-card" href="#operations"><span class="eyebrow">06 / Controllo</span><strong>Operazioni dello studio</strong><p>Segui richieste CU e attività registrate.</p><span class="go">Apri servizio →</span></a></div><div class="work-note"><strong>Collegamenti esistenti</strong><p id="workspace-api-status">Verifica configurazione…</p><p id="workspace-cu-status">Verifica configurazione CU…</p><small>Operatore Nextcloud: <span id="workspace-user">—</span></small></div></section>
+<section id="deleghe"><span class="section-kicker">Clienti / autorizzazioni</span><h2>Registro deleghe dello studio</h2><p class="lead">Registra scadenza e riferimento del documento. Questa registrazione interna non attiva, rinnova o revoca deleghe sul portale Agenzia.</p>
+<form id="delegation-form"><div class="form-grid"><label>Codice fiscale cliente<input id="delegation-client" name="client" required pattern="([0-9]{11}|[A-Za-z0-9]{16})" maxlength="16"></label><label>Servizio<select name="service"><option value="cassetto">Cassetto fiscale</option><option value="fatture">Fatture e corrispettivi</option></select></label><label>Scadenza<input type="date" name="expires" required></label><label>Riferimento alla delega<input name="reference" maxlength="300" placeholder="Protocollo o riferimento del documento in Nextcloud" required></label></div><label><input type="checkbox" name="revoked"> Segna come revocata nel registro interno</label><button>Salva registrazione</button></form><p id="delegation-status" class="workspace-status" role="status"></p><div id="delegation-list" class="table-wrap"></div></section>
+<section id="operations"><span class="section-kicker">Monitoraggio</span><h2>Operazioni</h2><p id="operations-current" class="work-note">Nessuna operazione avviata da questa pagina.</p><button id="operations-refresh" class="secondary">Aggiorna registro</button><p id="operations-status" class="workspace-status" role="status"></p><h3>Richieste massive CU</h3><div id="operations-cu" class="table-wrap"></div><h3>Attività recenti</h3><div id="operations-log" class="table-wrap"></div><p class="muted">L’accesso Entratel resta personale. Dopo la scadenza della sessione, riconnettiti da Connessioni. Gli errori non vengono interpretati come assenza di documenti.</p></section>
+
+  <!-- 1. ACCESSO ENTRATEL -->
+  <section id="entratel">
+    <div class="section-header">
+      <div>
+        <small>CONNESSIONE UFFICIALE</small>
+        <h2>1. Accesso al Portale Entratel</h2>
+      </div>
+      <div class="actions">
+        <button type="button" id="entratel-resume-btn" class="secondary" hidden>🔄 Riprendi operazione in sospeso</button>
+        <button type="button" id="entratel-logout-btn" class="danger" disabled>Disconnetti</button>
+      </div>
+    </div>
+
+    <div id="entratel-banner" class="banner">Verifica della sessione del connettore in corso…</div>
+
+    <div id="entratel-circuit-banner" class="banner" style="display:none;background:#fef2f2;border:1px solid #f87171;color:#991b1b;margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div>
+          <strong>🛡️ SALVAVITA ANTI-BLOCCO PIN ATTIVO:</strong> <span id="entratel-circuit-reason">Il connettore è temporaneamente bloccato per salvaguardare il PIN Entratel dello studio.</span>
+        </div>
+        <button type="button" id="entratel-circuit-reset-btn" class="secondary" style="padding:4px 10px;font-size:12px;background:#fff;border-color:#f87171;color:#991b1b">🔓 Sblocca connettore</button>
+      </div>
+    </div>
+
+    <form id="entratel-form" autocomplete="off">
+      <fieldset id="entratel-login-fields" style="border:0;padding:0;margin:0">
+        <div class="grid-3">
+          <label>Nome Utente Entratel
+            <input name="username" type="text" placeholder="Nome utente o CF intermediario" required autocomplete="username">
+          </label>
+          <label>Password Entratel
+            <input name="password" type="password" placeholder="Password Entratel" required autocomplete="current-password">
+          </label>
+          <label>Codice PIN
+            <input name="pin" type="password" placeholder="PIN Entratel" required autocomplete="current-password">
+          </label>
+        </div>
+        <div class="actions" style="margin-top:4px">
+          <button type="submit" id="entratel-submit-btn">🔐 Accedi ad Entratel</button>
+          <span class="muted" style="font-size:12px">La sessione browser protetta rimane aperta nel container per eseguire le consultazioni per conto dello studio.</span>
+        </div>
+      </fieldset>
+    </form>
+  </section>
+
+  <!-- 2. UTENZA STUDIO -->
+  <section id="studio">
+    <div class="section-header">
+      <div>
+        <small>DELEGA FISCALE</small>
+        <h2>2. Utenza di Lavoro dello Studio Delegato</h2>
+      </div>
+    </div>
+    <p class="muted">L'utenza di lavoro corrisponde al soggetto incaricato che ha ricevuto la delega dal cliente alla consultazione del cassetto fiscale o fatture.</p>
+    <div class="grid">
+      <label>Codice Fiscale Studio / Intermediario Incaricante
+        <input id="ade-studio" value="00000000000" maxlength="16" placeholder="00000000000">
+      </label>
+      <label>Denominazione Studio & Sede
+        <input value="STUDIO ASSOCIATO studio-example (Sede 000)" readonly style="background:#f8fafc">
+      </label>
+    </div>
+  </section>
+
+  <!-- 3. SELEZIONE CLIENTE -->
+  <section id="cliente">
+    <div class="section-header">
+      <div>
+        <small>FASCICOLO CLIENTELA</small>
+        <h2>3. Selezione Cliente dello Studio</h2>
+      </div>
+      <div class="filter-chips">
+        <span class="chip active" data-type="all">Tutti</span>
+        <span class="chip" data-type="DI">Ditte Individuali</span>
+        <span class="chip" data-type="PF">Persone Fisiche</span>
+        <span class="chip" data-type="PG">Società (Srl, Snc, Sas...)</span>
+      </div>
+    </div>
+
+    <!-- Scheda cliente attivo -->
+    <div id="active-client-card" class="active-client-card" hidden>
+      <div>
+        <small style="color:#0284c7">CLIENTE ATTUALMENTE SELEZIONATO</small>
+        <h3 id="active-client-name" style="margin:4px 0 2px;font-size:17px">—</h3>
+        <span style="font-size:13px;color:#475569">
+          CF: <code id="active-client-cf" style="font-weight:700">—</code> ·
+          P.IVA: <code id="active-client-piva">—</code>
+        </span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span id="active-client-type" class="badge badge-blue">Ditta Individuale</span>
+      </div>
+    </div>
+
+    <label>Cerca cliente nello studio per nome, Codice Fiscale o Partita IVA:
+      <input id="client-search-input" type="search" placeholder="🔍 Cerca cliente (es. Sartori, Amenta, 04769...)">
+    </label>
+
+    <div id="client-list-container" style="max-height:240px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:6px;padding:6px;background:#f8fafc">
+      <p class="muted" style="padding:14px;text-align:center">Caricamento clienti dello studio in corso…</p>
+    </div>
+  </section>
+
+  <!-- 4. HUB OPERATIVO DEL CLIENTE -->
+  <section id="operativo" style="padding-top:16px">
+    <div class="tabs">
+      <button class="tab-btn active" data-target="tab-cassetto">📂 Cassetto Fiscale</button>
+      <button class="tab-btn" data-target="tab-fatture">🧾 Fatture & Corrispettivi (SDI)</button>
+      <button class="tab-btn" data-target="tab-cu">📋 Scarico Massivo CU</button>
+      <button class="tab-btn" data-target="tab-verifiche">🔍 Verifiche Anagrafiche</button>
+      <button class="tab-btn" data-target="tab-archivio">📁 Archivio Documenti NC</button>
+    </div>
+
+    <!-- TAB CASSETTO FISCALE -->
+    <div id="tab-cassetto" class="tab-panel active">
+      <h2>Cassetto Fiscale Delegato</h2>
+      <p class="muted">Accesso alle consultazioni per il cliente selezionato tramite la delega attiva dello studio.</p>
+
+      <!-- Servizi Consultazioni AdE -->
+      <div class="cassetto-services-bar" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:18px;background:#f1f5f9;padding:10px 14px;border-radius:8px;font-size:13px;color:#334155;border:1px solid #e2e8f0">
+        <span style="font-weight:600;color:#0f172a;margin-right:4px">Sezione Consultazioni AdE:</span>
+        <span class="badge" style="background:#e2e8f0;color:#0f172a">👤 Anagrafica</span>
+        <span class="badge" style="background:#dbeafe;color:#1e40af;font-weight:600">📥 Dichiarazioni</span>
+        <span class="badge" style="background:#e2e8f0;color:#0f172a">📊 ISA</span>
+        <span class="badge" style="background:#e2e8f0;color:#0f172a">✉️ Comunicazioni</span>
+        <span class="badge" style="background:#e2e8f0;color:#0f172a">📑 Registro</span>
+        <span class="badge" style="background:#dbeafe;color:#1e40af;font-weight:600">💳 Versamenti</span>
+        <span class="badge" style="background:#e2e8f0;color:#0f172a">💰 Rimborsi</span>
+      </div>
+
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:18px;margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+          <div>
+            <h3 style="margin:0">📥 Dichiarazioni Fiscali e Modelli del Cliente</h3>
+            <p class="muted" style="margin:4px 0 0">Seleziona il modello e l'annualità disponibili per scaricare la dichiarazione completa in formato PDF nell'archivio Nextcloud.</p>
+          </div>
+          <button type="button" id="cassetto-decl-reload-btn" class="secondary requires-entratel" style="padding:6px 14px;font-size:13px" disabled>
+            🔄 Aggiorna Elenco Modelli
+          </button>
+        </div>
+
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <label style="margin:0;min-width:260px">Modello / Tipologia:
+            <select id="cassetto-decl-model" style="margin:4px 0 0" disabled><option value="">Seleziona un cliente e collega Entratel</option></select>
+          </label>
+          <label style="margin:0;min-width:160px">Annualità Fiscale:
+            <select id="cassetto-decl-year" style="margin:4px 0 0" disabled><option value="">Scegli prima la tipologia</option></select>
+          </label>
+          <button type="button" id="cassetto-decl-btn" class="requires-entratel" style="margin-top:20px" disabled>
+            📥 Scarica PDF Modello
+          </button>
+        </div>
+        <div id="cassetto-decl-status" style="margin-top:12px"></div>
+        <div id="cassetto-decl-results" style="margin-top:16px"></div>
+      </div>
+
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:18px">
+        <!-- Intestazione F24 -->
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:14px">
+          <div>
+            <h3 style="margin:0 0 4px">💳 Versamenti F24 (Cassetto Fiscale)</h3>
+            <p class="muted" style="margin:0">Consultazione ed analisi delle quietanze e dei modelli F24 con quadratura contabile rigo per rigo, sincronizzati con l'Agenzia delle Entrate.</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button type="button" id="f24-export-csv-btn" class="secondary" style="padding:6px 12px;font-size:13px;display:inline-flex;align-items:center;gap:6px">📥 Esporta CSV</button>
+            <button type="button" id="f24-reload-analysis-btn" class="secondary" style="padding:6px 10px;font-size:13px" title="Ricarica archivio F24 locale">🔄</button>
+          </div>
+        </div>
+
+        <!-- Sottomenu Cassetto Fiscale -->
+        <div style="display:flex;gap:8px;border-bottom:2px solid #e2e8f0;padding-bottom:10px;margin-bottom:16px;flex-wrap:wrap">
+          <button type="button" id="f24-nav-models" class="chip active" style="font-weight:700;padding:6px 16px;font-size:13px">📋 Modello F24 (per Annualità)</button>
+          <button type="button" id="f24-nav-tributisel" class="chip" style="font-weight:600;padding:6px 16px;font-size:13px">🔍 Ricerche tributi F24</button>
+          <button type="button" id="f24-nav-quiesel" class="chip" style="font-weight:600;padding:6px 16px;font-size:13px">🧾 Ricerca per Quietanza / Protocollo</button>
+        </div>
+
+        <!-- 1. VISTA: MODELLO F24 (PER ANNUALITÀ) -->
+        <div id="f24-section-models">
+          <!-- Barra Selettore Anni stile Agenzia delle Entrate -->
+          <div style="background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:12px 16px;margin-bottom:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                <span style="font-weight:700;font-size:13px;color:#334155;margin-right:4px">Annualità F24:</span>
+                <div id="f24-year-pills" style="display:inline-flex;gap:6px;flex-wrap:wrap">
+                  <button type="button" class="chip f24-year-btn active" data-year="2026" style="padding:5px 12px;font-size:13px;font-weight:700">2026</button>
+                  <button type="button" class="chip f24-year-btn" data-year="2025" style="padding:5px 12px;font-size:13px;font-weight:700">2025</button>
+                  <button type="button" class="chip f24-year-btn" data-year="2024" style="padding:5px 12px;font-size:13px;font-weight:700">2024</button>
+                  <button type="button" class="chip f24-year-btn" data-year="2023" style="padding:5px 12px;font-size:13px;font-weight:700">2023</button>
+                  <button type="button" class="chip f24-year-btn" data-year="2022" style="padding:5px 12px;font-size:13px;font-weight:700">2022</button>
+                  <button type="button" class="chip f24-year-btn" data-year="2021" style="padding:5px 12px;font-size:13px;font-weight:700">2021</button>
+                  <button type="button" class="chip f24-year-btn" data-year="2020" style="padding:5px 12px;font-size:13px;font-weight:700">2020</button>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px">
+                <button type="button" id="cassetto-f24-btn" class="requires-entratel" style="padding:7px 14px;font-size:13px;display:inline-flex;align-items:center;gap:6px" disabled>
+                  🔍 Consulta Portale AdE (<span id="f24-active-year-label">2026</span>)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Criteri di ricerca temporali sui versamenti acquisiti nel [ANNO] (stile AdE collapse-ricerca-vers) -->
+          <details id="f24-temporal-criteria" style="background:#fff;border:1px solid #cbd5e1;border-radius:6px;padding:10px 14px;margin-bottom:14px">
+            <summary style="cursor:pointer;font-weight:700;font-size:13px;color:#1e293b;user-select:none">
+              🔍 Criteri di ricerca temporali sui versamenti acquisiti nel <span id="f24-criteria-year-text">2026</span> <small style="color:#64748b;font-weight:400">(opzionali)</small>
+            </summary>
+            <div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:10px;align-items:end">
+              <label style="margin:0;font-size:12px">Da data versamento:
+                <input type="date" id="f24-filter-from" style="margin:3px 0 0;font-size:13px;padding:5px 8px">
+              </label>
+              <label style="margin:0;font-size:12px">A data versamento:
+                <input type="date" id="f24-filter-to" style="margin:3px 0 0;font-size:13px;padding:5px 8px">
+              </label>
+              <label style="margin:0;font-size:12px">Filtro Ente Creditore:
+                <select id="f24-filter-ente" style="margin:3px 0 0;font-size:13px;padding:5px 8px">
+                  <option value="all">Tutti gli enti</option>
+                  <option value="Erario">Erario (Imposte, IVA, Ritenute)</option>
+                  <option value="INPS">INPS (Previdenza)</option>
+                  <option value="Regioni">Regioni (Add. Reg., IRAP)</option>
+                  <option value="IMU / Enti Locali">Comuni / IMU / Enti Locali</option>
+                  <option value="INAIL / Altri">INAIL e altri enti</option>
+                </select>
+              </label>
+              <label style="margin:0;font-size:12px">Filtro Codice Tributo:
+                <input type="search" id="f24-filter-tributo" placeholder="Es. 1040, 6001, DM10..." style="margin:3px 0 0;font-size:13px;padding:5px 8px">
+              </label>
+              <div style="display:flex;gap:6px">
+                <button type="button" id="f24-reset-filters-btn" class="secondary" style="padding:6px 12px;font-size:12px">Azzera filtri data</button>
+              </div>
+            </div>
+          </details>
+
+          <!-- Cruscotto KPI Annualità -->
+          <div id="f24-kpi-container" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;margin-bottom:14px">
+            <div style="background:#fff;border:1px solid #e2e8f0;border-left:4px solid #ef4444;border-radius:6px;padding:10px 14px">
+              <small style="color:#64748b;font-size:11px;font-weight:600;text-transform:uppercase">Totale a Debito (<span class="f24-kpi-year-badge">2026</span>)</small>
+              <div id="f24-kpi-debito" style="font-size:18px;font-weight:700;color:#dc2626;margin-top:2px">€ 0,00</div>
+            </div>
+            <div style="background:#fff;border:1px solid #e2e8f0;border-left:4px solid #10b981;border-radius:6px;padding:10px 14px">
+              <small style="color:#64748b;font-size:11px;font-weight:600;text-transform:uppercase">Totale a Credito (<span class="f24-kpi-year-badge">2026</span>)</small>
+              <div id="f24-kpi-credito" style="font-size:18px;font-weight:700;color:#16a34a;margin-top:2px">€ 0,00</div>
+            </div>
+            <div style="background:#fff;border:1px solid #e2e8f0;border-left:4px solid #0284c7;border-radius:6px;padding:10px 14px">
+              <small style="color:#64748b;font-size:11px;font-weight:600;text-transform:uppercase">Saldo Netto Versato</small>
+              <div id="f24-kpi-saldo" style="font-size:18px;font-weight:700;color:#0284c7;margin-top:2px">€ 0,00</div>
+            </div>
+            <div style="background:#fff;border:1px solid #e2e8f0;border-left:4px solid #6366f1;border-radius:6px;padding:10px 14px">
+              <small style="color:#64748b;font-size:11px;font-weight:600;text-transform:uppercase">Versamenti Acquisiti</small>
+              <div id="f24-kpi-count" style="font-size:18px;font-weight:700;color:#4f46e5;margin-top:2px">0</div>
+            </div>
+          </div>
+
+          <!-- Contatore / Info Portale -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:12px;color:#64748b">
+            <span id="f24-table-summary">Elenco versamenti acquisiti nel <strong id="f24-summary-year">2026</strong></span>
+            <span id="f24-view-counter"></span>
+          </div>
+
+          <!-- Tabella Principale Modelli F24 -->
+          <div id="cassetto-f24-results" style="margin-top:4px"></div>
+        </div>
+
+        <!-- 2. VISTA: RICERCHE TRIBUTI F24 (Ric=F24Sel) -->
+        <div id="f24-section-tributisel" style="display:none">
+          <div style="background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:16px;margin-bottom:14px">
+            <h4 style="margin:0 0 6px;color:#1e293b">🔍 Ricerca Versamenti per Singolo Tributo (Tutti gli anni)</h4>
+            <p class="muted" style="font-size:12px;margin:0 0 12px">Interroga tutti i versamenti e le compensazioni storiche per un determinato codice tributo attraverso tutte le annualità.</p>
+            <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+              <label style="margin:0;min-width:200px;font-size:12px">Codice Tributo da ricercare:
+                <input type="search" id="f24-tributisel-input" placeholder="Es. 1040, 6001, 3801, DM10..." style="margin:3px 0 0;font-size:14px;padding:6px 10px;font-weight:700">
+              </label>
+              <label style="margin:0;min-width:180px;font-size:12px">Filtro Ente:
+                <select id="f24-tributisel-ente" style="margin:3px 0 0;font-size:13px;padding:6px 8px">
+                  <option value="all">Tutti gli enti</option>
+                  <option value="Erario">Erario</option>
+                  <option value="INPS">INPS</option>
+                  <option value="Regioni">Regioni</option>
+                  <option value="IMU / Enti Locali">Comuni / IMU</option>
+                  <option value="INAIL / Altri">INAIL</option>
+                </select>
+              </label>
+              <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                <span style="font-size:11px;color:#64748b">Frequenti:</span>
+                <button type="button" class="chip f24-chip-suggest" data-trib="1040">1040 (Autonomi)</button>
+                <button type="button" class="chip f24-chip-suggest" data-trib="6001">6001 (IVA Gen)</button>
+                <button type="button" class="chip f24-chip-suggest" data-trib="3801">3801 (Add. Reg)</button>
+                <button type="button" class="chip f24-chip-suggest" data-trib="DM10">DM10 (INPS)</button>
+              </div>
+            </div>
+          </div>
+          <div id="f24-tributisel-results"></div>
+        </div>
+
+        <!-- 3. VISTA: RICERCA PER QUIETANZA / PROTOCOLLO (Ric=QUIESel) -->
+        <div id="f24-section-quiesel" style="display:none">
+          <div style="background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:16px;margin-bottom:14px">
+            <h4 style="margin:0 0 6px;color:#1e293b">🧾 Ricerca Quietanza per Protocollo Telematico</h4>
+            <p class="muted" style="font-size:12px;margin:0 0 12px">Inserisci il protocollo telematico del modello F24 (17 o più cifre) per aprirne la quietanza o verificarne la quadratura contabile.</p>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+              <input type="search" id="f24-quiesel-input" placeholder="Es. 260116..." style="margin:0;font-size:14px;padding:6px 12px;font-family:monospace;min-width:320px">
+              <button type="button" id="f24-quiesel-btn" class="secondary" style="padding:6px 14px">🔍 Cerca Quietanza</button>
+            </div>
+          </div>
+          <div id="f24-quiesel-results"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB FATTURE & CORRISPETTIVI -->
+    <div id="tab-fatture" class="tab-panel">
+      <h2>Fatture e Corrispettivi (SDI)</h2>
+      <p class="muted">Accesso diretto al portale delle fatture elettroniche con delega per singolo soggetto per il cliente selezionato.</p>
+
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:18px;margin-bottom:20px">
+        <div class="actions" style="margin-bottom:14px">
+          <button type="button" id="sdi-invoices-received-btn" class="requires-entratel" disabled>📥 Apri Fatture Ricevute</button>
+          <button type="button" id="sdi-invoices-issued-btn" class="secondary requires-entratel" disabled>📤 Apri Fatture Emesse</button>
+        </div>
+        <div id="sdi-status"></div>
+      </div>
+    </div>
+
+    <!-- TAB SCARICO MASSIVO CU -->
+    <div id="tab-cu" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2>Scarico Massivo CU (Certificazione Unica)</h2>
+          <p class="muted">Composizione fornitura RCU ministeriale, cifratura Entratel CCF e trasmissione con protocollo telematico.</p>
+        </div>
+        <button id="cu-test-diag" type="button" class="secondary" style="font-size:12px">Esegui test diagnostico CU</button>
+      </div>
+
+      <div id="cu-diag-result" style="margin-bottom:14px"></div>
+      <div id="cu-setup-result" style="margin-bottom:14px"></div>
+
+      <!-- Configurazione certificati UTEF / UTEC in primo piano -->
+      <details id="cu-setup-details" style="margin:16px 0;background:#f0f9ff;padding:16px;border:2px solid #0284c7;border-radius:8px" open>
+        <summary style="cursor:pointer;font-weight:700;font-size:15px;color:#0369a1">⚙️ Configurazione certificati ambiente di sicurezza studio-example (UTEF / UTEC)</summary>
+        <div style="background:#fff;border:1px solid #bae6fd;border-radius:6px;padding:12px 14px;margin:12px 0;font-size:13px;color:#0f172a">
+          📁 <strong>Ambiente studio-example rilevato:</strong> I certificati <code>UTEF.P12</code> (Firma) e <code>UTEC.P12</code> (Cifra) sono stati estratti dal file zip e pre-caricati nel sistema.<br>
+          👉 È sufficiente inserire la tua <strong>Password dell'ambiente di sicurezza studio-example</strong> nel campo qui sotto, cliccare su <strong>Controlla certificati</strong> e poi su <strong>Confermo: Salva configurazione</strong>.<br>
+          <small style="color:#64748b">I file estratti sono disponibili anche in <code>Downloads\Ambiente_Omnistudio\</code> se desideri selezionarli manualmente.</small>
+        </div>
+        <form id="cu-setup" autocomplete="off" style="margin-top:12px">
+          <fieldset disabled>
+            <div class="grid">
+              <label>Certificato UTEF.P12 (Firma)<input name="firma" type="file" accept=".p12,.pfx"></label>
+              <label>Certificato UTEC.P12 (Cifra)<input name="cifra" type="file" accept=".p12,.pfx"></label>
+            </div>
+            <label style="font-weight:600;font-size:14px">Password ambiente di sicurezza studio-example:
+              <input name="password" type="password" placeholder="Inserisci la password dell'ambiente studio-example" style="margin-top:6px" required>
+            </label>
+            <div class="actions" style="margin-top:10px">
+              <button type="submit" style="padding:9px 18px">🔍 Controlla certificati</button>
+              <button type="submit" id="cu-save" style="padding:9px 18px" disabled>💾 Confermo: Salva configurazione</button>
+            </div>
+          </fieldset>
+        </form>
+      </details>
+
+      <div style="background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:16px;margin:14px 0">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+          <div style="display:flex;gap:8px;align-items:center;flex:1;min-width:260px">
+            <input id="cu-client-search" type="search" placeholder="🔍 Cerca cliente per nome o CF..." style="margin-bottom:0;width:100%">
+          </div>
+          <div style="display:flex;gap:8px">
+            <button type="button" id="cu-select-all" class="secondary" style="padding:7px 12px;font-size:13px">Seleziona tutti (PF e Ditte)</button>
+            <button type="button" id="cu-deselect-all" class="secondary" style="padding:7px 12px;font-size:13px">Deseleziona</button>
+          </div>
+        </div>
+
+        <div id="cu-clients-container" style="max-height:240px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:6px;padding:4px;background:#f8fafc">
+          <p class="muted" style="padding:12px;text-align:center">Caricamento elenco clienti…</p>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;flex-wrap:wrap;gap:10px">
+          <div>
+            <strong id="cu-selected-count" style="font-size:16px;color:#0284c7">0</strong> <span style="font-size:14px">soggetti selezionati</span>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button id="cu-download-rcu-btn" type="button" class="secondary" style="padding:10px 16px;font-size:13px;font-weight:600" disabled>
+              💾 Scarica fornitura RCU (.rcu)
+            </button>
+            <button id="cu-direct-submit-btn" type="button" style="background:#0284c7;color:#fff;border:none;padding:10px 22px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer" disabled>
+              🚀 Genera ed invia richiesta CU all'Agenzia
+            </button>
+          </div>
+        </div>
+        <p class="muted" style="margin-top:8px;font-size:12px">Limite AdE: massimo 2 richieste giornaliere per intermediario.</p>
+      </div>
+      <div id="cu-direct-submit-result" style="margin-top:12px"></div>
+
+      <!-- Invio file già autenticato con Desktop Telematico -->
+      <details style="margin:14px 0;background:#f8fafc;border:1px solid #cbd5e1;border-radius:8px;padding:14px">
+        <summary style="cursor:pointer;font-weight:600;color:#0f172a">📤 Oppure: Trasmetti fornitura già autenticata da Desktop Telematico (.ccf)</summary>
+        <form id="cu-submit-form" style="margin-top:12px" enctype="multipart/form-data">
+          <p class="muted" style="margin:0 0 10px;font-size:13px">Se hai già controllato e autenticato il file RCU tramite Desktop Telematico, caricalo qui sotto per trasmetterlo subito all'Agenzia delle Entrate via gateway ModI.</p>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <input id="cu-file-input" type="file" name="file" accept=".ccf,.rcu" required style="max-width:320px">
+            <button id="cu-submit-btn" type="submit" style="padding:8px 16px">Invia file autenticato all'Agenzia</button>
+          </div>
+          <div id="cu-submit-result" style="margin-top:10px"></div>
+        </form>
+      </details>
+
+      <!-- Controllo esito CU -->
+      <h3 style="margin-top:24px">Controllo Esito e Download File CU</h3>
+      <div class="grid">
+        <label>Protocollo telematico
+          <input id="cu-proto-input" placeholder="Es. 260927...">
+        </label>
+        <div style="display:flex;align-items:flex-end;margin-bottom:15px">
+          <button id="cu-esito-btn" type="button" disabled>Recupera esito e file</button>
+        </div>
+      </div>
+      <div id="cu-esito-result"></div>
+
+      <div id="cu-history-container" style="margin-top:16px">
+        <h4>Richieste sottomesse</h4>
+        <div id="cu-history-list" class="muted">Nessuna richiesta registrata.</div>
+      </div>
+
+    </div>
+
+    <!-- TAB VERIFICHE ANAGRAFICHE -->
+    <div id="tab-verifiche" class="tab-panel">
+      <h2>Verifiche Anagrafiche Ufficiali</h2>
+      <p class="muted">Interrogazione in tempo reale delle API libere dell'Agenzia delle Entrate per validità Codice Fiscale e Partita IVA.</p>
+
+      <div class="grid">
+        <div>
+          <label>Codice Fiscale da verificare
+            <input id="verify-cf-input" maxlength="16" placeholder="11 cifre o 16 caratteri">
+          </label>
+          <button type="button" id="verify-cf-btn">Verifica Codice Fiscale</button>
+        </div>
+        <div>
+          <label>Partita IVA da verificare
+            <input id="verify-piva-input" maxlength="11" placeholder="11 cifre">
+          </label>
+          <button type="button" id="verify-piva-btn">Verifica Partita IVA</button>
+        </div>
+      </div>
+      <div id="verify-result" style="margin-top:16px"></div>
+    </div>
+
+    <!-- TAB ARCHIVIO DOCUMENTI -->
+    <div id="tab-archivio" class="tab-panel">
+      <h2>Archivio Documenti Nextcloud</h2>
+      <p class="muted">Tutti i documenti acquisiti dal portale per il cliente attivo (salvati in <code>Studio/AgenziaEntrate/[CF]/</code>).</p>
+      <div id="client-archive-results" style="margin-top:14px">
+        <p class="muted">Seleziona un cliente per consultare i documenti archiviati.</p>
+      </div>
+    </div>
+
+    <!-- TAB REGISTRO AUDIT GDPR -->
+    <div id="tab-audit" class="tab-panel">
+      <div class="section-header">
+        <div>
+          <h2>Registro delle attività</h2>
+          <p class="muted">Storico delle operazioni registrate con hash concatenati. Non costituisce una certificazione di immutabilità o di conformità.</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button id="audit-refresh-btn" type="button" class="secondary" style="font-size:12px">🔄 Aggiorna registro</button>
+          <a id="audit-export-btn" href="/studio-ade-api?op=audit-log&format=csv" class="button secondary" style="font-size:12px" target="_blank" download>📥 Esporta CSV</a>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;background:#f8fafc;padding:10px 14px;border:1px solid #e2e8f0;border-radius:6px">
+        <label style="margin:0;font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="audit-filter-client" style="margin:0"> Filtra per cliente attualmente selezionato
+        </label>
+        <span id="audit-client-badge" style="font-size:12px;color:#0284c7;font-weight:600"></span>
+      </div>
+
+      <div style="overflow-x:auto;border:1px solid #cbd5e1;border-radius:8px;background:#fff">
+        <table id="audit-table" style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead>
+            <tr style="background:#f1f5f9;text-align:left;border-bottom:2px solid #cbd5e1">
+              <th style="padding:10px 12px">Data/Ora (UTC)</th>
+              <th style="padding:10px 12px">Operatore</th>
+              <th style="padding:10px 12px">Cliente (CF)</th>
+              <th style="padding:10px 12px">Operazione</th>
+              <th style="padding:10px 12px">Dettagli</th>
+              <th style="padding:10px 12px">Esito</th>
+              <th style="padding:10px 12px">IP</th>
+              <th style="padding:10px 12px">Integrità SHA-256</th>
+            </tr>
+          </thead>
+          <tbody id="audit-tbody">
+            <tr><td colspan="8" style="padding:16px;text-align:center;color:#64748b">Caricamento registro di audit…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script type="module" src="unified-app.mjs?v=20"></script>
+<script type="module" src="cu-setup.mjs?v=15"></script>
+<script type="module" src="workspace.mjs?v=1"></script>
+</body>
+</html>

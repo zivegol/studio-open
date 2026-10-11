@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>studio-example Mobile</title>
+
+<style>
+body {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f2f4f7;
+    margin: 0;
+    padding: 0;
+}
+
+.shell { max-width: 760px; margin: 0 auto; padding-bottom: 20px; }
+
+.header {
+    background: linear-gradient(135deg, #00457c, #0082c9);
+    color: white;
+    text-align: center;
+    padding: 24px 20px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    min-height: 108px;
+    padding: 18px 12px;
+    text-align: center;
+    font-size: 16px;
+    text-decoration: none;
+    color: #333;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transition: transform 0.1s;
+}
+
+.card-icon { display:block; font-size:26px; margin-bottom:8px; }
+.quick-grid .card { border: 1px solid #dce8f0; color:#00457c; font-weight:700; }
+.services-grid .card { min-height:82px; font-size:14px; color:#36485a; }
+
+.card:active {
+    transform: scale(0.97);
+}
+
+.section-title {
+    padding: 18px 15px 4px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #666;
+}
+
+@media (min-width: 680px) {
+    .grid { grid-template-columns: repeat(4, 1fr); }
+    .quick-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.footer {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    margin: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">studio-example Mobile</div>
+<div class="shell">
+
+<div class="section-title">Accesso rapido</div>
+<div class="grid quick-grid" id="dynamic-links"></div>
+
+<div id="grouped-apps"></div>
+<div class="section-title">Nextcloud</div>
+
+<div class="grid services-grid">
+
+<a class="card" href="/index.php/apps/files/">File</a>
+<a class="card" href="/index.php/apps/mail/">Posta</a>
+<a class="card" href="/index.php/apps/calendar/">Calendario</a>
+<a class="card" href="/index.php/apps/notes/">Note</a>
+<a class="card" href="/index.php/apps/deck/">Deck</a>
+<a class="card" href="/studio-apps/dashboard.html?v=20260901-mobile1">Tutte le app</a>
+
+</div>
+
+<div class="footer">
+    studio-example Control Panel
+</div>
+</div>
+
+<script src="portal-layout.js?v=20261003-drag2"></script>
+<script>
+function loadAppsScript() {
+    return new Promise(resolve => {
+        const candidates = ['/studio-apps/apps.js?v=20261003-six-groups', 'apps.js?v=20261003-six-groups'];
+        let index = 0;
+
+        function tryNext() {
+            if (index >= candidates.length) {
+                resolve();
+                return;
+            }
+            const script = document.createElement('script');
+            script.src = candidates[index++];
+            script.onload = resolve;
+            script.onerror = tryNext;
+            document.head.appendChild(script);
+        }
+
+        tryNext();
+    });
+}
+
+function appUrl(app) {
+    const raw = String(app.url || '');
+    const direct = /^https?:\/\//i.test(raw) ? raw : '/studio-apps/' + raw.replace(/^\//, '');
+    if (app.title === 'Dossier Cliente') {
+        const target = new URL(direct, location.origin).pathname + new URL(direct, location.origin).search;
+        return '/index.php/login?redirect_url=' + encodeURIComponent(target);
+    }
+    return direct;
+}
+
+function addCard(app, container = document.getElementById('dynamic-links')) {
+    const icons = {
+        'Dossier Cliente': '👤',
+        'RAG Locale': '🤖',
+        'Revisore Legale': '⚖️',
+        'Calcolatore Mutui': '🏦',
+        'Analisi Bilanci': '📊'
+    };
+
+    const a = document.createElement('a');
+    a.className = 'card';
+    a.href = appUrl(app);
+    if (/^https?:\/\//i.test(app.url || '')) a.target = '_blank';
+    a.innerHTML = '<span class="card-icon">' + (icons[app.title] || app.icon || 'APP') + '</span>' + app.title;
+
+    container.appendChild(a);
+}
+
+function initMobileApps() {
+    if (!window.APPS) return;
+    document.getElementById('dynamic-links').replaceChildren();
+    document.getElementById('grouped-apps').replaceChildren();
+
+    const wanted = ['Dossier Cliente', 'RAG Locale', 'Revisore Legale', 'Calcolatore Mutui', 'Analisi Bilanci'];
+    (window.APP_GROUPS || []).forEach(group => {
+        const section = document.createElement('details');
+        const heading = document.createElement('summary');
+        heading.className = 'section-title';
+        heading.style.cursor = 'pointer';
+        heading.textContent = group;
+        const grid = document.createElement('div');
+        grid.className = 'grid quick-grid';
+        window.APPS.filter(app => app.group === group).forEach(app => addCard(app, grid));
+        section.append(heading, grid);
+        document.getElementById('grouped-apps').appendChild(section);
+    });
+    wanted.forEach(title => {
+        const app = window.APPS.find(item => item && item.title === title);
+        if (app) addCard(app);
+    });
+}
+
+loadAppsScript().then(() => PortalLayout.init(initMobileApps));
+</script>
+
+</body>
+</html>

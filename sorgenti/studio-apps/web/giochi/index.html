@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giochi - studio-example</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #65758b;
+      --line: #d9e3ef;
+      --accent: #0067a8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: radial-gradient(circle at top left, #e6f3ff, transparent 32rem), var(--bg);
+      color: var(--text);
+      padding: 32px;
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 44px);
+      letter-spacing: -0.04em;
+    }
+
+    p {
+      margin: 0 0 26px;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+    }
+
+    a {
+      display: block;
+      padding: 20px;
+      min-height: 118px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--card);
+      color: inherit;
+      text-decoration: none;
+      box-shadow: 0 12px 30px rgba(23, 32, 51, 0.08);
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    a:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 18px 42px rgba(23, 32, 51, 0.12);
+    }
+
+    .title {
+      display: block;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .hint {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Giochi</h1>
+    <p>Seleziona uno dei giochi disponibili nella cartella Nextcloud dello studio.</p>
+
+    <section class="grid" aria-label="Elenco giochi">
+      <a href="bubble-fiocco.html">
+        <span class="title">Bubble Fiocco</span>
+        <span class="hint">Puzzle arcade leggero.</span>
+      </a>
+      <a href="forza4_neon.html">
+        <span class="title">Forza 4 Neon</span>
+        <span class="hint">Classico Forza 4 in stile neon.</span>
+      </a>
+      <a href="pong.html">
+        <span class="title">Pong</span>
+        <span class="hint">Il grande classico da pausa caffe.</span>
+      </a>
+      <a href="retro_racer_80.html">
+        <span class="title">Retro Racer 80</span>
+        <span class="hint">Corsa arcade retrò.</span>
+      </a>
+      <a href="2grevenge-invader3.html">
+        <span class="title">Revenge Invader</span>
+        <span class="hint">Azione spaziale vecchia scuola.</span>
+      </a>
+      <a href="fiocco-warplane-45_V0001.html">
+        <span class="title">Fiocco WarPlane 45</span>
+        <span class="hint">Battaglie aeree in stile arcade.</span>
+      </a>
+      <a href="poker.html">
+        <span class="title">Poker Club</span>
+        <span class="hint">Texas Hold'em, Omaha e Five-Card Draw.</span>
+      </a>
+      <a href="super-volley-fiocco_V0002.html">
+        <span class="title">Super Volley Fiocco</span>
+        <span class="hint">Pallavolo in stile arcade.</span>
+      </a>
+    </section>
+  </main>
+</body>
+</html>

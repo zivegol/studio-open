@@ -1,0 +1,1 @@
+ALTER TABLE `agent_runs` MODIFY COLUMN `review_status` enum('queued','running','completed','partial','failed','skipped');

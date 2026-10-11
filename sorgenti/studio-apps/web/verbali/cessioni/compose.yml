@@ -1,0 +1,40 @@
+services:
+  cessioni:
+    build: .
+    image: studio-cessioni:20261006
+    restart: unless-stopped
+    user: "33:33"
+    read_only: true
+    tmpfs:
+      - /tmp:size=536870912
+    environment:
+      - HOME=/tmp
+    volumes:
+      - cessioni_data:/data
+      - nextcloud_data:/ncdata:ro
+    networks:
+      - studio
+    mem_limit: 1536m
+    pids_limit: 256
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: "3"
+    healthcheck:
+      test: [CMD, python, -c, "import socket; s=socket.create_connection(('127.0.0.1',8096),2); s.close()"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+volumes:
+  cessioni_data:
+    name: studio-cessioni_cessioni_data
+  nextcloud_data:
+    external: true
+    name: nextcloud_nextcloud_data
+networks:
+  studio:
+    external: true
+    name: nextcloud_default

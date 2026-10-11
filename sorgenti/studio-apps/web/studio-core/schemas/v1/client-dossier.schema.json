@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:studio-example:studio-core:schema:v1:client-dossier",
+  "title": "ClientDossier v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "clientId", "dossierId", "classification", "ownerUserId", "status", "retention"],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "clientId": {"type": "string", "format": "uuid"},
+    "dossierId": {"type": "string", "format": "uuid"},
+    "classification": {"enum": ["internal", "confidential", "restricted"]},
+    "ownerUserId": {"type": "string", "minLength": 1},
+    "status": {"enum": ["open", "suspended", "closed", "archived"]},
+    "retention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policyId", "retainUntil"],
+      "properties": {
+        "policyId": {"type": "string", "minLength": 1},
+        "retainUntil": {"type": "string", "format": "date"}
+      }
+    }
+  }
+}

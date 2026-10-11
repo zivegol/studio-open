@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OmniStat - Laboratorio statistico</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../bilanci-analytics/xlsx.full.min.js"></script>
+  <script src="../studio-core/storage.js?v=20260816-gateway2"></script>
+  <style>
+    :root{
+      --bg:#f2f6f9;
+      --card:#ffffff;
+      --line:#dce6ed;
+      --text:#1a2b3c;
+      --muted:#5a7a96;
+      --blue:#00457c;
+      --sky:#0082c9;
+      --sky-light:#e8f4fb;
+      --ok:#2d7d46;
+      --warn:#b26b00;
+      --danger:#a12626;
+      --shadow:0 6px 18px rgba(0,0,0,0.08);
+      --radius:16px;
+    }
+
+    * { box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    .topbar{
+      background:var(--blue);
+      color:#fff;
+      padding:16px 20px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .title-wrap h1{
+      margin:0;
+      font-size:24px;
+    }
+
+    .title-wrap p{
+      margin:4px 0 0;
+      font-size:13px;
+      opacity:0.9;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:none;
+      border-radius:12px;
+      padding:11px 16px;
+      font-weight:600;
+      cursor:pointer;
+      background:#fff;
+      color:var(--blue);
+      box-shadow:var(--shadow);
+    }
+
+    .btn.secondary{
+      background:#dfeaf3;
+      color:var(--blue);
+    }
+
+    .wrap{
+      max-width:1300px;
+      margin:20px auto;
+      padding:0 16px 24px;
+    }
+
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+      overflow:hidden;
+    }
+
+    .panel-header{
+      padding:16px 18px;
+      border-bottom:1px solid var(--line);
+      background:#fafcfe;
+      font-weight:700;
+    }
+
+    .panel-body{
+      padding:18px;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1.5fr 1fr;
+      gap:18px;
+    }
+
+    .grid-3{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+
+    .stats-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+      gap:12px;
+    }
+
+    .stat-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .stat-label{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+      text-transform:uppercase;
+      letter-spacing:0.04em;
+    }
+
+    .stat-value{
+      font-size:24px;
+      font-weight:700;
+    }
+
+    textarea{
+      width:100%;
+      min-height:180px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      font-size:15px;
+      color:var(--text);
+      background:#fff;
+    }
+
+    .help{
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .controls{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .control-box{
+      background:#f9fbfd;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .control-box label{
+      display:block;
+      font-size:13px;
+      font-weight:600;
+      margin-bottom:8px;
+    }
+
+    .control-box input[type="number"]{
+      width:100%;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      font-size:14px;
+    }
+
+    .checks{
+      display:grid;
+      gap:10px;
+      margin-top:6px;
+    }
+
+    .checks label{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      font-weight:500;
+      font-size:14px;
+      margin:0;
+    }
+
+    .chart-wrap{
+      height:420px;
+    }
+
+    .sigma-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;
+    }
+
+    .sigma-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .sigma-card h4{
+      margin:0 0 8px;
+      font-size:16px;
+    }
+
+    .sigma-card p{
+      margin:6px 0;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .comment-box{
+      background:var(--sky-light);
+      border:1px solid #cfe4f5;
+      border-radius:14px;
+      padding:16px;
+      font-size:15px;
+      line-height:1.6;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+    }
+
+    th, td{
+      border-bottom:1px solid var(--line);
+      padding:10px;
+      text-align:left;
+    }
+
+    th{
+      background:#fafcfe;
+      font-size:12px;
+      text-transform:uppercase;
+      color:var(--muted);
+      letter-spacing:0.04em;
+    }
+
+    .pill{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .pill.ok{ background:#e6f4eb; color:var(--ok); }
+    .pill.warn{ background:#fff3de; color:var(--warn); }
+    .pill.danger{ background:#fde8e8; color:var(--danger); }
+
+    .small-actions{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+    .import-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+    .import-grid label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:5px}
+    .import-grid input,.import-grid select{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff}
+    .quality-box{margin:10px 0 14px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#f8fbfd;font-size:13px;line-height:1.55}
+
+    @media (max-width: 900px){
+      .grid-2{ grid-template-columns:1fr; }
+      .controls{ grid-template-columns:1fr; }
+      .chart-wrap{ height:320px; }
+      .import-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="title-wrap">
+      <h1>📉 OmniStat</h1>
+      <p>Laboratorio statistico interattivo: distribuzioni, gaussiana, grafici</p>
+    </div>
+    <div class="top-actions">
+      <button class="btn" onclick="analyzeData()">Analizza</button>
+      <button class="btn secondary" onclick="saveProject(true)">Salva progetto</button>
+      <button class="btn secondary" onclick="loadProject(true)">Ricarica</button>
+      <button class="btn secondary" onclick="loadExample()">Carica esempio</button>
+      <button class="btn secondary" onclick="clearAllData()">Pulisci</button>
+      <span id="projectStatus" style="font-size:12px; align-self:center; opacity:.9;">Avvio archivio...</span>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="panel">
+      <div class="panel-header">Dati in ingresso</div>
+      <div class="panel-body">
+        <div class="import-grid">
+          <div><label for="datasetFile">File CSV o Excel</label><input id="datasetFile" type="file" accept=".csv,.xlsx,.xls" /></div>
+          <div><label for="sheetSelect">Foglio</label><select id="sheetSelect" disabled><option>Nessun file</option></select></div>
+          <div><label for="columnSelect">Colonna da analizzare</label><select id="columnSelect" disabled><option>Nessuna</option></select></div>
+          <div><label for="decimalSelect">Formato decimali</label><select id="decimalSelect"><option value="auto">Rileva automaticamente</option><option value="it">Italiano (1.234,56)</option><option value="en">Internazionale (1,234.56)</option></select></div>
+        </div>
+        <div class="small-actions" style="margin:0 0 10px"><button class="btn secondary" id="importButton" onclick="importSelectedColumn()" disabled>Importa colonna</button></div>
+        <div id="qualityBox" class="quality-box">Nessun dataset importato. Puoi caricare CSV/XLSX oppure incollare direttamente una serie numerica.</div>
+        <div class="grid-2">
+          <div>
+            <textarea id="dataInput" placeholder="Incolla qui i dati numerici.
+Puoi usare:
+- una riga per numero
+- virgole
+- punto e virgola
+- spazi
+
+Esempio:
+12
+14
+18
+19
+19
+22
+25"></textarea>
+            <div class="help">
+              Incolla una serie di numeri. L'app calcola media, mediana, moda, varianza, deviazione standard, istogramma e curva normale teorica.
+            </div>
+            <div class="small-actions">
+              <button class="btn secondary" onclick="generateNormalSample()">Genera distribuzione normale</button>
+              <button class="btn secondary" onclick="generateUniformSample()">Genera distribuzione uniforme</button>
+            </div>
+          </div>
+
+          <div class="controls">
+            <div class="control-box">
+              <label for="binsInput">Numero classi istogramma</label>
+              <input id="binsInput" type="number" min="3" max="30" value="8" />
+            </div>
+
+            <div class="control-box">
+              <label for="sampleSize">Campione casuale</label>
+              <input id="sampleSize" type="number" min="10" max="1000" value="100" />
+            </div>
+
+            <div class="control-box">
+              <label for="simMean">Media simulazione</label>
+              <input id="simMean" type="number" step="0.1" value="50" />
+            </div>
+
+            <div class="control-box">
+              <label for="simStd">Deviazione standard simulazione</label>
+              <input id="simStd" type="number" min="0.1" step="0.1" value="10" />
+            </div>
+
+            <div class="control-box" style="grid-column:1 / -1;">
+              <div class="checks">
+                <label><input type="checkbox" id="showGaussian" checked> Mostra curva gaussiana</label>
+                <label><input type="checkbox" id="showMeanLine" checked> Mostra linea media</label>
+                <label><input type="checkbox" id="showMedianLine" checked> Mostra linea mediana</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">Indicatori statistici</div>
+      <div class="panel-body">
+        <div class="stats-grid" id="statsGrid"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">Distribuzione dei dati</div>
+      <div class="panel-body">
+        <div class="chart-wrap">
+          <canvas id="mainChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">Intervalli gaussiani</div>
+      <div class="panel-body">
+        <div class="sigma-grid" id="sigmaGrid"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">Commento automatico</div>
+      <div class="panel-body">
+        <div class="comment-box" id="commentBox">
+          Inserisci dei dati e premi <strong>Analizza</strong>.
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">Tabella frequenze per classe</div>
+      <div class="panel-body">
+        <div style="overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Classe</th>
+                <th>Frequenza</th>
+                <th>Frequenza %</th>
+                <th>Centro classe</th>
+              </tr>
+            </thead>
+            <tbody id="freqTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let mainChart = null;
+    const APP_VERSION = '20260816-import-quality';
+    const PROJECT_FOLDER = 'Studio/OmniStat';
+    const PROJECT_PATH = PROJECT_FOLDER + '/project.json';
+    const MANIFEST_PATH = PROJECT_FOLDER + '/manifest.json';
+    let projectReady = false;
+    let saveTimer = null;
+    let importedWorkbook = null;
+    let importedRows = [];
+    let sourceMetadata = null;
+
+    function setProjectStatus(text, error = false) {
+      const el = document.getElementById('projectStatus');
+      el.textContent = text;
+      el.style.color = error ? '#fecaca' : '#fff';
+    }
+
+    async function sha256(text) {
+      const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+      return Array.from(new Uint8Array(digest)).map(v => v.toString(16).padStart(2, '0')).join('');
+    }
+
+    function projectDocument() {
+      const raw = document.getElementById('dataInput').value;
+      return {
+        schemaVersion: 2,
+        app: 'omnistat',
+        appVersion: APP_VERSION,
+        updatedAt: new Date().toISOString(),
+        dataInput: raw,
+        source: sourceMetadata,
+        settings: {
+          bins: Number(document.getElementById('binsInput').value) || 8,
+          sampleSize: Number(document.getElementById('sampleSize').value) || 100,
+          simulationMean: Number(document.getElementById('simMean').value) || 50,
+          simulationStd: Number(document.getElementById('simStd').value) || 10,
+          showGaussian: document.getElementById('showGaussian').checked,
+          showMeanLine: document.getElementById('showMeanLine').checked,
+          showMedianLine: document.getElementById('showMedianLine').checked
+        }
+      };
+    }
+
+    async function saveProject(showConfirmation = false) {
+      if (!projectReady || !window.StudioStorage) return;
+      try {
+        setProjectStatus('Salvataggio...');
+        const project = projectDocument();
+        const json = JSON.stringify(project);
+        const hash = await sha256(json);
+        await StudioStorage.ensureFolder(PROJECT_FOLDER);
+        await StudioStorage.put(PROJECT_PATH, json, { contentType: 'application/json;charset=utf-8' });
+        await StudioStorage.put(MANIFEST_PATH, JSON.stringify({
+          schemaVersion: 1,
+          app: 'omnistat',
+          appVersion: APP_VERSION,
+          updatedAt: project.updatedAt,
+          projectPath: PROJECT_PATH,
+          sha256: hash,
+          observationCount: parseNumbers(project.dataInput).length,
+          source: project.source || null,
+          quality: qualitySummary(parseNumbers(project.dataInput))
+        }, null, 2), { contentType: 'application/json;charset=utf-8' });
+        setProjectStatus('Progetto salvato in Nextcloud');
+        if (showConfirmation) alert('Progetto OmniStat salvato in Nextcloud.');
+      } catch (error) {
+        setProjectStatus('Salvataggio non riuscito: ' + error.message, true);
+      }
+    }
+
+    function scheduleProjectSave() {
+      if (!projectReady) return;
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => saveProject(false), 700);
+    }
+
+    function applyProject(project) {
+      const settings = project.settings || {};
+      document.getElementById('dataInput').value = project.dataInput || '';
+      document.getElementById('binsInput').value = settings.bins || 8;
+      document.getElementById('sampleSize').value = settings.sampleSize || 100;
+      document.getElementById('simMean').value = settings.simulationMean ?? 50;
+      document.getElementById('simStd').value = settings.simulationStd ?? 10;
+      document.getElementById('showGaussian').checked = settings.showGaussian !== false;
+      document.getElementById('showMeanLine').checked = settings.showMeanLine !== false;
+      document.getElementById('showMedianLine').checked = settings.showMedianLine !== false;
+      sourceMetadata = project.source || null;
+      renderQuality(parseNumbers(project.dataInput || ''), sourceMetadata);
+      if (parseNumbers(project.dataInput || '').length >= 2) analyzeData();
+    }
+
+    async function loadProject(showConfirmation = false) {
+      try {
+        setProjectStatus('Lettura progetto Nextcloud...');
+        const response = await StudioStorage.request(PROJECT_PATH, { method: 'GET', headers: { Accept: 'application/json' } });
+        if (response.status === 404) return false;
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        const project = await response.json();
+        if (!project || ![1, 2].includes(project.schemaVersion)) throw new Error('Formato progetto non compatibile');
+        applyProject(project);
+        setProjectStatus('Progetto Nextcloud caricato');
+        if (showConfirmation) alert('Progetto OmniStat ricaricato.');
+        return true;
+      } catch (error) {
+        setProjectStatus('Caricamento non riuscito: ' + error.message, true);
+        return false;
+      }
+    }
+
+    async function initializeProject() {
+      projectReady = false;
+      const loaded = window.StudioStorage ? await loadProject(false) : false;
+      projectReady = true;
+      if (!loaded) {
+        loadExample();
+        await saveProject(false);
+      }
+    }
+
+    function parseNumbers(raw) {
+      return raw
+        .split(/[\s,;]+/)
+        .map(v => v.trim())
+        .filter(v => v !== "")
+        .map(v => Number(v.replace(",", ".")))
+        .filter(v => Number.isFinite(v));
+    }
+
+    function parseLocaleNumber(value, locale = 'auto') {
+      if (typeof value === 'number') return Number.isFinite(value) ? value : null;
+      let text = String(value ?? '').trim().replace(/\s/g, '');
+      if (!text) return null;
+      if (locale === 'it' || (locale === 'auto' && /,\d{1,}$/.test(text))) text = text.replace(/\./g, '').replace(',', '.');
+      else if (locale === 'en') text = text.replace(/,/g, '');
+      const number = Number(text);
+      return Number.isFinite(number) ? number : null;
+    }
+
+    function qualitySummary(values, totalRows = values.length, invalid = 0) {
+      if (!values.length) return {valid:0,totalRows,missing:Math.max(0,totalRows-invalid),invalid,duplicates:0,outliers:0};
+      const q1 = percentile(values, .25), q3 = percentile(values, .75), iqr = q3 - q1;
+      return {
+        valid: values.length, totalRows, missing: Math.max(0, totalRows-values.length-invalid), invalid,
+        duplicates: values.length - new Set(values).size,
+        outliers: values.filter(v => v < q1 - 1.5 * iqr || v > q3 + 1.5 * iqr).length
+      };
+    }
+
+    function renderQuality(values, source = null, totalRows = values.length, invalid = 0) {
+      const q = qualitySummary(values, totalRows, invalid);
+      const origin = source ? `<strong>Fonte:</strong> ${source.fileName} · foglio ${source.sheet} · colonna ${source.column}<br>` : '';
+      document.getElementById('qualityBox').innerHTML = `${origin}<strong>Qualità:</strong> ${q.valid} valori validi · ${q.missing} mancanti · ${q.invalid} non numerici · ${q.duplicates} duplicati · ${q.outliers} possibili outlier`;
+      return q;
+    }
+
+    function renderManualQuality(raw) {
+      const tokens = String(raw || '').split(/[\s,;]+/).map(value => value.trim()).filter(Boolean);
+      const values = parseNumbers(raw);
+      renderQuality(values, null, tokens.length, Math.max(0, tokens.length - values.length));
+    }
+
+    async function handleDatasetFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      try {
+        const bytes = await file.arrayBuffer();
+        importedWorkbook = XLSX.read(bytes, {type:'array', cellDates:true, raw:true});
+        const digest = await crypto.subtle.digest('SHA-256', bytes);
+        const hash = Array.from(new Uint8Array(digest)).map(v => v.toString(16).padStart(2,'0')).join('');
+        sourceMetadata = {fileName:file.name,size:file.size,lastModified:new Date(file.lastModified).toISOString(),sha256:hash,parser:'sheetjs',parserVersion:XLSX.version};
+        const sheet = document.getElementById('sheetSelect');
+        sheet.innerHTML = importedWorkbook.SheetNames.map(name => `<option value="${name.replace(/"/g,'&quot;')}">${name}</option>`).join('');
+        sheet.disabled = false;
+        loadSelectedSheet();
+      } catch (error) { document.getElementById('qualityBox').textContent = 'Importazione non riuscita: ' + error.message; }
+    }
+
+    function loadSelectedSheet() {
+      if (!importedWorkbook) return;
+      const sheetName = document.getElementById('sheetSelect').value;
+      importedRows = XLSX.utils.sheet_to_json(importedWorkbook.Sheets[sheetName], {header:1, defval:null, raw:true});
+      const width = Math.max(0, ...importedRows.slice(0,20).map(row => row.length));
+      const first = importedRows[0] || [];
+      const column = document.getElementById('columnSelect');
+      column.innerHTML = Array.from({length:width}, (_, i) => `<option value="${i}">${first[i] || 'Colonna ' + (i+1)}</option>`).join('');
+      column.disabled = !width;
+      document.getElementById('importButton').disabled = !width;
+      document.getElementById('qualityBox').textContent = `${importedRows.length} righe lette da ${sourceMetadata.fileName}. Seleziona la colonna da analizzare.`;
+    }
+
+    function importSelectedColumn() {
+      const index = Number(document.getElementById('columnSelect').value);
+      const locale = document.getElementById('decimalSelect').value;
+      const header = String((importedRows[0] || [])[index] ?? `Colonna ${index+1}`);
+      const raw = importedRows.slice(1).map(row => row[index]);
+      let invalid = 0;
+      const values = raw.map(value => { const n = parseLocaleNumber(value, locale); if (n === null && value !== null && String(value).trim()) invalid++; return n; }).filter(value => value !== null);
+      sourceMetadata = {...sourceMetadata, sheet:document.getElementById('sheetSelect').value, column:header, columnIndex:index, decimalConvention:locale, importedAt:new Date().toISOString()};
+      document.getElementById('dataInput').value = values.join('\n');
+      renderQuality(values, sourceMetadata, raw.length, invalid);
+      analyzeData();
+      scheduleProjectSave();
+    }
+
+    function mean(arr) {
+      return arr.reduce((a, b) => a + b, 0) / arr.length;
+    }
+
+    function median(arr) {
+      const s = [...arr].sort((a, b) => a - b);
+      const n = s.length;
+      return n % 2 === 0 ? (s[n/2 - 1] + s[n/2]) / 2 : s[Math.floor(n/2)];
+    }
+
+    function mode(arr) {
+      const map = new Map();
+      arr.forEach(v => map.set(v, (map.get(v) || 0) + 1));
+      let bestValue = null;
+      let bestCount = 0;
+      for (const [value, count] of map.entries()) {
+        if (count > bestCount) {
+          bestCount = count;
+          bestValue = value;
+        }
+      }
+      return bestCount > 1 ? bestValue : null;
+    }
+
+    function variance(arr, sample = false) {
+      const m = mean(arr);
+      const denom = sample ? arr.length - 1 : arr.length;
+      if (denom <= 0) return 0;
+      return arr.reduce((acc, v) => acc + (v - m) ** 2, 0) / denom;
+    }
+
+    function stdDev(arr, sample = false) {
+      return Math.sqrt(variance(arr, sample));
+    }
+
+    function percentile(arr, p) {
+      const s = [...arr].sort((a, b) => a - b);
+      const idx = (s.length - 1) * p;
+      const lower = Math.floor(idx);
+      const upper = Math.ceil(idx);
+      if (lower === upper) return s[lower];
+      return s[lower] + (s[upper] - s[lower]) * (idx - lower);
+    }
+
+    function skewnessPearson(arr) {
+      const m = mean(arr);
+      const med = median(arr);
+      const sd = stdDev(arr);
+      if (sd === 0) return 0;
+      return 3 * (m - med) / sd;
+    }
+
+    function normalPdf(x, mu, sigma) {
+      if (sigma <= 0) return 0;
+      return (1 / (sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * ((x - mu) / sigma) ** 2);
+    }
+
+    function buildHistogram(arr, bins) {
+      const min = Math.min(...arr);
+      const max = Math.max(...arr);
+
+      let width = (max - min) / bins;
+      if (width === 0) width = 1;
+
+      const edges = [];
+      const counts = new Array(bins).fill(0);
+
+      for (let i = 0; i <= bins; i++) {
+        edges.push(min + i * width);
+      }
+
+      for (const value of arr) {
+        let idx = Math.floor((value - min) / width);
+        if (idx >= bins) idx = bins - 1;
+        if (idx < 0) idx = 0;
+        counts[idx]++;
+      }
+
+      const labels = [];
+      const centers = [];
+
+      for (let i = 0; i < bins; i++) {
+        const from = edges[i];
+        const to = edges[i + 1];
+        labels.push(`${formatNumber(from)} – ${formatNumber(to)}`);
+        centers.push((from + to) / 2);
+      }
+
+      return { min, max, width, edges, counts, labels, centers };
+    }
+
+    function formatNumber(value) {
+      if (!Number.isFinite(value)) return "—";
+      return new Intl.NumberFormat("it-IT", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      }).format(value);
+    }
+
+    function addStat(label, value) {
+      return `
+        <div class="stat-card">
+          <div class="stat-label">${label}</div>
+          <div class="stat-value">${value}</div>
+        </div>
+      `;
+    }
+
+    function renderStats(data) {
+      const cv = data.mean !== 0 ? (data.stdPopulation / data.mean) * 100 : 0;
+      const html = [
+        addStat("Numerosità", formatNumber(data.n)),
+        addStat("Minimo", formatNumber(data.min)),
+        addStat("Massimo", formatNumber(data.max)),
+        addStat("Range", formatNumber(data.max - data.min)),
+        addStat("Media", formatNumber(data.mean)),
+        addStat("Mediana", formatNumber(data.median)),
+        addStat("Moda", data.mode === null ? "nessuna" : formatNumber(data.mode)),
+        addStat("Varianza", formatNumber(data.variancePopulation)),
+        addStat("Dev. standard", formatNumber(data.stdPopulation)),
+        addStat("Q1", formatNumber(data.q1)),
+        addStat("Q3", formatNumber(data.q3)),
+        addStat("Coeff. variazione %", formatNumber(cv))
+      ].join("");
+
+      document.getElementById("statsGrid").innerHTML = html;
+    }
+
+    function renderSigma(data) {
+      const mu = data.mean;
+      const sd = data.stdPopulation;
+
+      const ranges = [
+        { title: "± 1σ", low: mu - sd, high: mu + sd, theory: "≈ 68%" },
+        { title: "± 2σ", low: mu - 2 * sd, high: mu + 2 * sd, theory: "≈ 95%" },
+        { title: "± 3σ", low: mu - 3 * sd, high: mu + 3 * sd, theory: "≈ 99,7%" }
+      ];
+
+      const html = ranges.map(r => {
+        const count = data.values.filter(v => v >= r.low && v <= r.high).length;
+        const perc = data.n > 0 ? (count / data.n) * 100 : 0;
+        return `
+          <div class="sigma-card">
+            <h4>${r.title}</h4>
+            <p><strong>Intervallo:</strong> ${formatNumber(r.low)} → ${formatNumber(r.high)}</p>
+            <p><strong>Valori osservati:</strong> ${count} su ${data.n} (${formatNumber(perc)}%)</p>
+            <p><strong>Riferimento teorico gaussiano:</strong> ${r.theory}</p>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("sigmaGrid").innerHTML = html;
+    }
+
+    function renderComment(data) {
+      const skew = skewnessPearson(data.values);
+      const cv = data.mean !== 0 ? (data.stdPopulation / data.mean) * 100 : 0;
+      const outlierLow = data.q1 - 1.5 * (data.q3 - data.q1);
+      const outlierHigh = data.q3 + 1.5 * (data.q3 - data.q1);
+      const outliers = data.values.filter(v => v < outlierLow || v > outlierHigh).length;
+
+      let symmetryText = "La distribuzione appare abbastanza simmetrica.";
+      if (skew > 0.5) symmetryText = "La distribuzione appare asimmetrica a destra: la media è trascinata verso valori più alti.";
+      if (skew < -0.5) symmetryText = "La distribuzione appare asimmetrica a sinistra: la media è trascinata verso valori più bassi.";
+
+      let dispersionText = "La dispersione dei dati è contenuta.";
+      if (cv > 30) dispersionText = "La dispersione dei dati è elevata rispetto alla media.";
+      else if (cv > 15) dispersionText = "La dispersione dei dati è moderata.";
+
+      let outlierText = "Non emergono outlier evidenti con il criterio interquartile.";
+      if (outliers > 0) outlierText = `Sono presenti ${outliers} possibili outlier secondo il criterio interquartile.`;
+
+      document.getElementById("commentBox").innerHTML = `
+        <strong>Sintesi automatica.</strong><br>
+        ${symmetryText}<br>
+        ${dispersionText}<br>
+        ${outlierText}<br>
+        Media: <strong>${formatNumber(data.mean)}</strong>, mediana: <strong>${formatNumber(data.median)}</strong>, deviazione standard: <strong>${formatNumber(data.stdPopulation)}</strong>.
+      `;
+    }
+
+    function renderFrequencyTable(hist, total) {
+      const body = document.getElementById("freqTableBody");
+      body.innerHTML = hist.labels.map((label, i) => `
+        <tr>
+          <td>${label}</td>
+          <td>${hist.counts[i]}</td>
+          <td>${formatNumber((hist.counts[i] / total) * 100)}%</td>
+          <td>${formatNumber(hist.centers[i])}</td>
+        </tr>
+      `).join("");
+    }
+
+    function buildLineForValue(value, height) {
+      return [{ x: value, y: 0 }, { x: value, y: height }];
+    }
+
+    function renderChart(data, hist) {
+      const showGaussian = document.getElementById("showGaussian").checked;
+      const showMeanLine = document.getElementById("showMeanLine").checked;
+      const showMedianLine = document.getElementById("showMedianLine").checked;
+
+      const maxCount = Math.max(...hist.counts, 1);
+      const gaussianScale = data.n * hist.width;
+      const gaussianData = hist.centers.map(x => normalPdf(x, data.mean, data.stdPopulation) * gaussianScale);
+
+      const datasets = [
+        {
+          type: 'bar',
+          label: 'Frequenze',
+          data: hist.counts,
+          yAxisID: 'y',
+          borderWidth: 1
+        }
+      ];
+
+      if (showGaussian) {
+        datasets.push({
+          type: 'line',
+          label: 'Curva gaussiana teorica',
+          data: gaussianData,
+          yAxisID: 'y',
+          tension: 0.35,
+          pointRadius: 0,
+          borderWidth: 2
+        });
+      }
+
+      if (showMeanLine) {
+        datasets.push({
+          type: 'line',
+          label: 'Media',
+          data: hist.centers.map((x, i) => {
+            const epsilon = hist.width / 2;
+            return Math.abs(x - data.mean) <= epsilon ? maxCount : null;
+          }),
+          yAxisID: 'y',
+          pointRadius: 0,
+          borderDash: [6, 6],
+          borderWidth: 2,
+          spanGaps: false
+        });
+      }
+
+      if (showMedianLine) {
+        datasets.push({
+          type: 'line',
+          label: 'Mediana',
+          data: hist.centers.map((x, i) => {
+            const epsilon = hist.width / 2;
+            return Math.abs(x - data.median) <= epsilon ? maxCount : null;
+          }),
+          yAxisID: 'y',
+          pointRadius: 0,
+          borderDash: [2, 6],
+          borderWidth: 2,
+          spanGaps: false
+        });
+      }
+
+      const ctx = document.getElementById('mainChart').getContext('2d');
+      if (mainChart) mainChart.destroy();
+
+      mainChart = new Chart(ctx, {
+        data: {
+          labels: hist.labels,
+          datasets
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top' },
+            tooltip: { mode: 'index', intersect: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Frequenza'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Classi'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function analyzeData() {
+      const raw = document.getElementById("dataInput").value;
+      const values = parseNumbers(raw);
+
+      if (values.length < 2) {
+        alert("Inserisci almeno 2 valori numerici validi.");
+        return;
+      }
+
+      const bins = Math.max(3, Math.min(30, Number(document.getElementById("binsInput").value) || 8));
+      const data = {
+        values,
+        n: values.length,
+        min: Math.min(...values),
+        max: Math.max(...values),
+        mean: mean(values),
+        median: median(values),
+        mode: mode(values),
+        variancePopulation: variance(values, false),
+        stdPopulation: stdDev(values, false),
+        q1: percentile(values, 0.25),
+        q3: percentile(values, 0.75)
+      };
+
+      const hist = buildHistogram(values, bins);
+
+      renderStats(data);
+      renderSigma(data);
+      renderComment(data);
+      renderFrequencyTable(hist, data.n);
+      renderChart(data, hist);
+      scheduleProjectSave();
+    }
+
+    function loadExample() {
+      sourceMetadata = {fileName:'Esempio integrato',sheet:'-',column:'valori',parser:'omnistat-generator',importedAt:new Date().toISOString()};
+      document.getElementById("dataInput").value = [
+        42, 45, 47, 49, 49, 50, 50, 51, 52, 52,
+        53, 54, 54, 55, 55, 56, 57, 58, 60, 62,
+        63, 64, 65, 66, 68, 70, 72, 74, 75, 78
+      ].join("\n");
+      analyzeData();
+    }
+
+    function clearAllData() {
+      sourceMetadata = null;
+      document.getElementById("dataInput").value = "";
+      document.getElementById("statsGrid").innerHTML = "";
+      document.getElementById("sigmaGrid").innerHTML = "";
+      document.getElementById("freqTableBody").innerHTML = "";
+      document.getElementById("commentBox").innerHTML = 'Inserisci dei dati e premi <strong>Analizza</strong>.';
+      if (mainChart) {
+        mainChart.destroy();
+        mainChart = null;
+      }
+      renderQuality([]);
+      scheduleProjectSave();
+    }
+
+    function randomNormal(mu = 0, sigma = 1) {
+      let u = 0, v = 0;
+      while (u === 0) u = Math.random();
+      while (v === 0) v = Math.random();
+      const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+      return mu + z * sigma;
+    }
+
+    function generateNormalSample() {
+      const n = Number(document.getElementById("sampleSize").value) || 100;
+      const mu = Number(document.getElementById("simMean").value) || 50;
+      const sigma = Math.max(0.1, Number(document.getElementById("simStd").value) || 10);
+
+      const arr = Array.from({ length: n }, () => Number(randomNormal(mu, sigma).toFixed(2)));
+      sourceMetadata = {fileName:'Simulazione normale',sheet:'-',column:'valori',parser:'omnistat-generator',importedAt:new Date().toISOString()};
+      document.getElementById("dataInput").value = arr.join("\n");
+      analyzeData();
+    }
+
+    function generateUniformSample() {
+      const n = Number(document.getElementById("sampleSize").value) || 100;
+      const mu = Number(document.getElementById("simMean").value) || 50;
+      const sigma = Math.max(0.1, Number(document.getElementById("simStd").value) || 10);
+
+      const min = mu - Math.sqrt(3) * sigma;
+      const max = mu + Math.sqrt(3) * sigma;
+
+      const arr = Array.from({ length: n }, () =>
+        Number((min + Math.random() * (max - min)).toFixed(2))
+      );
+      sourceMetadata = {fileName:'Simulazione uniforme',sheet:'-',column:'valori',parser:'omnistat-generator',importedAt:new Date().toISOString()};
+
+      document.getElementById("dataInput").value = arr.join("\n");
+      analyzeData();
+    }
+
+    document.getElementById('datasetFile').addEventListener('change', handleDatasetFile);
+    document.getElementById('sheetSelect').addEventListener('change', loadSelectedSheet);
+    document.getElementById('dataInput').addEventListener('input', () => {
+      sourceMetadata = null;
+      renderManualQuality(document.getElementById('dataInput').value);
+    });
+    initializeProject();
+  </script>
+</body>
+</html>

@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Separatore Marca Temporale — studio-example</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Source+Sans+3:wght@300;400;500;600&display=swap');
+
+  :root {
+    --ink:       #1a1a18;
+    --ink-mid:   #4a4a46;
+    --ink-light: #8a8a84;
+    --paper:     #f8f5ef;
+    --paper-warm:#f0ebe0;
+    --paper-card:#fdfaf4;
+    --rule:      #d8d0c0;
+    --rule-light:#e8e2d4;
+    --accent:    #2c4a7c;
+    --accent-lt: #e8eef7;
+    --green:     #2d6a4f;
+    --green-lt:  #e8f4ed;
+    --amber:     #7c5c1e;
+    --amber-lt:  #fdf3e0;
+    --red:       #7c2c2c;
+    --red-lt:    #fdf0f0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.65;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--paper);
+  }
+  .header-brand span {
+    color: var(--rule);
+    font-weight: 400;
+    font-size: 13px;
+    margin-left: 1rem;
+    font-family: 'Source Sans 3', sans-serif;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .header-meta {
+    font-size: 11px;
+    color: var(--ink-light);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ── Layout ── */
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 4rem;
+  }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.25rem;
+  }
+  .page-sub {
+    font-size: 13px;
+    color: var(--ink-light);
+    letter-spacing: 0.04em;
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* ── Drop zone ── */
+  .drop-zone {
+    border: 1.5px dashed var(--rule);
+    border-radius: 6px;
+    background: var(--paper-card);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+  }
+  .drop-zone:hover, .drop-zone.over {
+    border-color: var(--accent);
+    background: var(--accent-lt);
+  }
+  .drop-zone input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .dz-icon {
+    width: 48px; height: 48px;
+    margin: 0 auto 1rem;
+    opacity: 0.35;
+  }
+  .dz-icon svg { width: 100%; height: 100%; }
+  .dz-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+  }
+  .dz-sub {
+    font-size: 13px;
+    color: var(--ink-light);
+  }
+  .dz-formats {
+    display: inline-flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  .fmt-pill {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 3px;
+    border: 1px solid var(--rule);
+    color: var(--ink-mid);
+    background: var(--paper-warm);
+  }
+
+  /* ── Sezione risultati ── */
+  .results { margin-top: 2rem; animation: fadeUp 0.3s ease; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 0.6rem;
+  }
+
+  /* ── Cards file ── */
+  .file-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule-light);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .file-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .file-icon {
+    width: 36px; height: 36px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .file-icon.p7m { background: var(--accent-lt); color: var(--accent); }
+  .file-icon.tsr { background: var(--green-lt); color: var(--green); }
+  .file-icon.src { background: var(--paper-warm); color: var(--ink-mid); }
+
+  .file-info { flex: 1; min-width: 0; }
+  .file-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 2px;
+  }
+  .file-meta { font-size: 12px; color: var(--ink-light); }
+
+  .btn-dl {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 4px;
+    border: 1px solid var(--rule);
+    background: transparent;
+    color: var(--ink-mid);
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    text-decoration: none;
+  }
+  .btn-dl:hover { background: var(--paper-warm); border-color: var(--ink-mid); color: var(--ink); }
+  .btn-dl svg { width: 14px; height: 14px; }
+
+  /* ── Rename row ── */
+  .rename-row {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--rule-light);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .rename-label { font-size: 12px; color: var(--ink-light); flex-shrink: 0; }
+  .rename-input {
+    flex: 1;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    padding: 5px 9px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--paper);
+    color: var(--ink);
+    min-width: 0;
+    transition: border-color 0.15s;
+  }
+  .rename-input:focus { outline: none; border-color: var(--accent); }
+  .btn-apply {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--accent);
+    background: var(--accent-lt);
+    color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .btn-apply:hover { background: var(--accent); color: #fff; }
+
+  /* ── Azioni globali ── */
+  .actions-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule-light);
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 20px;
+    border-radius: 4px;
+    border: none;
+    background: var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--accent); }
+  .btn-primary svg { width: 16px; height: 16px; }
+
+  .btn-reset {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 12px;
+    color: var(--ink-light);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .btn-reset:hover { color: var(--ink); }
+
+  /* ── Istruzioni AdE ── */
+  .ade-box {
+    margin-top: 1.75rem;
+    background: var(--accent-lt);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 1rem 1.25rem;
+  }
+  .ade-box-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+  .ade-steps { list-style: none; }
+  .ade-steps li {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.5;
+    margin-bottom: 0.4rem;
+  }
+  .ade-steps li:last-child { margin-bottom: 0; }
+  .step-n {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ── Log ── */
+  .log-box {
+    margin-top: 1.25rem;
+    background: var(--ink);
+    border-radius: 6px;
+    padding: 0.9rem 1.1rem;
+    font-family: 'Courier New', monospace;
+    font-size: 11.5px;
+    color: #b0b8a8;
+    line-height: 1.7;
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  .log-ok  { color: #7ec8a0; }
+  .log-wn  { color: #e8c87a; }
+  .log-er  { color: #e87a7a; }
+
+  /* ── Errore ── */
+  .error-box {
+    margin-top: 1.25rem;
+    background: var(--red-lt);
+    border-left: 3px solid var(--red);
+    border-radius: 0 6px 6px 0;
+    padding: 0.9rem 1.1rem;
+    font-size: 13px;
+    color: var(--red);
+    display: none;
+  }
+
+  /* ── Stato badge ── */
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .badge-ok  { background: var(--green-lt); color: var(--green); }
+  .badge-wn  { background: var(--amber-lt); color: var(--amber); }
+  .badge-info{ background: var(--accent-lt); color: var(--accent); }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-light);
+    padding: 1.5rem;
+    border-top: 1px solid var(--rule-light);
+    margin-top: 2rem;
+    letter-spacing: 0.04em;
+  }
+  footer strong { color: var(--ink-mid); font-weight: 500; }
+
+  /* hide */
+  .hidden { display: none !important; }
+
+  /* scrollbar log */
+  .log-box::-webkit-scrollbar { width: 4px; }
+  .log-box::-webkit-scrollbar-track { background: transparent; }
+  .log-box::-webkit-scrollbar-thumb { background: #3a3a38; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-brand">
+    studio-example
+    <span>Strumenti digitali</span>
+  </div>
+  <div class="header-meta">Separatore marca temporale · v1.0</div>
+</header>
+
+<div class="page">
+  <h1 class="page-title">Separatore Marca Temporale</h1>
+  <p class="page-sub">
+    Estrae il documento firmato (.p7m) e la marca temporale (.tsr) da un file .m7m o .tsd —
+    pronti per la trasmissione all'Agenzia delle Entrate (cessione quote societarie)
+  </p>
+
+  <!-- Drop zone -->
+  <div id="dz" class="drop-zone" role="button" aria-label="Carica file marcato temporalmente">
+    <input type="file" id="file-input" accept=".m7m,.tsd,.tst" aria-label="Seleziona file">
+    <div class="dz-icon">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="8" y="4" width="24" height="32" rx="2"/>
+        <path d="M28 4l8 8"/>
+        <path d="M28 4v8h8"/>
+        <path d="M16 28h16M16 20h16M16 34h8"/>
+        <circle cx="36" cy="36" r="8" fill="white" stroke-width="2"/>
+        <path d="M36 32v8M32 36h8"/>
+      </svg>
+    </div>
+    <div class="dz-title">Trascina il file marcato qui</div>
+    <div class="dz-sub">oppure clicca per sfogliare</div>
+    <div class="dz-formats">
+      <span class="fmt-pill">.m7m</span>
+      <span class="fmt-pill">.tsd</span>
+      <span class="fmt-pill">.p7m.tsd</span>
+    </div>
+  </div>
+
+  <!-- Error box -->
+  <div id="error-box" class="error-box"></div>
+
+  <!-- Risultati -->
+  <div id="results" class="results hidden">
+
+    <div class="section-label">File sorgente</div>
+    <div class="file-card">
+      <div class="file-card-header">
+        <div class="file-icon src" id="src-ext">M7M</div>
+        <div class="file-info">
+          <div class="file-name" id="src-name"></div>
+          <div class="file-meta" id="src-meta"></div>
+        </div>
+        <span class="badge badge-info" id="src-badge"></span>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:1.25rem">File estratti</div>
+
+    <!-- Card p7m -->
+    <div class="file-card">
+      <div class="file-card-header">
+        <div class="file-icon p7m">P7M</div>
+        <div class="file-info">
+          <div class="file-name" id="doc-name-display"></div>
+          <div class="file-meta" id="doc-meta"></div>
+        </div>
+        <button class="btn-dl" id="btn-dl-doc" onclick="downloadFile('doc')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 12h12"/>
+          </svg>
+          Scarica
+        </button>
+      </div>
+      <div class="rename-row">
+        <span class="rename-label">Nome file:</span>
+        <input type="text" class="rename-input" id="doc-rename" placeholder="nome file">
+        <button class="btn-apply" onclick="applyRename('doc')">Applica</button>
+      </div>
+    </div>
+
+    <!-- Card tsr -->
+    <div class="file-card">
+      <div class="file-card-header">
+        <div class="file-icon tsr">TSR</div>
+        <div class="file-info">
+          <div class="file-name" id="tsr-name-display"></div>
+          <div class="file-meta" id="tsr-meta"></div>
+        </div>
+        <button class="btn-dl" id="btn-dl-tsr" onclick="downloadFile('tsr')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 12h12"/>
+          </svg>
+          Scarica
+        </button>
+      </div>
+      <div class="rename-row">
+        <span class="rename-label">Nome file:</span>
+        <input type="text" class="rename-input" id="tsr-rename" placeholder="nome file">
+        <button class="btn-apply" onclick="applyRename('tsr')">Applica</button>
+      </div>
+    </div>
+
+    <!-- Azioni -->
+    <div class="actions-bar">
+      <button class="btn-primary" onclick="downloadAll()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 12h12"/>
+        </svg>
+        Scarica entrambi i file
+      </button>
+      <button class="btn-reset" onclick="resetApp()">Carica un altro file</button>
+    </div>
+
+    <!-- Guida AdE -->
+    <div class="ade-box">
+      <div class="ade-box-title">Trasmissione Agenzia delle Entrate — Cessione quote</div>
+      <ol class="ade-steps">
+        <li><div class="step-n">1</div><div>Apri l'applicazione AdE per la registrazione telematica dei trasferimenti di quote.</div></li>
+        <li><div class="step-n">2</div><div>Carica il file <strong>.p7m</strong> nel campo "atto informatico firmato digitalmente".</div></li>
+        <li><div class="step-n">3</div><div>Carica il file <strong>.tsr</strong> nel campo "marca temporale" (token di marcatura).</div></li>
+        <li><div class="step-n">4</div><div>Verifica che i due file abbiano la stessa base nome — requisito obbligatorio prima della trasmissione.</div></li>
+      </ol>
+    </div>
+
+    <!-- Log -->
+    <div class="log-box" id="log-box"></div>
+
+  </div>
+</div>
+
+<footer>
+  <strong>studio-example</strong> · Separatore Marca Temporale · Elaborazione locale, nessun dato trasmesso a server esterni
+</footer>
+
+<script>
+(function(){
+
+const state = { docBytes: null, tsrBytes: null, docName: '', tsrName: '' };
+
+/* ── Utilities ── */
+function fmt(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1048576) return (n / 1024).toFixed(1) + ' KB';
+  return (n / 1048576).toFixed(2) + ' MB';
+}
+
+function log(msg, cls) {
+  const b = document.getElementById('log-box');
+  const d = document.createElement('div');
+  if (cls) d.className = 'log-' + cls;
+  d.textContent = msg;
+  b.appendChild(d);
+  b.scrollTop = b.scrollHeight;
+}
+
+function showError(msg) {
+  const eb = document.getElementById('error-box');
+  eb.style.display = 'block';
+  eb.textContent = '⚠ ' + msg;
+  document.getElementById('results').classList.add('hidden');
+}
+
+function hideError() {
+  document.getElementById('error-box').style.display = 'none';
+}
+
+/* ── Drop zone ── */
+const dz = document.getElementById('dz');
+dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('over');
+  const f = e.dataTransfer.files[0];
+  if (f) processFile(f);
+});
+document.getElementById('file-input').addEventListener('change', e => {
+  if (e.target.files[0]) processFile(e.target.files[0]);
+});
+
+/* ── Reset ── */
+window.resetApp = function() {
+  state.docBytes = state.tsrBytes = null;
+  state.docName = state.tsrName = '';
+  document.getElementById('results').classList.add('hidden');
+  hideError();
+  document.getElementById('log-box').innerHTML = '';
+  document.getElementById('file-input').value = '';
+};
+
+/* ── Rename ── */
+window.applyRename = function(which) {
+  const input = document.getElementById(which === 'doc' ? 'doc-rename' : 'tsr-rename');
+  const display = document.getElementById(which === 'doc' ? 'doc-name-display' : 'tsr-name-display');
+  const val = input.value.trim();
+  if (!val) return;
+  if (which === 'doc') state.docName = val;
+  else state.tsrName = val;
+  display.textContent = val;
+  log('Rinominato → ' + val, 'ok');
+};
+
+/* ── Download ── */
+function saveBytes(bytes, name) {
+  const blob = new Blob([bytes], { type: 'application/octet-stream' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+window.downloadFile = function(which) {
+  if (which === 'doc' && state.docBytes) saveBytes(state.docBytes, state.docName);
+  else if (which === 'tsr' && state.tsrBytes) saveBytes(state.tsrBytes, state.tsrName);
+};
+
+window.downloadAll = function() {
+  if (state.docBytes) saveBytes(state.docBytes, state.docName);
+  setTimeout(() => {
+    if (state.tsrBytes) saveBytes(state.tsrBytes, state.tsrName);
+  }, 400);
+};
+
+/* ── Parser M7M ── */
+function parseM7M(buf) {
+  const text = new TextDecoder('latin-1').decode(buf);
+  const bm = text.match(/boundary="?([^"\r\n;]+)"?/i);
+  if (!bm) throw new Error('Boundary MIME non trovata. Il file potrebbe non essere un M7M valido.');
+  const boundary = '--' + bm[1];
+  log('Formato: M7M — boundary trovata');
+
+  const parts = [];
+  let pos = 0;
+  while (pos < text.length) {
+    const bp = text.indexOf(boundary, pos);
+    if (bp < 0) break;
+    const after = bp + boundary.length;
+    if (text.substring(after, after + 2) === '--') break;
+    const he = text.indexOf('\r\n\r\n', after);
+    if (he < 0) break;
+    const headers = text.substring(after, he);
+    const nextB = text.indexOf(boundary, he + 4);
+    const bodyEnd = nextB > 0 ? nextB - 2 : text.length;
+    const bodyText = text.substring(he + 4, bodyEnd);
+
+    const cte = (headers.match(/Content-Transfer-Encoding:\s*(\S+)/i) || [])[1] || 'binary';
+    const fnm = (headers.match(/filename="([^"]+)"/i) || [])[1] || '';
+    const ct  = (headers.match(/Content-Type:\s*([^\r\n;]+)/i) || [])[1] || '';
+
+    let bytes;
+    if (cte.toLowerCase() === 'base64') {
+      bytes = Uint8Array.from(atob(bodyText.replace(/\s/g, '')), c => c.charCodeAt(0));
+    } else {
+      bytes = new Uint8Array(bodyText.length);
+      for (let i = 0; i < bodyText.length; i++) bytes[i] = bodyText.charCodeAt(i) & 0xff;
+    }
+
+    parts.push({ ct: ct.trim(), cte, filename: fnm, bytes });
+    log('Parte MIME: ' + ct.trim() + ' — ' + fmt(bytes.length));
+    pos = nextB > 0 ? nextB : text.length;
+  }
+
+  if (parts.length < 2) throw new Error('File M7M non valido: trovate ' + parts.length + ' parti (attese almeno 2).');
+
+  let docBytes = null, tsrBytes = null;
+  for (const p of parts) {
+    if (p.ct.includes('timestamp-reply') || p.ct.includes('tsr') || p.ct.includes('timestamp')) {
+      tsrBytes = p.bytes;
+    } else if (p.ct.includes('pkcs7') || p.ct.includes('p7m') || p.ct.includes('octet') || p.ct.includes('pdf') || p.ct.includes('xml')) {
+      docBytes = p.bytes;
+    }
+  }
+  if (!docBytes) docBytes = parts[0].bytes;
+  if (!tsrBytes && parts.length >= 2) tsrBytes = parts[1].bytes;
+
+  return { docBytes, tsrBytes };
+}
+
+/* ── Parser TSD (ASN.1 DER) ── */
+function parseLen(buf, off) {
+  const fb = buf[off];
+  if (!(fb & 0x80)) return { len: fb, next: off + 1 };
+  const nb = fb & 0x7f;
+  let len = 0;
+  for (let i = 0; i < nb; i++) len = (len << 8) | buf[off + 1 + i];
+  return { len, next: off + 1 + nb };
+}
+
+function parseTSD(buf) {
+  log('Formato: TSD — parsing ASN.1 DER');
+  // Strategia: ricerca pattern CMS (OID id-signedData 1.2.840.113549.1.7.2)
+  const CMS_OID = [0x06, 0x09, 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x07, 0x02];
+  let tsrStart = -1, tsrEnd = -1;
+  let docStart = -1, docLen = 0;
+
+  for (let i = 0; i < buf.length - 11; i++) {
+    let match = true;
+    for (let j = 0; j < CMS_OID.length; j++) { if (buf[i + j] !== CMS_OID[j]) { match = false; break; } }
+    if (match) {
+      // Risali al SEQUENCE contenitore
+      let s = i - 2;
+      while (s >= 0 && buf[s] !== 0x30) s--;
+      if (s >= 0 && buf[s] === 0x30) {
+        const li = parseLen(buf, s + 1);
+        tsrStart = s;
+        tsrEnd = li.next + li.len;
+        log('Token CMS (id-signedData) trovato a offset ' + s + ', size: ' + fmt(tsrEnd - s));
+      }
+      break;
+    }
+  }
+
+  // Cerca context tag [0] o [1] per il payload documento
+  for (let i = 0; i < buf.length - 4; i++) {
+    if (buf[i] === 0xa0 || buf[i] === 0xa1 || buf[i] === 0xa2) {
+      const li = parseLen(buf, i + 1);
+      if (li.len > 500 && li.len < buf.length - i) {
+        docStart = li.next;
+        docLen = li.len;
+        log('Payload documento trovato (context [' + (buf[i] & 0x1f) + ']), size: ' + fmt(docLen));
+        break;
+      }
+    }
+  }
+
+  const tsrBytes = tsrStart >= 0 ? buf.slice(tsrStart, tsrEnd) : null;
+  const docBytes = docStart >= 0 ? buf.slice(docStart, docStart + docLen) : null;
+  return { docBytes, tsrBytes };
+}
+
+/* ── Elaborazione file principale ── */
+function processFile(file) {
+  hideError();
+  document.getElementById('log-box').innerHTML = '';
+  const ext = file.name.split('.').pop().toLowerCase();
+  const base = file.name.replace(/\.(m7m|tsd|tst)$/i, '');
+
+  log('Caricamento: ' + file.name + ' (' + fmt(file.size) + ')');
+
+  document.getElementById('src-name').textContent = file.name;
+  document.getElementById('src-meta').textContent = fmt(file.size) + ' · ' + new Date(file.lastModified).toLocaleDateString('it-IT');
+  document.getElementById('src-ext').textContent = ext.toUpperCase();
+  document.getElementById('src-badge').textContent = ext.toUpperCase();
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const buf = new Uint8Array(e.target.result);
+      let result;
+
+      if (ext === 'm7m') result = parseM7M(buf);
+      else result = parseTSD(buf);
+
+      let { docBytes, tsrBytes } = result;
+
+      if (!docBytes && !tsrBytes)
+        throw new Error('Impossibile estrarre i componenti. Verifica che il file sia un .m7m o .tsd valido generato da InfoCamere Sign Desktop o software compatibile.');
+
+      // Nomi file
+      const docName = base.endsWith('.p7m') ? base : base + '.p7m';
+      const tsrName = base.replace(/\.p7m$/i, '') + '.p7m.tsr';
+
+      state.docBytes = docBytes;
+      state.tsrBytes = tsrBytes;
+      state.docName  = docName;
+      state.tsrName  = tsrName;
+
+      // UI
+      document.getElementById('doc-name-display').textContent = docName;
+      document.getElementById('doc-meta').textContent = docBytes ? fmt(docBytes.length) : 'non estratto';
+      document.getElementById('doc-rename').value = docName;
+
+      document.getElementById('tsr-name-display').textContent = tsrName;
+      document.getElementById('tsr-meta').textContent = tsrBytes ? fmt(tsrBytes.length) : 'non estratto';
+      document.getElementById('tsr-rename').value = tsrName;
+
+      if (docBytes) log('✓ Documento firmato estratto: ' + docName + ' (' + fmt(docBytes.length) + ')', 'ok');
+      else log('⚠ Documento firmato non estratto', 'wn');
+
+      if (tsrBytes) log('✓ Marca temporale estratta: ' + tsrName + ' (' + fmt(tsrBytes.length) + ')', 'ok');
+      else log('⚠ Marca temporale non estratta', 'wn');
+
+      log('Elaborazione completata — file pronti per il download.', 'ok');
+      document.getElementById('results').classList.remove('hidden');
+
+    } catch (err) {
+      showError(err.message);
+      log('ERRORE: ' + err.message, 'er');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+})();
+</script>
+</body>
+</html>

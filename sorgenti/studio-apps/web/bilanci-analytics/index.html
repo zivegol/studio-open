@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Analisi bilanci analitici</title>
+  <script src="xlsx.full.min.js"></script>
+  <script src="../studio-core/storage.js?v=20260816-gateway2"></script>
+  <script defer src="app.js?v=20260917-horizontal-improvements4"></script>
+  <style>
+    :root {
+      --bg:#f4f7fb; --panel:#fff; --text:#1c2733; --muted:#637287; --line:#dbe4ef;
+      --blue:#006aa6; --green:#147a46; --red:#b42318; --amber:#8a5a00;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+    .shell{width:min(1440px,calc(100% - 28px));margin:20px auto}
+    header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:14px}
+    h1{font-size:25px;margin:0 0 4px;letter-spacing:0}
+    p{margin:0;color:var(--muted);line-height:1.35}
+    .panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;box-shadow:0 8px 24px rgba(20,35,55,.06)}
+    .grid{display:grid;grid-template-columns:330px minmax(0,1fr);gap:14px;align-items:start}
+    .filters{display:grid;gap:10px}
+    label{display:block;font-size:12px;font-weight:700;margin:0 0 5px}
+    input,select{width:100%;min-height:36px;border:1px solid var(--line);border-radius:6px;padding:7px 9px;font:inherit;background:#fff;color:var(--text)}
+    button{border:0;border-radius:6px;min-height:36px;padding:8px 12px;background:var(--blue);color:#fff;font-weight:700;cursor:pointer}
+    button.secondary{background:#e8eef6;color:#263442}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    .buttons{display:flex;gap:8px;flex-wrap:wrap}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:12px}
+    .stat{border:1px solid var(--line);border-radius:8px;background:#fbfdff;padding:10px}
+    .stat span{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}
+    .stat strong{font-size:19px;letter-spacing:0}
+    .main-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:12px}
+    .main-grid.client-mode{grid-template-columns:1fr}
+    .main-grid.client-mode #detailPanel{display:none}
+    .analysis-stack{display:grid;gap:12px}
+    .year-card{border:1px solid var(--line);border-radius:8px;background:#fbfdff;margin:0 0 10px;overflow:hidden}
+    .year-head{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;background:#eef5fb;border-bottom:1px solid var(--line)}
+    .year-head strong{font-size:15px}.year-head span{color:var(--muted);font-size:12px}
+    .metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:12px}
+    .metric-group{display:grid;gap:6px}
+    .metric-group h3{margin:0 0 4px;font-size:13px;color:#263442}
+    .metric-line{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #e5edf6;padding:4px 0;font-size:12.5px}
+    .metric-line span:first-child{color:var(--muted)}
+    .metric-line.total{font-weight:700;border-top:1px solid var(--line);padding-top:6px}
+    .metric-line.sub{padding-left:12px;font-size:12px}
+    .metric-line.sub span:first-child{color:#7a8796}
+    .metric-pct{display:block;color:#7a8796;font-size:10px;font-weight:400;line-height:1.15;margin-top:1px}
+    .source-note{font-size:10.5px;margin-top:6px;color:var(--muted)}
+    .comparison-block{margin-bottom:12px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+    .comparison-block h3{font-size:14px;margin:0;padding:10px 12px;background:#eef5fb;border-bottom:1px solid var(--line)}
+    .comparison-table th,.comparison-table td{text-align:right;min-width:130px}
+    .comparison-table th:first-child,.comparison-table td:first-child{text-align:left;min-width:190px}
+    .comparison-delta{display:block;font-size:10px;font-weight:600;margin-top:2px;white-space:nowrap}
+    .statement-block{margin:0 0 14px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+    .statement-block h3{font-size:14px;margin:0;padding:10px 12px;background:#eef5fb;border-bottom:1px solid var(--line)}
+    .statement-wrap{max-height:none}.statement-table{table-layout:fixed}
+    .statement-table{width:100%;min-width:785px}
+    .statement-table col.statement-label-col{width:36%}
+    .statement-table th,.statement-table td{text-align:right;padding:7px 9px}
+    .statement-table th:not(:first-child),.statement-table td:not(:first-child){text-align:right}
+    .statement-table th:first-child,.statement-table td:first-child{text-align:left;position:sticky;left:0;background:#fff;z-index:1}
+    .statement-table thead th:first-child{background:#f5f8fc;z-index:2}
+    .statement-table tr.total td{font-weight:700;background:#f8fbfe}
+    .statement-table tr.total td:first-child{background:#f8fbfe}
+    .statement-table tr.sub td:first-child{padding-left:24px;color:var(--muted)}
+    .statement-table tr.statement-section td{font-weight:700;color:var(--blue);background:#eaf3fa;border-top:2px solid var(--line)}
+    .statement-table tr.statement-section td:first-child{background:#eaf3fa}
+    .statement-pct{display:block;font-size:10px;color:var(--muted);font-weight:400;margin-top:2px}
+    .statement-delta{display:block;font-size:10px;font-weight:700;margin-top:2px;color:var(--muted)}
+    .statement-delta.up{color:var(--green)}.statement-delta.down{color:var(--red)}
+    .benchmark-table th,.benchmark-table td{text-align:right}
+    .benchmark-table th:first-child,.benchmark-table td:first-child{text-align:left}
+    .mode-note{font-size:13px;color:var(--muted);margin:0 0 10px}
+    table{width:100%;border-collapse:collapse;font-size:12.5px}
+    th,td{border-bottom:1px solid var(--line);padding:7px 6px;text-align:right;vertical-align:top}
+    th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
+    th{color:var(--muted);font-size:11px}
+    .table-wrap{max-height:520px;overflow:auto}
+    .log{height:165px;overflow:auto;background:#0f1720;color:#d5e3f4;border-radius:8px;padding:9px;font-family:Consolas,"Courier New",monospace;font-size:12px;line-height:1.45}
+    .chart{display:grid;gap:8px}
+    .bar-row{display:grid;grid-template-columns:92px minmax(0,1fr) 82px;gap:8px;align-items:center;font-size:12px}
+    .bar-track{height:10px;background:#e6edf5;border-radius:999px;overflow:hidden}
+    .bar{height:100%;background:var(--blue);width:0}
+    .time-chart{margin-bottom:16px}.time-chart>strong{display:block;margin-bottom:6px}
+    .time-chart svg{width:100%;height:auto;max-height:250px;background:#fbfdff;border:1px solid var(--line);border-radius:7px}
+    .time-chart svg text{font:11px Arial,Helvetica,sans-serif;fill:var(--muted)}
+    .time-chart svg text.point-value{font-size:9px;font-weight:700}
+    .chart-legend{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 6px;font-size:10.5px;color:var(--muted)}
+    .chart-legend span{display:flex;align-items:center;gap:4px}.chart-legend i{width:12px;height:3px;border-radius:2px;display:inline-block}
+    .pie-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:0 0 16px}
+    .pie-card{border:1px solid var(--line);border-radius:8px;background:#fbfdff;padding:12px}
+    .pie-card>strong{display:block;margin-bottom:10px}.pie-layout{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center}
+    .pie{width:145px;aspect-ratio:1;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+    .pie-legend{display:grid;gap:6px;font-size:11px}.pie-legend div{display:grid;grid-template-columns:10px 1fr auto;gap:6px;align-items:center}
+    .pie-legend i{width:9px;height:9px;border-radius:2px}.pie-legend strong{font-size:11px}
+    .index-charts-title{font-weight:700;margin:0 0 7px}.index-chart-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:10px}
+    .index-chart{border:1px solid var(--line);border-radius:8px;background:#fbfdff;padding:10px}.index-chart>strong{font-size:12px}.index-average{float:right;font-size:10px;font-weight:700;color:#455468}
+    .index-chart svg{width:100%;height:auto}.index-chart svg text{font:10px Arial,Helvetica,sans-serif;fill:var(--muted)}
+    .warn{color:var(--amber);font-weight:700}.bad{color:var(--red);font-weight:700}.ok{color:var(--green);font-weight:700}
+    .hint{font-size:12px;color:var(--muted);margin-top:6px}
+    @media(max-width:1050px){.grid,.main-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.pie-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <h1>Analisi bilanci analitici</h1>
+        <p>Dashboard sui bilanci originali non anonimizzati, con trend per cliente, aggregazioni ATECO/geografia e confronto tra aziende.</p>
+      </div>
+      <div class="buttons">
+        <button id="loadBtn">Aggiorna dati</button>
+        <button class="secondary" id="saveProjectBtn">Salva progetto</button>
+        <button class="secondary" id="exportBtn" disabled>Esporta CSV</button>
+        <span id="projectStatus" style="font-size:12px;color:var(--muted);align-self:center">Avvio archivio...</span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <aside class="panel filters">
+        <div>
+          <label for="ncBase">URL Nextcloud</label>
+          <input id="ncBase" value="https://cloud.studio.example">
+        </div>
+        <div>
+          <label for="ncUser">Utente WebDAV</label>
+          <input id="ncUser" value="admin">
+          <div class="hint" id="userHint"></div>
+        </div>
+        <div>
+          <label for="baseFolder">Cartella bilanci analitici</label>
+          <input id="baseFolder" value="studio-example/archivio studio-example/bilanci analitici">
+        </div>
+        <div>
+          <label for="registryPath">File adempimenti clienti</label>
+          <input id="registryPath" value="studio-example/archivio studio-example/adempimenti CLIENTI.xlsx">
+        </div>
+        <div>
+          <label for="yearsInput">Annualità</label>
+          <input id="yearsInput" value="2023,2024,2025,2026">
+          <div class="hint">Legge solo le cartelle esistenti e ignora quelle con “anonimizzati”.</div>
+        </div>
+        <div>
+          <label for="clientFilter">Cliente</label>
+          <select id="clientFilter"><option value="">Tutti</option></select>
+        </div>
+        <div>
+          <label for="atecoFilter">Codice ATECO</label>
+          <select id="atecoFilter"><option value="">Tutti</option></select>
+        </div>
+        <div>
+          <label for="geoFilter">Provincia</label>
+          <select id="geoFilter"><option value="">Tutte</option></select>
+        </div>
+        <div>
+          <label for="comuneFilter">Comune</label>
+          <select id="comuneFilter"><option value="">Tutti</option></select>
+        </div>
+        <div>
+          <label for="yearFilter">Anno</label>
+          <select id="yearFilter"><option value="">Tutti</option></select>
+        </div>
+        <div>
+          <label for="employeeClassFilter">Numero dipendenti</label>
+          <select id="employeeClassFilter"><option value="">Tutte le classi</option></select>
+        </div>
+        <div>
+          <label for="revenueClassFilter">Classe di fatturato</label>
+          <select id="revenueClassFilter"><option value="">Tutte le classi</option></select>
+        </div>
+        <div class="buttons">
+          <button class="secondary" id="resetBtn">Reset filtri</button>
+        </div>
+        <div class="log" id="log"></div>
+      </aside>
+
+      <section>
+        <div class="stats">
+          <div class="stat"><span>Aziende</span><strong id="sCompanies">0</strong></div>
+          <div class="stat"><span>Osservazioni</span><strong id="sRows">0</strong></div>
+          <div class="stat"><span>Ricavi medi</span><strong id="sAvgRevenue">0</strong></div>
+          <div class="stat"><span>Margine medio</span><strong id="sAvgMargin">0%</strong></div>
+          <div class="stat"><span>Debiti / Attivo</span><strong id="sDebtRatio">0%</strong></div>
+          <div class="stat"><span>Ricavi / dip.</span><strong id="sRevEmp">0</strong></div>
+          <div class="stat"><span>Risultato / dip.</span><strong id="sResultEmp">0</strong></div>
+          <div class="stat"><span>File sorgente</span><strong id="sSourceFiles">0</strong></div>
+          <div class="stat"><span>Avvisi qualità</span><strong id="sWarnings">0</strong></div>
+          <div class="stat"><span>Errori import</span><strong id="sErrors">0</strong></div>
+          <div class="stat"><span>Aggiornato</span><strong id="sUpdated" style="font-size:13px">-</strong></div>
+        </div>
+
+        <div class="main-grid" id="mainGrid">
+          <div class="panel analysis-stack">
+            <div>
+              <h2 id="analysisTitle">Analisi verticale</h2>
+              <p class="mode-note" id="analysisNote"></p>
+              <div id="verticalView"></div>
+            </div>
+            <div>
+              <h2>Benchmark</h2>
+              <div id="benchmarkView"></div>
+            </div>
+          </div>
+
+          <div class="panel" id="detailPanel">
+            <h2>Dettaglio osservazioni</h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cliente</th><th>Anno</th><th>ATECO</th><th>Prov.</th><th>Dip.</th>
+                    <th>Ricavi</th><th>Ricavi/dip.</th><th>Costi</th><th>MOL</th><th>Risultato</th><th>Ris./dip.</th><th>ROE</th><th>ROI</th><th>ROS</th><th>Margine</th><th>Attivo</th><th>Debiti</th><th>Debiti/Attivo</th><th>File origine</th>
+                  </tr>
+                </thead>
+                <tbody id="rowsBody"><tr><td colspan="17">Carica i dati per iniziare.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2>Benchmark ed evoluzione temporale</h2>
+            <div class="chart" id="trendChart"></div>
+            <hr style="border:0;border-top:1px solid var(--line);margin:14px 0">
+            <div class="chart" id="atecoChart"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

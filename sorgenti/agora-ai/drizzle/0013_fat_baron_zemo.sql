@@ -1,0 +1,1 @@
+ALTER TABLE `agent_runs` ADD `review_repair_attempts` int DEFAULT 0 NOT NULL;

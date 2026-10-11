@@ -1,0 +1,1 @@
+ALTER TABLE `agent_runs` ADD `fallback_model` varchar(128);

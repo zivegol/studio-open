@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF → Excel</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #f7f6f2; --surface: #ffffff; --border: #e2e0d8; --border-strong: #c8c5ba;
+            --text: #1a1917; --text-muted: #6b6860; --text-faint: #9c9a94;
+            --accent: #1d6a45; --accent-bg: #e8f4ee; --accent-light: #d0e9da;
+            --warn: #8a4000; --warn-bg: #fdf0e4; --danger: #8a0000; --danger-bg: #fdf0f0;
+            --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
+        }
+        body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem; }
+        .layout { max-width: 860px; margin: 0 auto; }
+        header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+        header h1 { font-family: var(--mono); font-size: 18px; font-weight: 500; }
+        .back-link { font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-decoration: none; }
+        .back-link:hover { color: var(--accent); }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 1.5rem; margin-bottom: 1rem; }
+        .card-title { font-family: var(--mono); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 1rem; }
+
+        /* Dropzone multi */
+        .dropzone { border: 1.5px dashed var(--border-strong); border-radius: 4px; padding: 2rem 1.5rem; text-align: center; cursor: pointer; transition: all 0.15s; background: var(--bg); }
+        .dropzone:hover, .dropzone.drag-over { border-color: var(--accent); background: var(--accent-bg); }
+        .dropzone p { font-size: 14px; color: var(--text-muted); margin-bottom: 4px; }
+        .dropzone small { font-size: 12px; color: var(--text-faint); }
+        #pdfInput { display: none; }
+
+        /* File list */
+        .file-list { margin-top: 1rem; display: flex; flex-direction: column; gap: 6px; }
+        .file-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; font-family: var(--mono); font-size: 12px; }
+        .file-item .fname { flex: 1; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .file-item .fsize { color: var(--text-faint); white-space: nowrap; }
+        .file-item .fremove { background: none; border: none; color: var(--text-faint); cursor: pointer; font-size: 14px; padding: 0 4px; }
+        .file-item .fremove:hover { color: var(--danger); }
+        .file-item .fstatus { font-size: 11px; white-space: nowrap; }
+        .file-item.done .fstatus { color: var(--accent); }
+        .file-item.error .fstatus { color: var(--danger); }
+        .file-item.processing .fstatus { color: var(--warn); }
+
+        /* Modalità output */
+        .mode-row { display: flex; gap: 10px; margin-bottom: 1rem; }
+        .mode-btn { flex: 1; padding: 10px; border: 1.5px solid var(--border-strong); border-radius: 4px; background: var(--bg); font-family: var(--mono); font-size: 12px; cursor: pointer; transition: all 0.15s; text-align: center; color: var(--text-muted); }
+        .mode-btn.active { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
+
+        /* Folder picker */
+        .folder-section { display: flex; flex-direction: column; gap: 10px; }
+        .folder-tabs { display: flex; gap: 6px; }
+        .folder-tab { font-family: var(--mono); font-size: 11px; padding: 5px 12px; border: 1px solid var(--border-strong); border-radius: 4px; background: var(--bg); cursor: pointer; color: var(--text-muted); transition: all 0.15s; }
+        .folder-tab.active { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); }
+        .folder-manual { display: flex; gap: 8px; align-items: center; }
+        .folder-manual input { flex: 1; padding: 8px 12px; border: 1px solid var(--border-strong); border-radius: 4px; font-family: var(--mono); font-size: 13px; background: var(--surface); color: var(--text); }
+        .folder-manual input:focus { outline: none; border-color: var(--accent); }
+        .folder-manual button { padding: 8px 14px; border: 1px solid var(--border-strong); border-radius: 4px; background: var(--bg); font-family: var(--mono); font-size: 12px; cursor: pointer; color: var(--text-muted); transition: all 0.15s; white-space: nowrap; }
+        .folder-manual button:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* Tree browser */
+        .tree-browser { border: 1px solid var(--border); border-radius: 4px; max-height: 220px; overflow-y: auto; background: var(--surface); }
+        .tree-item { display: flex; align-items: center; gap: 8px; padding: 7px 12px; cursor: pointer; font-family: var(--mono); font-size: 12px; color: var(--text-muted); border-bottom: 1px solid var(--border); transition: background 0.1s; user-select: none; }
+        .tree-item:last-child { border-bottom: none; }
+        .tree-item:hover { background: var(--bg); }
+        .tree-item.selected { background: var(--accent-bg); color: var(--accent); }
+        .tree-item .tree-icon { width: 16px; text-align: center; flex-shrink: 0; }
+        .tree-item .tree-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tree-item .tree-arrow { color: var(--text-faint); font-size: 10px; }
+        .tree-loading { padding: 1rem; text-align: center; font-family: var(--mono); font-size: 12px; color: var(--text-faint); }
+        .tree-path-bar { padding: 6px 12px; background: var(--bg); border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .tree-crumb { cursor: pointer; color: var(--accent); }
+        .tree-crumb:hover { text-decoration: underline; }
+
+        /* Opzioni */
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .option-group label { display: block; font-size: 12px; font-weight: 500; color: var(--text-muted); margin-bottom: 6px; }
+        .option-group select, .option-group input[type="number"], .option-group input[type="text"] { width: 100%; padding: 7px 10px; border: 1px solid var(--border-strong); border-radius: 4px; font-family: var(--sans); font-size: 13px; background: var(--surface); color: var(--text); }
+        .option-group select:focus, .option-group input:focus { outline: none; border-color: var(--accent); }
+        .checkbox-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+        .checkbox-row input[type="checkbox"] { accent-color: var(--accent); width: 15px; height: 15px; }
+        .checkbox-row span { font-size: 13px; color: var(--text-muted); }
+
+        /* Buttons */
+        .btn-primary { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 5px; font-family: var(--mono); font-size: 14px; font-weight: 500; letter-spacing: 0.03em; cursor: pointer; transition: opacity 0.15s; }
+        .btn-primary:hover { opacity: 0.88; }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        /* Log */
+        .log-box { background: #1a1917; border-radius: 4px; padding: 1rem 1.25rem; min-height: 80px; max-height: 180px; overflow-y: auto; }
+        .log-line { font-family: var(--mono); font-size: 12px; line-height: 1.8; color: #a0a09a; }
+        .log-line.ok { color: #6fcf97; }
+        .log-line.err { color: #eb5757; }
+        .log-line.info { color: #56ccf2; }
+
+        /* Progress bar */
+        .progress-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; margin-top: 10px; overflow: hidden; display: none; }
+        .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; width: 0%; }
+
+        /* Result */
+        .stats-row { display: flex; gap: 1rem; margin-bottom: 1rem; }
+        .stat { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 10px 14px; text-align: center; }
+        .stat-val { font-family: var(--mono); font-size: 20px; font-weight: 500; color: var(--accent); }
+        .stat-lbl { font-size: 11px; color: var(--text-faint); margin-top: 2px; }
+        .preview-scroll { overflow-x: auto; border: 1px solid var(--border); border-radius: 4px; }
+        .preview-table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: var(--mono); }
+        .preview-table th { background: #f0ede6; padding: 6px 10px; text-align: left; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid var(--border); white-space: nowrap; }
+        .preview-table td { padding: 5px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; color: var(--text); }
+        .preview-table tr:last-child td { border-bottom: none; }
+        .preview-table tr:nth-child(even) td { background: #faf9f6; }
+        .hidden { display: none; }
+
+        /* NC status */
+        .nc-status { font-family: var(--mono); font-size: 11px; padding: 6px 10px; border-radius: 4px; display: inline-flex; align-items: center; gap: 6px; }
+        .nc-status.ok { background: var(--accent-bg); color: var(--accent); }
+        .nc-status.warn { background: var(--warn-bg); color: var(--warn); }
+        .nc-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    </style>
+</head>
+<body>
+<div class="layout">
+    <header>
+        <h1>PDF → Excel</h1>
+        <a class="back-link" href="/apps/external/2/">← App di Studio</a>
+    </header>
+
+    <!-- 1. FILE -->
+    <div class="card">
+        <div class="card-title">1 — file PDF da convertire</div>
+        <div class="dropzone" id="dropzone" onclick="document.getElementById('pdfInput').click()">
+            <p>Trascina qui uno o più PDF oppure clicca per selezionare</p>
+            <small>Puoi selezionare più file tenendo premuto Cmd (Mac) o Ctrl (Windows)</small>
+        </div>
+        <input type="file" id="pdfInput" accept="application/pdf" multiple>
+        <div class="file-list" id="fileList"></div>
+    </div>
+
+    <!-- 2. MODALITÀ OUTPUT -->
+    <div class="card">
+        <div class="card-title">2 — modalità output</div>
+        <div class="mode-row">
+            <div class="mode-btn active" id="modeSeparate" onclick="setMode('separate')">
+                📄 Un Excel per ogni PDF
+            </div>
+            <div class="mode-btn" id="modeMerged" onclick="setMode('merged')">
+                📋 Tutti i PDF in un unico Excel
+            </div>
+        </div>
+        <div class="option-group" id="sheetNameGroup" style="display:none">
+            <label>Nome file Excel unificato</label>
+            <input type="text" id="mergedFileName" value="conversione_unificata" placeholder="nome file senza estensione">
+        </div>
+    </div>
+
+    <!-- 3. DESTINAZIONE -->
+    <div class="card">
+        <div class="card-title">3 — destinazione file</div>
+
+        <div style="margin-bottom:1rem; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <span style="font-size:13px; color:var(--text-muted)">Salva su:</span>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+                <input type="radio" name="dest" value="local" checked onchange="setDest('local')"> Download locale
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+                <input type="radio" name="dest" value="nc" onchange="setDest('nc')"> Nextcloud
+            </label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+                <input type="radio" name="dest" value="both" onchange="setDest('both')"> Entrambi
+            </label>
+        </div>
+
+        <!-- Destinazione PDF originali -->
+        <div id="pdfDestSection" style="display:none; margin-bottom:1.5rem;">
+            <div style="font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:8px;">Cartella Nextcloud per i PDF originali</div>
+            <div class="folder-section">
+                <div class="folder-tabs">
+                    <div class="folder-tab active" id="pdfTabManual" onclick="setFolderTab('pdf','manual')">Percorso manuale</div>
+                    <div class="folder-tab" id="pdfTabTree" onclick="setFolderTab('pdf','tree')">Sfoglia cartelle</div>
+                </div>
+                <div id="pdfManualDiv" class="folder-manual">
+                    <input type="text" id="pdfFolderInput" placeholder="es. studio-example/clienti/2025/pdf">
+                    <button onclick="validateFolder('pdf')">Verifica</button>
+                </div>
+                <div id="pdfTreeDiv" class="hidden">
+                    <div class="tree-browser" id="pdfTreeBrowser"></div>
+                </div>
+                <div id="pdfFolderStatus"></div>
+            </div>
+        </div>
+
+        <!-- Destinazione Excel -->
+        <div id="xlsxDestSection" style="display:none;">
+            <div style="font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:8px;">Cartella Nextcloud per i file Excel</div>
+            <div class="folder-section">
+                <div class="folder-tabs">
+                    <div class="folder-tab active" id="xlsxTabManual" onclick="setFolderTab('xlsx','manual')">Percorso manuale</div>
+                    <div class="folder-tab" id="xlsxTabTree" onclick="setFolderTab('xlsx','tree')">Sfoglia cartelle</div>
+                </div>
+                <div id="xlsxManualDiv" class="folder-manual">
+                    <input type="text" id="xlsxFolderInput" placeholder="es. studio-example/clienti/2025/excel">
+                    <button onclick="validateFolder('xlsx')">Verifica</button>
+                </div>
+                <div id="xlsxTreeDiv" class="hidden">
+                    <div class="tree-browser" id="xlsxTreeBrowser"></div>
+                </div>
+                <div id="xlsxFolderStatus"></div>
+            </div>
+        </div>
+
+        <div id="localOnlyNote" style="font-size:13px;color:var(--text-muted);font-style:italic;">
+            I file Excel verranno scaricati nella cartella Download del tuo dispositivo.
+        </div>
+    </div>
+
+    <!-- 4. OPZIONI -->
+    <div class="card">
+        <div class="card-title">4 — opzioni di estrazione</div>
+        <div class="options-grid">
+            <div class="option-group">
+                <label>Tolleranza riga (px)</label>
+                <input type="number" id="rowTolerance" value="3" min="1" max="20">
+            </div>
+            <div class="option-group">
+                <label>Tolleranza colonna (px)</label>
+                <input type="number" id="colTolerance" value="15" min="1" max="50">
+            </div>
+            <div class="option-group">
+                <label>Modalità colonne</label>
+                <select id="colMode">
+                    <option value="accounting">Situazione contabile (codice/descrizione/saldo)</option>
+                    <option value="auto">Automatica (coordinate X)</option>
+                    <option value="raw">Grezza (testo per riga)</option>
+                    <option value="merged">Unisci per riga</option>
+                </select>
+            </div>
+            <div class="option-group">
+                <label>Nome foglio (modalità separata)</label>
+                <input type="text" id="sheetName" value="Dati PDF" maxlength="31">
+            </div>
+        </div>
+        <div class="checkbox-row">
+            <input type="checkbox" id="skipEmpty" checked>
+            <span>Salta righe completamente vuote</span>
+        </div>
+        <div class="checkbox-row">
+            <input type="checkbox" id="trimCells" checked>
+            <span>Rimuovi spazi iniziali/finali</span>
+        </div>
+        <div class="checkbox-row">
+            <input type="checkbox" id="detectNumbers" checked>
+            <span>Converti valori numerici (importi, percentuali)</span>
+        </div>
+    </div>
+
+    <!-- 5. CONVERTI -->
+    <div class="card">
+        <div class="card-title">5 — conversione</div>
+        <button class="btn-primary" id="convertBtn" disabled>Converti e salva</button>
+        <div class="progress-bar-wrap" id="progressWrap">
+            <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+        <div style="margin-top:1rem;">
+            <div class="log-box" id="logBox">
+                <div class="log-line">In attesa dei file...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. RISULTATO -->
+    <div class="card hidden" id="resultCard">
+        <div class="card-title">6 — riepilogo</div>
+        <div class="stats-row">
+            <div class="stat"><div class="stat-val" id="statFiles">—</div><div class="stat-lbl">file elaborati</div></div>
+            <div class="stat"><div class="stat-val" id="statPages">—</div><div class="stat-lbl">pagine totali</div></div>
+            <div class="stat"><div class="stat-val" id="statRows">—</div><div class="stat-lbl">righe estratte</div></div>
+        </div>
+        <div style="margin-top:1rem;">
+            <div class="preview-scroll" id="previewContainer"></div>
+        </div>
+    </div>
+</div>
+
+<script src="/studio-apps/studio-core/core.js?v=20260814-2"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+const NC_URL = 'https://cloud.studio.example';
+let DAV_BASE = '';
+let NC_USER = '';
+
+async function ensureStorageReady() {
+    if (!window.StudioStorage) throw new Error('Modulo Studio Storage non disponibile.');
+    if (!DAV_BASE) {
+        const user = await StudioStorage.getCurrentUser();
+        NC_USER = user.id;
+        DAV_BASE = NC_URL + await StudioStorage.davBase();
+    }
+    return DAV_BASE;
+}
+
+// Stato
+let selectedFiles = [];
+let outputMode = 'separate';
+let destMode = 'local';
+let pdfFolderNC = '';
+let xlsxFolderNC = '';
+let folderTabState = { pdf: 'manual', xlsx: 'manual' };
+let treePathState = { pdf: '', xlsx: '' };
+
+// ── UI helpers ────────────────────────────────────────────────────────────
+function setMode(m) {
+    outputMode = m;
+    document.getElementById('modeSeparate').classList.toggle('active', m === 'separate');
+    document.getElementById('modeMerged').classList.toggle('active', m === 'merged');
+    document.getElementById('sheetNameGroup').style.display = m === 'merged' ? 'block' : 'none';
+}
+
+function setDest(d) {
+    destMode = d;
+    const nc = d === 'nc' || d === 'both';
+    document.getElementById('pdfDestSection').style.display = nc ? 'block' : 'none';
+    document.getElementById('xlsxDestSection').style.display = nc ? 'block' : 'none';
+    document.getElementById('localOnlyNote').style.display = d === 'local' ? 'block' : 'none';
+}
+
+function setFolderTab(type, tab) {
+    folderTabState[type] = tab;
+    document.getElementById(type + 'TabManual').classList.toggle('active', tab === 'manual');
+    document.getElementById(type + 'TabTree').classList.toggle('active', tab === 'tree');
+    document.getElementById(type + 'ManualDiv').classList.toggle('hidden', tab !== 'manual');
+    document.getElementById(type + 'TreeDiv').classList.toggle('hidden', tab !== 'tree');
+    if (tab === 'tree') loadTree(type, treePathState[type]);
+}
+
+function clearLog() { document.getElementById('logBox').innerHTML = ''; }
+function addLog(msg, type) {
+    const el = document.createElement('div');
+    el.className = 'log-line' + (type ? ' ' + type : '');
+    el.textContent = '› ' + msg;
+    document.getElementById('logBox').appendChild(el);
+    document.getElementById('logBox').scrollTop = 9999;
+}
+
+function setProgress(pct) {
+    document.getElementById('progressWrap').style.display = 'block';
+    document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// ── File handling ─────────────────────────────────────────────────────────
+const dropzone = document.getElementById('dropzone');
+const pdfInput = document.getElementById('pdfInput');
+
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+dropzone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropzone.classList.remove('drag-over');
+    addFiles([...e.dataTransfer.files].filter(f => f.type === 'application/pdf'));
+});
+pdfInput.addEventListener('change', () => addFiles([...pdfInput.files]));
+
+function addFiles(files) {
+    for (const f of files) {
+        if (!selectedFiles.find(x => x.name === f.name && x.size === f.size)) {
+            selectedFiles.push(f);
+        }
+    }
+    renderFileList();
+    document.getElementById('convertBtn').disabled = selectedFiles.length === 0;
+}
+
+function removeFile(idx) {
+    selectedFiles.splice(idx, 1);
+    renderFileList();
+    document.getElementById('convertBtn').disabled = selectedFiles.length === 0;
+}
+
+function renderFileList() {
+    const list = document.getElementById('fileList');
+    list.innerHTML = '';
+    selectedFiles.forEach((f, i) => {
+        const el = document.createElement('div');
+        el.className = 'file-item';
+        el.id = 'file-item-' + i;
+        el.innerHTML = `
+            <span class="tree-icon">📄</span>
+            <span class="fname">${escHtml(f.name)}</span>
+            <span class="fsize">${(f.size/1024).toFixed(1)} KB</span>
+            <span class="fstatus" id="fstatus-${i}">in attesa</span>
+            <button class="fremove" onclick="removeFile(${i})">✕</button>
+        `;
+        list.appendChild(el);
+    });
+}
+
+function setFileStatus(i, status, text) {
+    const el = document.getElementById('file-item-' + i);
+    const st = document.getElementById('fstatus-' + i);
+    if (el) el.className = 'file-item ' + status;
+    if (st) st.textContent = text;
+}
+
+// ── WebDAV ────────────────────────────────────────────────────────────────
+async function davPropfind(path) {
+    await ensureStorageReady();
+    const r = await fetch(DAV_BASE + encodeURIPath(path), {
+        method: 'PROPFIND',
+        credentials: 'include',
+        headers: { 'Depth': '1', 'OCS-APIRequest': 'true' }
+    });
+    return r;
+}
+
+async function davPut(path, data) {
+    await ensureStorageReady();
+    const r = await fetch(DAV_BASE + encodeURIPath(path), {
+        method: 'PUT',
+        credentials: 'include',
+        body: data
+    });
+    return r.ok;
+}
+
+async function davMkcol(path) {
+    await ensureStorageReady();
+    const r = await fetch(DAV_BASE + encodeURIPath(path), {
+        method: 'MKCOL',
+        credentials: 'include'
+    });
+    return r.ok || r.status === 405;
+}
+
+function encodeURIPath(path) {
+    return path.split('/').map(s => encodeURIComponent(s)).join('/');
+}
+
+async function validateFolder(type) {
+    const input = document.getElementById(type + 'FolderInput');
+    const statusEl = document.getElementById(type + 'FolderStatus');
+    const path = input.value.trim();
+    if (!path) return;
+    statusEl.innerHTML = '<span class="nc-status warn">verifica in corso...</span>';
+    try {
+        const r = await davPropfind(path + '/');
+        if (r.status === 207) {
+            if (type === 'pdf') pdfFolderNC = path;
+            else xlsxFolderNC = path;
+            statusEl.innerHTML = '<span class="nc-status ok">cartella trovata ✓</span>';
+        } else if (r.status === 404) {
+            statusEl.innerHTML = '<span class="nc-status warn">cartella non trovata — verrà creata automaticamente</span>';
+            if (type === 'pdf') pdfFolderNC = path;
+            else xlsxFolderNC = path;
+        } else {
+            statusEl.innerHTML = '<span class="nc-status warn">errore ' + r.status + '</span>';
+        }
+    } catch(e) {
+        statusEl.innerHTML = '<span class="nc-status warn">non raggiungibile</span>';
+    }
+}
+
+// ── Tree browser ──────────────────────────────────────────────────────────
+async function loadTree(type, path) {
+    const browser = document.getElementById(type + 'TreeBrowser');
+    browser.innerHTML = '<div class="tree-loading">caricamento...</div>';
+    treePathState[type] = path;
+
+    try {
+        const r = await davPropfind(path ? path + '/' : '');
+        if (!r.ok && r.status !== 207) {
+            browser.innerHTML = '<div class="tree-loading">errore caricamento</div>';
+            return;
+        }
+        const xml = await r.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(xml, 'text/xml');
+        const responses = [...doc.querySelectorAll('response')];
+
+        // Costruisci breadcrumb
+        const crumbs = path ? path.split('/') : [];
+        let crumbHtml = '<span class="tree-crumb" onclick="loadTree(\'' + type + '\', \'\')">Home</span>';
+        let cumPath = '';
+        crumbs.forEach((c, i) => {
+            cumPath += (i === 0 ? '' : '/') + c;
+            const cp = cumPath;
+            crumbHtml += ' / <span class="tree-crumb" onclick="loadTree(\'' + type + '\', \'' + cp + '\')">' + escHtml(c) + '</span>';
+        });
+
+        let html = '<div class="tree-path-bar">' + crumbHtml + '</div>';
+
+        // Parent link
+        if (path) {
+            const parentPath = path.includes('/') ? path.substring(0, path.lastIndexOf('/')) : '';
+            html += `<div class="tree-item" onclick="loadTree('${type}', '${parentPath}')">
+                <span class="tree-icon">⬆</span>
+                <span class="tree-name">..</span>
+            </div>`;
+        }
+
+        // Lista cartelle
+        const basePath = '/remote.php/dav/files/' + encodeURIComponent(NC_USER) + '/' + (path ? encodeURIPath(path) + '/' : '');
+        responses.forEach(resp => {
+            const href = resp.querySelector('href')?.textContent || '';
+            const isCollection = resp.querySelector('collection') !== null;
+            if (!isCollection) return;
+            if (href === basePath || href === basePath.replace(/\/$/, '')) return;
+
+            // Ricava nome
+            let name = decodeURIComponent(href.replace(basePath, '').replace(/\/$/, ''));
+            if (!name) return;
+
+            const fullPath = (path ? path + '/' : '') + name;
+            const isSel = (type === 'pdf' ? pdfFolderNC : xlsxFolderNC) === fullPath;
+
+            html += `<div class="tree-item ${isSel ? 'selected' : ''}" onclick="selectTreeFolder('${type}', '${fullPath}', event)">
+                <span class="tree-icon">📁</span>
+                <span class="tree-name">${escHtml(name)}</span>
+                <span class="tree-arrow">▶</span>
+            </div>`;
+        });
+
+        browser.innerHTML = html;
+    } catch(e) {
+        browser.innerHTML = '<div class="tree-loading">errore: ' + e.message + '</div>';
+    }
+}
+
+function selectTreeFolder(type, path, event) {
+    if (event) event.stopPropagation();
+    if (type === 'pdf') {
+        pdfFolderNC = path;
+        document.getElementById('pdfFolderInput').value = path;
+        document.getElementById('pdfFolderStatus').innerHTML = '<span class="nc-status ok">selezionata ✓</span>';
+    } else {
+        xlsxFolderNC = path;
+        document.getElementById('xlsxFolderInput').value = path;
+        document.getElementById('xlsxFolderStatus').innerHTML = '<span class="nc-status ok">selezionata ✓</span>';
+    }
+    loadTree(type, path);
+}
+
+// ── PDF parsing ───────────────────────────────────────────────────────────
+function parseNumber(str) {
+    if (typeof str !== 'string') return null;
+    let s = str.trim()
+        .replace(/[€$£\s\u00a0]/g, '')
+        .replace(/[−–—]/g, '-')
+        .replace(/[’']/g, '.');
+    if (!s || /[A-Za-z]/.test(s)) return null;
+    const percent = s.endsWith('%');
+    if (percent) s = s.slice(0, -1);
+    let negative = false;
+    if (/^\(.*\)$/.test(s)) { negative = true; s = s.slice(1, -1); }
+    if (s.endsWith('-')) { negative = true; s = s.slice(0, -1); }
+    if (s.startsWith('+')) s = s.slice(1);
+    if (s.startsWith('-')) { negative = true; s = s.slice(1); }
+    if (!/^\d+(?:[.,]\d+)*$/.test(s)) return null;
+
+    const lastComma = s.lastIndexOf(',');
+    const lastDot = s.lastIndexOf('.');
+    let decimal = '';
+    if (lastComma >= 0 && lastDot >= 0) decimal = lastComma > lastDot ? ',' : '.';
+    else if (lastComma >= 0) decimal = /,\d{1,2}$/.test(s) ? ',' : '';
+    else if (lastDot >= 0) decimal = /\.\d{1,2}$/.test(s) ? '.' : '';
+
+    let normalized;
+    if (decimal) {
+        const pos = s.lastIndexOf(decimal);
+        normalized = s.slice(0, pos).replace(/[.,]/g, '') + '.' + s.slice(pos + 1);
+    } else {
+        normalized = s.replace(/[.,]/g, '');
+    }
+    let n = Number(normalized);
+    if (!Number.isFinite(n)) return null;
+    if (negative) n = -n;
+    return percent ? n / 100 : n;
+}
+
+function groupByRows(items, tolerance) {
+    if (!items.length) return [];
+    const sorted = [...items].sort((a, b) => {
+        const dy = b.transform[5] - a.transform[5];
+        if (Math.abs(dy) > tolerance) return dy;
+        return a.transform[4] - b.transform[4];
+    });
+    const rows = [];
+    let currentRow = null, currentY = null;
+    for (const item of sorted) {
+        const y = item.transform[5];
+        if (currentY === null || Math.abs(y - currentY) > tolerance) {
+            currentRow = { y, items: [item] };
+            rows.push(currentRow);
+            currentY = y;
+        } else {
+            currentRow.items.push(item);
+            currentRow.items.sort((a, b) => a.transform[4] - b.transform[4]);
+        }
+    }
+    return rows;
+}
+
+function detectColumnBreaks(allRows, colTol) {
+    const xPos = [];
+    for (const row of allRows) for (const item of row.items) xPos.push(item.transform[4]);
+    xPos.sort((a, b) => a - b);
+    const clusters = [];
+    for (const x of xPos) {
+        const ex = clusters.find(c => Math.abs(c.center - x) < colTol * 2);
+        if (ex) { ex.count++; ex.center = (ex.center + x) / 2; }
+        else clusters.push({ center: x, count: 1 });
+    }
+    return clusters.sort((a, b) => a.center - b.center).map(c => c.center);
+}
+
+function rowToColumns(row, colCenters, colTol) {
+    const cells = new Array(colCenters.length).fill('');
+    for (const item of row.items) {
+        const x = item.transform[4];
+        let best = 0, bestD = Infinity;
+        for (let i = 0; i < colCenters.length; i++) {
+            const d = Math.abs(colCenters[i] - x);
+            if (d < bestD) { bestD = d; best = i; }
+        }
+        cells[best] = cells[best] ? cells[best] + ' ' + item.str : item.str;
+    }
+    return cells;
+}
+
+function isAccountCode(str) {
+    return /^(?=.*\d)[A-Z]?\d{2,}(?:[./-]\d+)*$/i.test(String(str || '').trim());
+}
+
+function isLikelyNumber(str) {
+    return parseNumber(String(str || '')) !== null;
+}
+
+function accountingPanelFromItems(items) {
+    const sorted = [...items].sort((a, b) => a.transform[4] - b.transform[4]);
+    if (!sorted.length) return null;
+
+    const codeCandidate = sorted.find(i => isAccountCode(i.str));
+    const hasContentAfterCode = codeCandidate && sorted.some(i => i !== codeCandidate && String(i.str || '').trim());
+    const codeItem = hasContentAfterCode ? codeCandidate : null;
+    const amountItems = sorted.filter(i => i !== codeItem && isLikelyNumber(i.str));
+    const amountItem = amountItems.length ? amountItems[amountItems.length - 1] : null;
+    const amount = amountItem ? amountItem.str : '';
+    const code = codeItem ? codeItem.str.trim() : '';
+
+    const descParts = sorted
+        .filter(i => i !== amountItem && i !== codeItem)
+        .map(i => String(i.str || '').trim())
+        .filter(Boolean);
+    const description = descParts.join(' ').replace(/\s+/g, ' ').trim();
+
+    if (!code && !description && !amount) return null;
+    return { code, description, amount };
+}
+
+function appendAccountingRecord(records, page, section, side, panel) {
+    if (!panel) return;
+    const amount = panel.amount ? parseNumber(panel.amount) : '';
+    const hasStrongRecord = Boolean(panel.code || panel.amount);
+    if (!hasStrongRecord && records.length) {
+        const last = [...records].reverse().find(r => r[2] === side);
+        if (last && panel.description) last[4] = (last[4] + ' ' + panel.description).replace(/\s+/g, ' ').trim();
+        return;
+    }
+    if (!hasStrongRecord) return;
+    records.push([page, section, side, panel.code, panel.description, amount]);
+}
+
+function parseAccountingRows(allRows) {
+    const out = [['Pagina', 'Sezione', 'Lato', 'Codice', 'Descrizione', 'Saldo']];
+    let currentSection = '';
+
+    for (const row of allRows) {
+        const page = row.page || 1;
+        const text = row.items.map(i => String(i.str || '').trim()).filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
+        if (!text) continue;
+        if (/^(CASA|Partita IVA|VIA |Situazione contabile|Periodo |Stampata il|Pagina \d+)/i.test(text)) continue;
+        if (/^(STATO PATRIMONIALE|CONTO ECONOMICO|RISULTATO D['’]ESERCIZIO)$/i.test(text)) {
+            currentSection = text;
+            continue;
+        }
+
+        const splitX = (row.pageWidth || 600) / 2;
+        const gutter = Math.max(6, (row.pageWidth || 600) * 0.012);
+        const leftItems = row.items.filter(i => i.transform[4] < splitX - gutter);
+        const rightItems = row.items.filter(i => i.transform[4] >= splitX - gutter);
+        const left = accountingPanelFromItems(leftItems);
+        const right = accountingPanelFromItems(rightItems);
+
+        appendAccountingRecord(out, page, currentSection, 'sinistra', left);
+        appendAccountingRecord(out, page, currentSection, 'destra', right);
+    }
+
+    return out.filter((row, idx) => idx === 0 || row.some((cell, c) => c > 2 && cell !== '' && cell != null));
+}
+
+async function parsePDF(file, opts) {
+    const buf = await file.arrayBuffer();
+    const sourceSha256 = await sha256Buffer(buf);
+    const pdf = await pdfjsLib.getDocument(new Uint8Array(buf)).promise;
+    let allRows = [];
+    const pageCharacters = [];
+    for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const tc = await page.getTextContent();
+        const pageWidth = page.getViewport({ scale: 1 }).width;
+        pageCharacters.push(tc.items.reduce((sum, item) => sum + String(item.str || '').trim().length, 0));
+        allRows.push(...groupByRows(tc.items, opts.rowTol).map(r => ({ ...r, page: i, pageWidth })));
+    }
+    let tableData = [];
+    if (opts.colMode === 'accounting') {
+        tableData = parseAccountingRows(allRows);
+    } else if (opts.colMode === 'raw') {
+        tableData = allRows.map(r => r.items.map(i => i.str));
+    } else if (opts.colMode === 'merged') {
+        tableData = allRows.map(r => [r.items.map(i => i.str).join(' ')]);
+    } else {
+        const cols = detectColumnBreaks(allRows, opts.colTol);
+        tableData = allRows.map(r => rowToColumns(r, cols, opts.colTol));
+    }
+    if (opts.trim) tableData = tableData.map(r => r.map(c => typeof c === 'string' ? c.trim() : c));
+    if (opts.skipEmpty) tableData = tableData.filter(r => r.some(c => c !== '' && c != null));
+    if (opts.detectNums) tableData = tableData.map(r => r.map(c => { const n = parseNumber(c); return n !== null ? n : c; }));
+    if (opts.colMode === 'auto' && tableData.length) {
+        const maxC = Math.max(...tableData.map(r => r.length));
+        const nonEmpty = [];
+        for (let c = 0; c < maxC; c++) if (tableData.some(r => r[c] !== '' && r[c] != null)) nonEmpty.push(c);
+        tableData = tableData.map(r => nonEmpty.map(c => r[c] !== undefined ? r[c] : ''));
+    }
+    const lowTextPages = pageCharacters.map((count, index) => count < 50 ? index + 1 : null).filter(Boolean);
+    return { data: tableData, pages: pdf.numPages, provenance: {
+        sourceFile: file.name,
+        sourceSha256,
+        parser: 'pdfjs-table-2.0',
+        convertedAt: new Date().toISOString(),
+        pageCount: pdf.numPages,
+        rowCount: tableData.length,
+        characterCount: pageCharacters.reduce((sum, value) => sum + value, 0),
+        lowTextPages,
+        qualityStatus: lowTextPages.length ? 'DA_VERIFICARE' : 'OK',
+        options: JSON.stringify(opts)
+    }};
+}
+
+async function sha256Buffer(buffer) {
+    const digest = await crypto.subtle.digest('SHA-256', buffer);
+    return Array.from(new Uint8Array(digest)).map(value => value.toString(16).padStart(2, '0')).join('');
+}
+
+function makeWorksheet(data, sheetName) {
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const maxC = data[0]?.length || 0;
+    ws['!cols'] = Array.from({length: maxC}, (_, c) => {
+        let max = 8;
+        for (const row of data) { const v = row[c]; if (v != null) max = Math.max(max, String(v).length); }
+        return { wch: Math.min(max + 2, 50) };
+    });
+    return ws;
+}
+
+function makeProvenanceWorksheet(provenance) {
+    return makeWorksheet([['Campo', 'Valore'], ...Object.entries(provenance).map(([key, value]) => [key, Array.isArray(value) ? value.join(', ') : value])], 'Provenienza');
+}
+
+// ── Salvataggio Nextcloud ─────────────────────────────────────────────────
+async function saveToNC(path, data) {
+    // Crea cartelle se necessario
+    const parts = path.split('/');
+    let cumPath = '';
+    for (let i = 0; i < parts.length - 1; i++) {
+        cumPath += (cumPath ? '/' : '') + parts[i];
+        await davMkcol(cumPath);
+    }
+    return await davPut(path, data);
+}
+
+// ── Conversione principale ────────────────────────────────────────────────
+document.getElementById('convertBtn').addEventListener('click', async () => {
+    if (!selectedFiles.length) return;
+
+    const btn = document.getElementById('convertBtn');
+    btn.disabled = true;
+    clearLog();
+    document.getElementById('resultCard').classList.add('hidden');
+    setProgress(0);
+
+    const opts = {
+        rowTol: parseInt(document.getElementById('rowTolerance').value) || 3,
+        colTol: parseInt(document.getElementById('colTolerance').value) || 15,
+        colMode: document.getElementById('colMode').value,
+        skipEmpty: document.getElementById('skipEmpty').checked,
+        trim: document.getElementById('trimCells').checked,
+        detectNums: document.getElementById('detectNumbers').checked,
+        sheetName: document.getElementById('sheetName').value || 'Dati PDF'
+    };
+
+    const saveLocal = destMode === 'local' || destMode === 'both';
+    const saveNC = destMode === 'nc' || destMode === 'both';
+
+    let totalPages = 0, totalRows = 0;
+    let firstData = null;
+    const conversionManifest = [];
+
+    if (outputMode === 'separate') {
+        // Un Excel per file
+        for (let i = 0; i < selectedFiles.length; i++) {
+            const f = selectedFiles[i];
+            setFileStatus(i, 'processing', 'elaborazione...');
+            addLog('Elaborazione: ' + f.name, 'info');
+            setProgress(Math.round((i / selectedFiles.length) * 100));
+
+            try {
+                const { data, pages, provenance } = await parsePDF(f, opts);
+                totalPages += pages;
+                totalRows += data.length;
+                if (!firstData) firstData = data;
+
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, makeWorksheet(data, opts.sheetName), opts.sheetName.substring(0, 31));
+                XLSX.utils.book_append_sheet(wb, makeProvenanceWorksheet(provenance), 'Provenienza');
+                conversionManifest.push(provenance);
+                if (provenance.qualityStatus !== 'OK') addLog('Revisione richiesta: pagine con poco testo ' + provenance.lowTextPages.join(', '), 'err');
+                const xlsxName = f.name.replace('.pdf', '') + '_convertito.xlsx';
+
+                if (saveLocal) {
+                    XLSX.writeFile(wb, xlsxName);
+                    addLog('Download: ' + xlsxName, 'ok');
+                }
+
+                if (saveNC) {
+                    const xlsxBuf = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+                    const xlsxBlob = new Uint8Array(xlsxBuf);
+
+                    if (xlsxFolderNC) {
+                        const ok = await saveToNC(xlsxFolderNC + '/' + xlsxName, xlsxBlob);
+                        addLog((ok ? 'Salvato NC: ' : 'Errore NC: ') + xlsxFolderNC + '/' + xlsxName, ok ? 'ok' : 'err');
+                    }
+                    if (pdfFolderNC) {
+                        const pdfBuf = await f.arrayBuffer();
+                        const ok = await saveToNC(pdfFolderNC + '/' + f.name, new Uint8Array(pdfBuf));
+                        addLog((ok ? 'PDF salvato NC: ' : 'Errore PDF NC: ') + f.name, ok ? 'ok' : 'err');
+                    }
+                }
+
+                setFileStatus(i, 'done', '✓ completato');
+            } catch(e) {
+                setFileStatus(i, 'error', '✗ errore');
+                addLog('Errore su ' + f.name + ': ' + e.message, 'err');
+            }
+        }
+
+    } else {
+        // Tutti in un unico Excel
+        const wb = XLSX.utils.book_new();
+        addLog('Modalità unificata: ' + selectedFiles.length + ' file', 'info');
+
+        for (let i = 0; i < selectedFiles.length; i++) {
+            const f = selectedFiles[i];
+            setFileStatus(i, 'processing', 'elaborazione...');
+            setProgress(Math.round((i / selectedFiles.length) * 100));
+
+            try {
+                const { data, pages, provenance } = await parsePDF(f, opts);
+                totalPages += pages;
+                totalRows += data.length;
+                if (!firstData) firstData = data;
+
+                const sheetN = f.name.replace('.pdf', '').substring(0, 31);
+                XLSX.utils.book_append_sheet(wb, makeWorksheet(data, sheetN), sheetN);
+                conversionManifest.push(provenance);
+                if (provenance.qualityStatus !== 'OK') addLog('Revisione richiesta per ' + f.name + ': pagine ' + provenance.lowTextPages.join(', '), 'err');
+                addLog('Aggiunto foglio: ' + sheetN, 'ok');
+                setFileStatus(i, 'done', '✓ aggiunto');
+
+                if (saveNC && pdfFolderNC) {
+                    const pdfBuf = await f.arrayBuffer();
+                    const ok = await saveToNC(pdfFolderNC + '/' + f.name, new Uint8Array(pdfBuf));
+                    addLog((ok ? 'PDF salvato NC: ' : 'Errore PDF NC: ') + f.name, ok ? 'ok' : 'err');
+                }
+            } catch(e) {
+                setFileStatus(i, 'error', '✗ errore');
+                addLog('Errore su ' + f.name + ': ' + e.message, 'err');
+            }
+        }
+
+        const mergedName = (document.getElementById('mergedFileName').value || 'conversione_unificata') + '.xlsx';
+        XLSX.utils.book_append_sheet(wb, makeWorksheet([
+            ['File fonte', 'SHA-256', 'Parser', 'Pagine', 'Righe', 'Caratteri', 'Pagine bassa confidenza', 'Stato qualità'],
+            ...conversionManifest.map(item => [item.sourceFile, item.sourceSha256, item.parser, item.pageCount, item.rowCount, item.characterCount, item.lowTextPages.join(', '), item.qualityStatus])
+        ], 'Provenienza'), 'Provenienza');
+
+        if (saveLocal) {
+            XLSX.writeFile(wb, mergedName);
+            addLog('Download: ' + mergedName, 'ok');
+        }
+
+        if (saveNC && xlsxFolderNC) {
+            const xlsxBuf = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+            const ok = await saveToNC(xlsxFolderNC + '/' + mergedName, new Uint8Array(xlsxBuf));
+            addLog((ok ? 'Salvato NC: ' : 'Errore NC: ') + xlsxFolderNC + '/' + mergedName, ok ? 'ok' : 'err');
+        }
+    }
+
+    setProgress(100);
+    addLog('Completato ✓', 'ok');
+
+    document.getElementById('statFiles').textContent = selectedFiles.length;
+    document.getElementById('statPages').textContent = totalPages;
+    document.getElementById('statRows').textContent = totalRows;
+    if (firstData) renderPreview(firstData.slice(0, 8));
+    document.getElementById('resultCard').classList.remove('hidden');
+    btn.disabled = false;
+});
+
+function renderPreview(rows) {
+    if (!rows.length) return;
+    const maxC = Math.max(...rows.map(r => r.length));
+    let html = '<table class="preview-table"><thead><tr>';
+    for (let c = 0; c < maxC; c++) html += '<th>' + String.fromCharCode(65 + c) + '</th>';
+    html += '</tr></thead><tbody>';
+    for (const row of rows) {
+        html += '<tr>';
+        for (let c = 0; c < maxC; c++) {
+            const v = row[c] !== undefined ? row[c] : '';
+            html += '<td>' + (v !== '' ? escHtml(String(v)) : '&nbsp;') + '</td>';
+        }
+        html += '</tr>';
+    }
+    html += '</tbody></table>';
+    document.getElementById('previewContainer').innerHTML = html;
+}
+
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>

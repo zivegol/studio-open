@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OmniClient Radar</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --nc-blue:#00457c; --nc-sky:#0082c9; --nc-light:#eaf5fc; --nc-border:#d6e6f2;
+      --nc-bg:#f5f8fb; --ok:#1f9d55; --warn:#d9822b; --danger:#d64545;
+      --text:#203040; --muted:#5c6f82; --card:#fff;
+    }
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--nc-bg);color:var(--text)}
+    header{background:linear-gradient(135deg,var(--nc-blue),var(--nc-sky));color:white;padding:22px 24px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+    header h1{margin:0 0 6px;font-size:28px} header p{margin:0;opacity:.95}
+    .wrap{max-width:1420px;margin:0 auto;padding:20px}.card{background:var(--card);border:1px solid var(--nc-border);border-radius:16px;padding:16px;box-shadow:0 4px 16px rgba(0,0,0,.04);margin-bottom:16px}
+    .grid{display:grid;gap:16px}.grid-2{grid-template-columns:1.2fr .8fr}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-4{grid-template-columns:repeat(4,1fr)}
+    .metric{padding:14px;border-radius:14px;background:var(--nc-light);border:1px solid var(--nc-border)}.metric .label{font-size:12px;text-transform:uppercase;color:var(--muted);letter-spacing:.04em}.metric .value{font-size:28px;font-weight:700;margin-top:6px;color:var(--nc-blue)}
+    .toolbar{display:grid;grid-template-columns:1.4fr 1fr 1fr auto auto;gap:12px;align-items:end} label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600}
+    input,select,button,textarea{width:100%;border-radius:10px;border:1px solid #cddceb;padding:10px 12px;font-size:14px;background:white} button{cursor:pointer;background:var(--nc-sky);color:white;border:none;font-weight:700;transition:.15s ease;white-space:nowrap}button:hover{filter:brightness(.96)}button.secondary{background:#eef5fb;color:var(--nc-blue);border:1px solid var(--nc-border)}
+    table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:10px 8px;border-bottom:1px solid #edf2f7;text-align:left;vertical-align:top}th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}.right{text-align:right}
+    .pill{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700}.green{background:#e8f7ef;color:var(--ok)}.yellow{background:#fff4de;color:#a36a00}.orange{background:#ffe8dc;color:var(--warn)}.red{background:#fde8e8;color:var(--danger)}.blue{background:#e8f2ff;color:#2a67c7}
+    .split{display:grid;grid-template-columns:1fr 1fr;gap:16px}.muted{color:var(--muted)}.small{font-size:12px}.hidden{display:none}.status-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.status-box{padding:12px;border-radius:12px;border:1px solid var(--nc-border)}
+    .bars{display:grid;gap:10px;margin-top:10px}.bar-row{display:grid;grid-template-columns:190px 1fr 72px;gap:10px;align-items:center}.bar{width:100%;height:14px;background:#edf4fb;border-radius:999px;overflow:hidden}.bar>span{display:block;height:100%;background:linear-gradient(90deg,var(--nc-blue),var(--nc-sky))}
+    textarea{min-height:210px;resize:vertical;line-height:1.45}.example{margin-top:12px;overflow-x:auto;background:#fbfdff;border:1px dashed var(--nc-border);border-radius:12px;padding:10px}.example table{min-width:760px}
+    .month-picker{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.chip{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--nc-border);background:#fbfdff;border-radius:999px;padding:6px 10px;font-size:13px}.chip input{width:auto}.client-card{background:#fbfdff;border:1px solid var(--nc-border);border-radius:14px;padding:14px}.client-card h4{margin:0 0 10px}.mono{font-variant-numeric:tabular-nums}
+    @media(max-width:1100px){.grid-2,.grid-3,.grid-4,.split,.toolbar,.status-grid{grid-template-columns:1fr}.bar-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header><h1>OmniClient Radar</h1><p>Analisi intelligente del fatturato clienti mensile da Excel o CSV, in formato matrice.</p></header>
+<div class="wrap">
+  <div class="card">
+    <div class="toolbar">
+      <div><label>File Excel o CSV</label><input type="file" id="fileInput" accept=".xlsx,.xls,.csv"></div>
+      <div><label>Colonna clienti</label><select id="clienteCol"></select></div>
+      <div><label>Confronto</label><select id="comparisonMode"><option value="last_vs_prev">Ultimo mese vs mese precedente</option><option value="last3_vs_prev3">Ultimi 3 mesi vs 3 mesi precedenti</option><option value="second_half_vs_first_half">Seconda metà vs prima metà</option></select></div>
+      <div><label>&nbsp;</label><button id="analyzeBtn">Analizza</button></div>
+      <div><label>&nbsp;</label><button class="secondary" id="exportBtn">Esporta CSV</button></div>
+    </div>
+    <div class="example small muted">
+      <strong>Struttura attesa:</strong> prima riga con i mesi, prima colonna con i clienti. Le celle successive contengono il fatturato mensile.
+      <table><thead><tr><th>Cliente</th><th>Gennaio</th><th>Febbraio</th><th>Marzo</th><th>Aprile</th><th>...</th><th>Dicembre</th></tr></thead><tbody><tr><td>Rossi Srl</td><td>10.000</td><td>12.500</td><td>8.700</td><td>14.200</td><td>...</td><td>16.000</td></tr></tbody></table>
+      <div id="monthSelector" class="month-picker hidden"></div>
+    </div>
+  </div>
+
+  <div id="results" class="hidden">
+    <div class="grid grid-4">
+      <div class="metric"><div class="label">Fatturato totale</div><div class="value" id="mTotale">-</div></div>
+      <div class="metric"><div class="label">Clienti attivi</div><div class="value" id="mClienti">-</div></div>
+      <div class="metric"><div class="label">Primo cliente</div><div class="value" id="mTop">-</div></div>
+      <div class="metric"><div class="label">Quota top 5</div><div class="value" id="mTop5">-</div></div>
+    </div>
+
+    <div class="card"><h3 style="margin-top:0">Radar clienti</h3><div class="status-grid">
+      <div class="status-box green"><strong id="stabiliN">0</strong><br><span class="small">🟢 Stabili</span></div>
+      <div class="status-box blue"><strong id="nuoviN">0</strong><br><span class="small">🔵 Nuovi</span></div>
+      <div class="status-box yellow"><strong id="monitorN">0</strong><br><span class="small">🟡 Da monitorare</span></div>
+      <div class="status-box orange"><strong id="caloN">0</strong><br><span class="small">🟠 In calo</span></div>
+      <div class="status-box red"><strong id="persiN">0</strong><br><span class="small">🔴 Persi</span></div>
+    </div></div>
+
+    <div class="grid grid-2">
+      <div class="card"><h3 style="margin-top:0">Top clienti</h3><table><thead><tr><th>#</th><th>Cliente</th><th class="right">Fatturato</th><th class="right">Peso %</th><th>Stato</th></tr></thead><tbody id="topTable"></tbody></table></div>
+      <div class="card"><h3 style="margin-top:0">Pareto fatturato</h3><div id="paretoText" class="muted"></div><div class="bars" id="paretoBars"></div></div>
+    </div>
+
+    <div class="split">
+      <div class="card"><h3 style="margin-top:0">Clienti in crescita / in calo</h3><table><thead><tr><th>Cliente</th><th class="right" id="prevHead">Periodo prec.</th><th class="right" id="currHead">Periodo att.</th><th class="right">Var. %</th></tr></thead><tbody id="trendTable"></tbody></table></div>
+      <div class="card"><h3 style="margin-top:0">Alert automatici</h3><div id="alerts"></div></div>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card"><h3 style="margin-top:0">Scheda singolo cliente</h3><label>Seleziona cliente</label><select id="clientSelect"></select><div id="clientDetail" class="client-card" style="margin-top:12px"></div></div>
+      <div class="card"><h3 style="margin-top:0">Andamento mensile totale</h3><div id="monthlyBars" class="bars"></div></div>
+    </div>
+
+    <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><h3 style="margin:0">Commento automatico per relazione</h3><button class="secondary" id="copyTextBtn" style="width:auto">Copia testo</button></div><textarea id="reportText"></textarea></div>
+  </div>
+</div>
+<script>
+const state={rows:[],headers:[],monthColumns:[],analysis:null};
+const els={fileInput:q('fileInput'),clienteCol:q('clienteCol'),comparisonMode:q('comparisonMode'),analyzeBtn:q('analyzeBtn'),exportBtn:q('exportBtn'),monthSelector:q('monthSelector'),results:q('results'),mTotale:q('mTotale'),mClienti:q('mClienti'),mTop:q('mTop'),mTop5:q('mTop5'),topTable:q('topTable'),paretoText:q('paretoText'),paretoBars:q('paretoBars'),trendTable:q('trendTable'),alerts:q('alerts'),reportText:q('reportText'),copyTextBtn:q('copyTextBtn'),stabiliN:q('stabiliN'),nuoviN:q('nuoviN'),monitorN:q('monitorN'),caloN:q('caloN'),persiN:q('persiN'),prevHead:q('prevHead'),currHead:q('currHead'),clientSelect:q('clientSelect'),clientDetail:q('clientDetail'),monthlyBars:q('monthlyBars')};
+function q(id){return document.getElementById(id)}
+function euro(v){return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v||0)}
+function pct(v){return `${(v||0).toFixed(1)}%`} function txt(v){return String(v??'').trim()} function norm(v){return txt(v).toLowerCase().replace(/\s+/g,' ')}
+function num(v){if(typeof v==='number')return isFinite(v)?v:0;let s=txt(v);if(!s||s==='-'||s.toLowerCase()==='n.d.')return 0;s=s.replace(/€/g,'').replace(/\s/g,'');if(s.includes(',')&&s.includes('.'))s=s.replace(/\./g,'').replace(',','.');else if(s.includes(','))s=s.replace(',','.');const n=Number(s);return isFinite(n)?n:0}
+const months=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre','gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+function looksMonth(h){h=txt(h).toLowerCase();return months.includes(h)||/^(20\d{2})[-_ ]?(0?[1-9]|1[0-2])$/.test(h)||/^(0?[1-9]|1[0-2])[-_ ]?(20\d{2})$/.test(h)||/^m(ese)?\s*\d{1,2}$/i.test(h)}
+function fillSelect(sel,headers,prefs=[]){sel.innerHTML=headers.map(h=>`<option value="${escapeHtml(h)}">${escapeHtml(h)}</option>`).join('');const f=headers.find(h=>prefs.some(p=>h.toLowerCase().includes(p)));sel.value=f||headers[0]||''}
+function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+function badge(s){const m={stabile:['green','Stabile'],nuovo:['blue','Nuovo'],monitorare:['yellow','Monitorare'],calo:['orange','In calo'],perso:['red','Perso']};const [c,t]=m[s]||['yellow',s];return `<span class="pill ${c}">${t}</span>`}
+function detectMonthColumns(headers,clientField){const cand=headers.filter(h=>h!==clientField);const monthLike=cand.filter(looksMonth);return monthLike.length>=2?monthLike:cand}
+function renderMonthSelector(){els.monthSelector.classList.remove('hidden');els.monthSelector.innerHTML='<strong style="width:100%;color:#203040">Mesi/colonne da includere:</strong>'+state.monthColumns.map((m,i)=>`<label class="chip"><input type="checkbox" data-month="${escapeHtml(m)}" checked> ${escapeHtml(m)}</label>`).join('')}
+function selectedMonths(){return Array.from(els.monthSelector.querySelectorAll('input[type=checkbox]:checked')).map(x=>x.dataset.month)}
+function compareSlices(cols,mode){if(cols.length<2)return{prev:[],curr:cols,prevLabel:'Periodo precedente',currLabel:'Periodo attuale'};if(mode==='last3_vs_prev3'){return{prev:cols.slice(Math.max(0,cols.length-6),Math.max(0,cols.length-3)),curr:cols.slice(Math.max(0,cols.length-3)),prevLabel:'3 mesi prec.',currLabel:'Ultimi 3 mesi'}}if(mode==='second_half_vs_first_half'){const mid=Math.floor(cols.length/2);return{prev:cols.slice(0,mid),curr:cols.slice(mid),prevLabel:'Prima metà',currLabel:'Seconda metà'}}return{prev:[cols[cols.length-2]],curr:[cols[cols.length-1]],prevLabel:cols[cols.length-2],currLabel:cols[cols.length-1]}}
+function sumCols(row,cols){return cols.reduce((s,c)=>s+num(row[c]),0)}
+function analyzeMatrix(rows,clientField,cols,mode){const cmp=compareSlices(cols,mode);const map=new Map();const monthlyTotals=Object.fromEntries(cols.map(c=>[c,0]));
+ rows.forEach(r=>{const name=txt(r[clientField]);const key=norm(name);if(!key)return;if(!map.has(key))map.set(key,{name,total:0,monthly:{},prev:0,curr:0,nonZeroMonths:0,firstActive:-1,lastActive:-1});const c=map.get(key);cols.forEach((m,i)=>{const v=num(r[m]);c.monthly[m]=(c.monthly[m]||0)+v;c.total+=v;monthlyTotals[m]+=v;if(v>0){c.nonZeroMonths++;if(c.firstActive<0)c.firstActive=i;c.lastActive=i}});c.prev+=sumCols(r,cmp.prev);c.curr+=sumCols(r,cmp.curr)});
+ const list=Array.from(map.values()).sort((a,b)=>b.total-a.total);const total=list.reduce((s,c)=>s+c.total,0);let cum=0,pareto80=0;list.forEach((c,i)=>{c.share=total?c.total/total*100:0;cum+=c.total;if(!pareto80&&total&&cum/total>=.8)pareto80=i+1;c.varPct=c.prev>0?(c.curr-c.prev)/c.prev*100:(c.curr>0?100:0);const missingTail=cols.length-1-c.lastActive;let st='stabile';if(c.firstActive>=Math.max(0,cols.length-2))st='nuovo';else if(c.lastActive<0||missingTail>=3)st='perso';else if(c.prev>0&&c.varPct<=-30)st='calo';else if(missingTail>=1||c.varPct<=-10)st='monitorare';c.status=st});
+ const counts={stabile:0,nuovo:0,monitorare:0,calo:0,perso:0};list.forEach(c=>counts[c.status]++);const top5Share=total?list.slice(0,5).reduce((s,c)=>s+c.total,0)/total*100:0;const top1Share=total&&list[0]?list[0].share:0;
+ const alerts=[];if(top1Share>=25&&list[0])alerts.push(`Dipendenza commerciale rilevante: il primo cliente (${list[0].name}) pesa il ${top1Share.toFixed(1)}% del fatturato.`);list.forEach(c=>{if(c.status==='perso')alerts.push(`Il cliente ${c.name} risulta assente negli ultimi mesi analizzati.`);if(c.status==='calo')alerts.push(`Il cliente ${c.name} registra un calo del ${Math.abs(c.varPct).toFixed(1)}% nel confronto selezionato.`);if(c.share>=20)alerts.push(`Il cliente ${c.name} rappresenta il ${c.share.toFixed(1)}% del fatturato complessivo.`)});if(!alerts.length)alerts.push('Non emergono alert gravi dai dati caricati. Il portafoglio clienti appare abbastanza regolare, salvo ulteriori verifiche qualitative.');
+ return{clientList:list,totalRevenue:total,clientCount:list.length,pareto80,top1Share,top5Share,statusCounts:counts,trendRows:[...list].sort((a,b)=>b.varPct-a.varPct),alerts,monthlyTotals,cols,cmp};}
+function render(a){els.results.classList.remove('hidden');els.mTotale.textContent=euro(a.totalRevenue);els.mClienti.textContent=a.clientCount;els.mTop.textContent=a.clientList[0]?pct(a.top1Share):'-';els.mTop5.textContent=pct(a.top5Share);['stabile','nuovo','monitorare','calo','perso'].forEach(k=>{const id={stabile:'stabiliN',nuovo:'nuoviN',monitorare:'monitorN',calo:'caloN',perso:'persiN'}[k];els[id].textContent=a.statusCounts[k]});
+ els.topTable.innerHTML=a.clientList.slice(0,20).map((c,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(c.name)}</td><td class="right mono">${euro(c.total)}</td><td class="right mono">${pct(c.share)}</td><td>${badge(c.status)}</td></tr>`).join('');
+ els.paretoText.innerHTML=a.clientCount?`L'80% del fatturato è generato da <strong>${a.pareto80}</strong> clienti su <strong>${a.clientCount}</strong>. Il primo cliente pesa <strong>${a.top1Share.toFixed(1)}%</strong>; i primi 5 pesano <strong>${a.top5Share.toFixed(1)}%</strong>.`:'Nessun dato disponibile.';const base=a.clientList[0]?.total||1;els.paretoBars.innerHTML=a.clientList.slice(0,10).map(c=>`<div class="bar-row"><div>${escapeHtml(c.name)}</div><div class="bar"><span style="width:${(c.total/base*100).toFixed(1)}%"></span></div><div class="right mono">${pct(c.share)}</div></div>`).join('');
+ els.prevHead.textContent=a.cmp.prevLabel;els.currHead.textContent=a.cmp.currLabel;const trend=[...a.trendRows.slice(0,6),...a.trendRows.slice(-6)].sort((x,y)=>y.varPct-x.varPct);els.trendTable.innerHTML=trend.map(c=>`<tr><td>${escapeHtml(c.name)}</td><td class="right mono">${euro(c.prev)}</td><td class="right mono">${euro(c.curr)}</td><td class="right mono">${c.varPct>=0?'+':''}${c.varPct.toFixed(1)}%</td></tr>`).join('');
+ els.alerts.innerHTML=a.alerts.slice(0,12).map(t=>`<div style="padding:10px 12px;border:1px solid #edf2f7;border-radius:12px;margin-bottom:8px;background:#fafcff">${escapeHtml(t)}</div>`).join('');
+ const maxM=Math.max(...Object.values(a.monthlyTotals),1);els.monthlyBars.innerHTML=a.cols.map(m=>`<div class="bar-row"><div>${escapeHtml(m)}</div><div class="bar"><span style="width:${(a.monthlyTotals[m]/maxM*100).toFixed(1)}%"></span></div><div class="right mono">${euro(a.monthlyTotals[m])}</div></div>`).join('');
+ els.clientSelect.innerHTML=a.clientList.map((c,i)=>`<option value="${i}">${escapeHtml(c.name)}</option>`).join('');els.clientSelect.onchange=()=>renderClientDetail(a.clientList[Number(els.clientSelect.value)],a);renderClientDetail(a.clientList[0],a);
+ const top=a.clientList.slice(0,3).map(c=>c.name).join(', ')||'n.d.';const calo=a.clientList.filter(c=>c.status==='calo').slice(0,3).map(c=>c.name).join(', ');const persi=a.clientList.filter(c=>c.status==='perso').slice(0,3).map(c=>c.name).join(', ');const nuovi=a.clientList.filter(c=>c.status==='nuovo').slice(0,3).map(c=>c.name).join(', ');
+ els.reportText.value=`Dall'analisi del fatturato clienti emerge un volume complessivo pari a ${euro(a.totalRevenue)}, distribuito su ${a.clientCount} clienti. Il grado di concentrazione commerciale risulta ${a.top1Share>=20?'elevato':'contenuto'}, poiché il primo cliente rappresenta il ${a.top1Share.toFixed(1)}% del fatturato totale e i primi 5 clienti incidono per il ${a.top5Share.toFixed(1)}%. L'analisi di Pareto evidenzia che l'80% del fatturato è generato da ${a.pareto80} clienti. I principali clienti per volume sono ${top}. ${nuovi?`Si segnalano nuovi clienti o clienti attivi solo negli ultimi mesi, tra cui ${nuovi}. `:''}${calo?`Si segnalano situazioni di calo da approfondire, in particolare ${calo}. `:''}${persi?`Sono inoltre emersi clienti potenzialmente persi o inattivi, tra cui ${persi}. `:''}Nel complesso si suggerisce di monitorare la dipendenza dai clienti maggiori, attivare azioni di recupero sui clienti in diminuzione e rafforzare i rapporti con i clienti in crescita.`;}
+function renderClientDetail(c,a){if(!c){els.clientDetail.innerHTML='Nessun cliente disponibile.';return}const max=Math.max(...a.cols.map(m=>c.monthly[m]||0),1);els.clientDetail.innerHTML=`<h4>${escapeHtml(c.name)}</h4><div class="grid grid-3"><div><span class="small muted">Totale</span><br><strong>${euro(c.total)}</strong></div><div><span class="small muted">Peso</span><br><strong>${pct(c.share)}</strong></div><div><span class="small muted">Stato</span><br>${badge(c.status)}</div></div><div class="bars" style="margin-top:14px">${a.cols.map(m=>`<div class="bar-row"><div>${escapeHtml(m)}</div><div class="bar"><span style="width:${((c.monthly[m]||0)/max*100).toFixed(1)}%"></span></div><div class="right mono">${euro(c.monthly[m]||0)}</div></div>`).join('')}</div>`}
+function exportCSV(){const a=state.analysis;if(!a){alert('Esegui prima l\'analisi.');return}const rows=[['Cliente','Fatturato totale','Peso %','Periodo precedente','Periodo attuale','Var %','Stato'],...a.clientList.map(c=>[c.name,c.total,c.share.toFixed(2),c.prev,c.curr,c.varPct.toFixed(2),c.status])];const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(';')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const aEl=document.createElement('a');aEl.href=url;aEl.download='omniclient-radar.csv';aEl.click();URL.revokeObjectURL(url)}
+els.fileInput.addEventListener('change',async e=>{const file=e.target.files?.[0];if(!file)return;const data=await file.arrayBuffer();const ext=file.name.toLowerCase().split('.').pop();let wb;if(ext==='csv'){const text=new TextDecoder('utf-8').decode(data);wb=XLSX.read(text,{type:'string'})}else wb=XLSX.read(data,{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws,{defval:''});state.rows=rows;state.headers=rows.length?Object.keys(rows[0]):[];fillSelect(els.clienteCol,state.headers,['cliente','ragione','denominazione','customer','nominativo']);state.monthColumns=detectMonthColumns(state.headers,els.clienteCol.value);renderMonthSelector();if(!state.headers.length)alert('Il file non contiene intestazioni leggibili.')});
+els.clienteCol.addEventListener('change',()=>{state.monthColumns=detectMonthColumns(state.headers,els.clienteCol.value);renderMonthSelector()});
+els.analyzeBtn.addEventListener('click',()=>{if(!state.rows.length){alert('Carica prima un file Excel o CSV.');return}const cols=selectedMonths();if(cols.length<1){alert('Seleziona almeno una colonna mese.');return}const a=analyzeMatrix(state.rows,els.clienteCol.value,cols,els.comparisonMode.value);state.analysis=a;render(a)});
+els.exportBtn.addEventListener('click',exportCSV);els.copyTextBtn.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(els.reportText.value);els.copyTextBtn.textContent='Copiato';setTimeout(()=>els.copyTextBtn.textContent='Copia testo',1200)}catch{alert('Copia non riuscita.')}});
+</script>
+</body>
+</html>

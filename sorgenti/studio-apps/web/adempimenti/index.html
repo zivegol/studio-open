@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Registro Adempimenti · Studio Dott. Professionista da configurare</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #1e3a8a;
+      --primary-hover: #1e40af;
+      --accent: #0284c7;
+      --success-bg: #dcfce7;
+      --success-text: #166534;
+      --warn-bg: #fef9c3;
+      --warn-text: #854d0e;
+      --badge-visto-bg: #f3e8ff;
+      --badge-visto-text: #6b21a8;
+      --badge-cciaa-bg: #ffedd5;
+      --badge-cciaa-text: #9a3412;
+      --badge-ade-bg: #e0f2fe;
+      --badge-ade-text: #0369a1;
+      --radius: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+    aside {
+      width: 250px;
+      background: #0f172a;
+      color: #f1f5f9;
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    aside .brand {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 2rem;
+    }
+    aside .brand span {
+      background: #2563eb;
+      color: #fff;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    aside .brand small {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      letter-spacing: 1px;
+    }
+    nav a, nav button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 0.85rem;
+      color: #cbd5e1;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-bottom: 0.35rem;
+      font-size: 0.9rem;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+    }
+    nav a:hover, nav button:hover, nav a.active {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+    }
+    main {
+      flex: 1;
+      padding: 2rem;
+      overflow-y: auto;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .eyebrow {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--muted);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: #dcfce7;
+      color: #166534;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      border: 1px solid #bbf7d0;
+    }
+    .status-badge::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+    h1 {
+      font-size: 1.6rem;
+      color: #0f172a;
+      margin-top: 0.2rem;
+    }
+    .header-desc {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+    .controls {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    input.search {
+      padding: 0.55rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      width: 260px;
+      background: #fff;
+    }
+    select, button.btn {
+      padding: 0.55rem 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      background: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 500;
+    }
+    button.btn.primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    button.btn.primary:hover {
+      background: var(--primary-hover);
+    }
+    button.btn.success {
+      background: #16a34a;
+      color: #fff;
+      border-color: #16a34a;
+    }
+    button.btn.success:hover {
+      background: #15803d;
+    }
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+    }
+    .stat-card small {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    .stat-card strong {
+      display: block;
+      font-size: 1.5rem;
+      margin-top: 0.25rem;
+      color: var(--text);
+    }
+    .tablewrap {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    th, td {
+      padding: 0.65rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    th {
+      background: #f1f5f9;
+      color: #475569;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    th.client-col, td.client-col {
+      min-width: 240px;
+      white-space: normal;
+      position: sticky;
+      left: 0;
+      background: inherit;
+      z-index: 5;
+    }
+    th.client-col {
+      background: #f1f5f9;
+      z-index: 15;
+    }
+    tr:hover {
+      background: #f8fafc;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin: 1px;
+    }
+    .badge-f24 { background: #e0e7ff; color: #3730a3; }
+    .badge-visto { background: var(--badge-visto-bg); color: var(--badge-visto-text); }
+    .badge-cciaa { background: var(--badge-cciaa-bg); color: var(--badge-cciaa-text); }
+    .badge-ade { background: var(--badge-ade-bg); color: var(--badge-ade-text); }
+    .badge-visura { background: #dcfce7; color: #166534; }
+    .badge-other { background: #f1f5f9; color: #475569; }
+    .empty-cell { color: #cbd5e1; font-size: 0.8rem; text-align: center; }
+    .actions-cell { text-align: right; }
+    .action-link {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      background: #f0f9ff;
+    }
+    .action-link:hover {
+      background: #e0f2fe;
+    }
+    .quarter-group {
+      border-left: 2px solid #cbd5e1;
+    }
+
+    /* Interactive cell styles */
+    td.month-cell {
+      cursor: pointer;
+      position: relative;
+      transition: background 0.12s, outline 0.12s;
+    }
+    td.month-cell:hover {
+      background: #eff6ff !important;
+      outline: 2px solid #3b82f6;
+      z-index: 2;
+    }
+    td.month-cell .edit-hint {
+      display: none;
+      position: absolute;
+      right: 4px;
+      top: 4px;
+      font-size: 10px;
+      color: #3b82f6;
+    }
+    td.month-cell:hover .edit-hint {
+      display: inline;
+    }
+
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+      width: 100%;
+      max-width: 560px;
+      padding: 1.75rem;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-header h3 {
+      font-size: 1.25rem;
+      color: #0f172a;
+    }
+    .modal-header p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+    .quick-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .quick-btn {
+      padding: 0.4rem 0.75rem;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .quick-btn:hover {
+      background: #e2e8f0;
+      border-color: #94a3b8;
+    }
+    .quick-btn.f24 { background: #e0e7ff; color: #3730a3; border-color: #c7d2fe; }
+    .quick-btn.f24:hover { background: #c7d2fe; }
+    .quick-btn.visura { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+    .quick-btn.visura:hover { background: #bbf7d0; }
+    .quick-btn.cciaa { background: #ffedd5; color: #9a3412; border-color: #fed7aa; }
+    .quick-btn.cciaa:hover { background: #fed7aa; }
+    .quick-btn.ade { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
+    .quick-btn.ade:hover { background: #bae6fd; }
+    .quick-btn.visto { background: #f3e8ff; color: #6b21a8; border-color: #e9d5ff; }
+    .quick-btn.visto:hover { background: #e9d5ff; }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+      color: #334155;
+    }
+    .form-input {
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+    .preview-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 0.75rem;
+      margin: 1rem 0;
+      min-height: 48px;
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      gap: 0.5rem;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: #fff;
+      padding: 0.85rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+      z-index: 200;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .toast.success { background: #15803d; }
+    .toast.error { background: #b91c1c; }
+
+    @media (max-width: 800px) {
+      body { flex-direction: column; }
+      aside { width: 100%; }
+      input.search { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <aside>
+    <a class="brand" href="../dashboard.html">
+      <span>AD</span> Registro Adempimenti <small>STUDIO</small>
+    </a>
+    <nav aria-label="Navigazione studio">
+      <a href="../avvisi-parcella/index.html">📋 Parcelle e fatture</a>
+      <a href="../dossier-clienti/index.html">📁 Dossier Clienti</a>
+      <a href="../dashboard.html">🏠 Tutte le applicazioni</a>
+    </nav>
+    <p style="margin-top: auto; font-size: 0.75rem; color: #64748b; line-height: 1.4;">
+      Registro operativo adempimenti clienti.<br>
+      Tariffe standard collegate alle parcelle: F24 (10 €) · Visure (10 €) · CCIAA (100 €) · Ag. Entrate (100 €) · Visti (300 €).
+    </p>
+  </aside>
+
+  <main>
+    <header>
+      <div>
+        <div class="eyebrow">
+          <span>MONITORAGGIO E FATTURAZIONE ADEMPIMENTI</span>
+          <span class="status-badge" id="sourceBadge">Database SQLite Attivo</span>
+        </div>
+        <h1>Registro Adempimenti Clienti</h1>
+        <p class="header-desc">
+          Gestione interattiva in tempo reale: clicca su qualsiasi casella mensile per inserire o modificare gli adempimenti eseguiti. I dati alimentano automaticamente gli avvisi di parcella.
+          Dal 1° ottobre 2026 il Registro è l’unica fonte operativa; l’Excel resta lo storico fino al 30 settembre 2026.
+        </p>
+      </div>
+      <div class="controls">
+        <label>Anno:
+          <select id="yearSelect">
+            <option value="2026" selected>2026</option>
+            <option value="2025">2025</option>
+          </select>
+        </label>
+        <input type="search" class="search" id="search" placeholder="Cerca cliente, P.IVA o CF…" aria-label="Cerca clienti">
+        <button class="btn success" id="addClientBtn">➕ Nuovo Cliente</button>
+        <button class="btn" id="exportCsvBtn">📥 Esporta Excel / CSV</button>
+        <button class="btn" id="refreshBtn">🔄 Aggiorna</button>
+        <a class="btn primary" href="../avvisi-parcella/index.html" style="text-decoration:none;">📋 Vai a Parcelle</a>
+      </div>
+    </header>
+
+    <div class="stats-cards" id="stats">
+      <div class="stat-card"><small>Clienti nel registro</small><strong id="totalClients">—</strong></div>
+      <div class="stat-card"><small>Totale F24 registrati</small><strong id="totalF24">—</strong></div>
+      <div class="stat-card"><small>Visti di conformità</small><strong id="totalVisti">—</strong></div>
+      <div class="stat-card"><small>Pratiche CCIAA / AdE / Visure</small><strong id="totalPratiche">—</strong></div>
+    </div>
+
+    <div class="tablewrap">
+      <table id="adempimentiTable">
+        <thead>
+          <tr>
+            <th class="client-col">Cliente</th>
+            <th>P.IVA / CF</th>
+            <th class="quarter-group">Q1 · Gen</th>
+            <th>Feb</th>
+            <th>Mar</th>
+            <th class="quarter-group">Q2 · Apr</th>
+            <th>Mag</th>
+            <th>Giu</th>
+            <th class="quarter-group">Q3 · Lug</th>
+            <th>Ago</th>
+            <th>Set</th>
+            <th class="quarter-group">Q4 · Ott</th>
+            <th>Nov</th>
+            <th>Dic</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="15" style="text-align:center; padding: 2rem; color: #64748b;">Caricamento registro adempimenti in corso…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Edit Cell Modal -->
+  <div class="modal-overlay" id="editCellModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalClientTitle">Modifica Adempimenti</h3>
+        <p id="modalClientSubtitle">Cliente · Mese Anno</p>
+      </div>
+
+      <div class="form-group">
+        <label>Inserimento Rapido Voci Frequenti:</label>
+        <div class="quick-buttons">
+          <button type="button" class="quick-btn f24" onclick="addQuickF24(1)">➕ +1 F24 (10 €)</button>
+          <button type="button" class="quick-btn f24" onclick="addQuickF24(-1)">➖ -1 F24</button>
+          <button type="button" class="quick-btn visura" onclick="addQuickItem('1 VISURA')">🔍 + Visura (10 €)</button>
+          <button type="button" class="quick-btn cciaa" onclick="addQuickItem('1 PRATICA CCIAA')">🏛️ + Pratica CCIAA (100 €)</button>
+          <button type="button" class="quick-btn ade" onclick="addQuickItem('1 PRATICA AGENZIA ENTRATE')">🏛️ + Pratica AdE (100 €)</button>
+          <button type="button" class="quick-btn visto" onclick="addQuickItem('VISTO')">🛡️ + Visto di conformità (300 €)</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="cellTextInput">Contenuto testuale della cella (modificabile liberamente):</label>
+        <input type="text" id="cellTextInput" class="form-input" placeholder="Es. 2 f24, 1 visto, 1 pratica cciaa..." autofocus>
+        <small style="color:var(--muted); font-size: 0.75rem; margin-top: 4px; display: block;">
+          Puoi combinare più voci con il segno <code>+</code> (es: <em>2 f24 + 1 visto + visura</em>) o scrivere note libere.
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>Anteprima visiva badge:</label>
+        <div class="preview-box" id="cellPreviewBox">
+          <span class="empty-cell">— Nessun adempimento registrato —</span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn" style="color:#dc2626;" onclick="clearCellContent()">🗑️ Svuota cella</button>
+        <div style="display:flex; gap:0.5rem;">
+          <button type="button" class="btn" onclick="closeEditModal()">Annulla</button>
+          <button type="button" class="btn primary" id="saveCellBtn" onclick="saveCellContent()">💾 Salva nel Database</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Client Modal -->
+  <div class="modal-overlay" id="addClientModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Nuovo Cliente nel Registro</h3>
+        <p>Aggiungi una nuova posizione al registro adempimenti dello studio.</p>
+      </div>
+      <div class="form-group">
+        <label for="newClientName">Denominazione / Cognome e Nome *</label>
+        <input type="text" id="newClientName" class="form-input" placeholder="Es. Nuova Società Srl" required>
+      </div>
+      <div class="form-group">
+        <label for="newClientVat">Partita IVA (11 cifre)</label>
+        <input type="text" id="newClientVat" class="form-input" placeholder="Es. 01234567890" maxlength="11">
+      </div>
+      <div class="form-group">
+        <label for="newClientCf">Codice Fiscale</label>
+        <input type="text" id="newClientCf" class="form-input" placeholder="Es. 01234567890 o DEMO000000000000" maxlength="16">
+      </div>
+      <div class="modal-actions">
+        <div></div>
+        <div style="display:flex; gap:0.5rem;">
+          <button type="button" class="btn" onclick="closeAddClientModal()">Annulla</button>
+          <button type="button" class="btn primary" id="saveClientBtn" onclick="saveNewClient()">💾 Salva Cliente</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    'use strict';
+    let data = null;
+    const monthNames = ['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+    const monthShort = ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'];
+
+    let activeClient = null;
+    let activeMonth = null;
+
+    function showToast(msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'toast show ' + type;
+      setTimeout(() => { t.className = 'toast'; }, 3200);
+    }
+
+    function parseCellBadge(raw) {
+      if (!raw || !raw.trim()) return '<span class="empty-cell">—</span>';
+      const text = raw.trim();
+      const parts = text.split(/(?:\+|\n|;)/);
+      const badges = [];
+
+      for (const p of parts) {
+        const item = p.trim();
+        if (!item) continue;
+        if (/f24/i.test(item) || /^\d+$/.test(item)) {
+          badges.push(`<span class="badge badge-f24" title="${item}">📄 ${item}</span>`);
+        } else if (/visto/i.test(item)) {
+          badges.push(`<span class="badge badge-visto" title="${item}">🛡️ ${item}</span>`);
+        } else if (/cciaa/i.test(item)) {
+          badges.push(`<span class="badge badge-cciaa" title="${item}">🏛️ ${item}</span>`);
+        } else if (/entrate|ade/i.test(item)) {
+          badges.push(`<span class="badge badge-ade" title="${item}">🏛️ ${item}</span>`);
+        } else if (/visur/i.test(item)) {
+          badges.push(`<span class="badge badge-visura" title="${item}">🔍 ${item}</span>`);
+        } else {
+          badges.push(`<span class="badge badge-other" title="${item}">${item}</span>`);
+        }
+      }
+      return badges.join(' ') || '<span class="empty-cell">—</span>';
+    }
+
+    async function loadData() {
+      const year = document.getElementById('yearSelect').value;
+      const tbody = document.getElementById('tbody');
+      tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; padding: 2rem; color: #64748b;">Caricamento registro adempimenti ' + year + '…</td></tr>';
+      try {
+        const res = await fetch('/studio-parcelle-api?op=adempimenti_all&year=' + encodeURIComponent(year));
+        if (!res.ok) throw new Error('Impossibile caricare i dati: codice ' + res.status);
+        data = await res.json();
+        render();
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; padding: 2rem; color: #dc2626;">Errore: ' + err.message + '</td></tr>';
+      }
+    }
+
+    function render() {
+      if (!data || !data.clients) return;
+      const search = (document.getElementById('search').value || '').trim().toLowerCase();
+      const tbody = document.getElementById('tbody');
+      const clients = data.clients;
+
+      let filtered = clients;
+      if (search) {
+        filtered = clients.filter(c => 
+          (c.name || '').toLowerCase().includes(search) ||
+          (c.vat || '').includes(search) ||
+          (c.cf || '').toLowerCase().includes(search)
+        );
+      }
+
+      document.getElementById('totalClients').textContent = clients.length;
+
+      // Calculate totals
+      let totalF24 = 0, totalVisti = 0, totalPratiche = 0;
+      for (const c of clients) {
+        for (let m = 1; m <= 12; m++) {
+          const raw = (c.months && c.months[m]) || '';
+          if (!raw) continue;
+          if (/visto/i.test(raw)) totalVisti++;
+          if (/cciaa|entrate|ade|visur/i.test(raw)) totalPratiche++;
+          const mF24 = raw.match(/(\d+)\s*f24/i);
+          if (mF24) totalF24 += parseInt(mF24[1], 10);
+          else if (/^\d+$/.test(raw.trim())) totalF24 += parseInt(raw.trim(), 10);
+        }
+      }
+      document.getElementById('totalF24').textContent = totalF24;
+      document.getElementById('totalVisti').textContent = totalVisti;
+      document.getElementById('totalPratiche').textContent = totalPratiche;
+
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="15" style="text-align:center; padding: 2rem; color: #64748b;">Nessun cliente corrispondente alla ricerca.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(c => {
+        const mCols = [];
+        for (let m = 1; m <= 12; m++) {
+          const raw = (c.months && c.months[m]) || '';
+          const isQStart = (m === 1 || m === 4 || m === 7 || m === 10);
+          const safeName = escapeHtml(c.name);
+          mCols.push(`
+            <td class="month-cell ${isQStart ? 'quarter-group' : ''}" 
+                data-client="${safeName}" 
+                data-month="${m}" 
+                onclick="openEditModal('${safeName.replace(/'/g, "\\'")}', ${m})"
+                title="Clicca per modificare ${monthNames[m-1]} per ${safeName}">
+              ${parseCellBadge(raw)}
+              <span class="edit-hint">✏️</span>
+            </td>
+          `);
+        }
+        return `
+          <tr>
+            <td class="client-col">
+              <strong>${escapeHtml(c.name)}</strong>
+              ${c.email ? `<br><small style="color:#166534; font-weight:600;">✉ ${escapeHtml(c.email)}</small>` : `<br><small style="color:#94a3b8;">✉ Nessuna email</small>`}
+            </td>
+            <td><small>${escapeHtml(c.vat || c.cf || '—')}</small></td>
+            ${mCols.join('')}
+            <td class="actions-cell">
+              <a class="action-link" href="../avvisi-parcella/index.html">📋 Crea avviso</a>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);
+    }
+
+    // Modal logic
+    function openEditModal(clientName, monthNum) {
+      activeClient = clientName;
+      activeMonth = monthNum;
+      const year = document.getElementById('yearSelect').value;
+
+      document.getElementById('modalClientTitle').textContent = `✏️ Modifica Adempimenti`;
+      document.getElementById('modalClientSubtitle').textContent = `${clientName} · ${monthNames[monthNum - 1]} ${year}`;
+
+      const clientObj = data.clients.find(c => c.name === clientName);
+      const currentVal = (clientObj && clientObj.months && clientObj.months[monthNum]) || '';
+
+      const input = document.getElementById('cellTextInput');
+      input.value = currentVal;
+      updatePreview();
+
+      document.getElementById('editCellModal').classList.add('open');
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function closeEditModal() {
+      document.getElementById('editCellModal').classList.remove('open');
+      activeClient = null;
+      activeMonth = null;
+    }
+
+    function updatePreview() {
+      const val = document.getElementById('cellTextInput').value.trim();
+      const box = document.getElementById('cellPreviewBox');
+      if (!val) {
+        box.innerHTML = '<span class="empty-cell">— Nessun adempimento registrato —</span>';
+      } else {
+        box.innerHTML = parseCellBadge(val);
+      }
+    }
+
+    document.getElementById('cellTextInput').addEventListener('input', updatePreview);
+    document.getElementById('cellTextInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        saveCellContent();
+      } else if (e.key === 'Escape') {
+        closeEditModal();
+      }
+    });
+
+    function addQuickF24(delta) {
+      const input = document.getElementById('cellTextInput');
+      let text = input.value.trim();
+      
+      const f24Match = text.match(/(\d+)\s*f24/i);
+      if (f24Match) {
+        const curCount = parseInt(f24Match[1], 10);
+        const newCount = Math.max(0, curCount + delta);
+        if (newCount === 0) {
+          text = text.replace(/(\d+)\s*f24(?:\s*\+\s*)?/i, '').replace(/\s*\+\s*$/, '').trim();
+        } else {
+          text = text.replace(/(\d+)\s*f24/i, `${newCount} F24`);
+        }
+      } else if (delta > 0) {
+        if (/^\d+$/.test(text)) {
+          const newCount = parseInt(text, 10) + delta;
+          text = `${newCount} F24`;
+        } else if (text !== '') {
+          text = `${text} + 1 F24`;
+        } else {
+          text = '1 F24';
+        }
+      }
+      input.value = text;
+      updatePreview();
+    }
+
+    function addQuickItem(itemLabel) {
+      const input = document.getElementById('cellTextInput');
+      let text = input.value.trim();
+      if (text === '') {
+        text = itemLabel;
+      } else {
+        text = `${text} + ${itemLabel}`;
+      }
+      input.value = text;
+      updatePreview();
+    }
+
+    function clearCellContent() {
+      document.getElementById('cellTextInput').value = '';
+      updatePreview();
+    }
+
+    async function saveCellContent() {
+      if (!activeClient || !activeMonth) return;
+      const text = document.getElementById('cellTextInput').value.trim();
+      const year = parseInt(document.getElementById('yearSelect').value, 10);
+      const saveBtn = document.getElementById('saveCellBtn');
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Salvataggio…';
+
+      try {
+        const res = await fetch('/studio-parcelle-api?op=adempimento_cell_save', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Parcelle-Request': '1'
+          },
+          body: JSON.stringify({
+            payload: {
+              clientName: activeClient,
+              year: year,
+              month: activeMonth,
+              text: text
+            }
+          })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || ('Errore HTTP ' + res.status));
+        }
+
+        // Update local state
+        let cObj = data.clients.find(c => c.name === activeClient);
+        if (!cObj) {
+          cObj = { name: activeClient, vat: '', cf: '', months: {} };
+          data.clients.push(cObj);
+        }
+        if (!cObj.months) cObj.months = {};
+        if (text === '') {
+          delete cObj.months[activeMonth];
+        } else {
+          cObj.months[activeMonth] = text;
+        }
+
+        render();
+        closeEditModal();
+        showToast(`✅ Adempimento aggiornato per ${activeClient}!`, 'success');
+      } catch (err) {
+        alert('Errore durante il salvataggio: ' + err.message);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '💾 Salva nel Database';
+      }
+    }
+
+    // Add Client modal
+    document.getElementById('addClientBtn').addEventListener('click', () => {
+      document.getElementById('newClientName').value = '';
+      document.getElementById('newClientVat').value = '';
+      document.getElementById('newClientCf').value = '';
+      document.getElementById('addClientModal').classList.add('open');
+      setTimeout(() => document.getElementById('newClientName').focus(), 50);
+    });
+
+    function closeAddClientModal() {
+      document.getElementById('addClientModal').classList.remove('open');
+    }
+
+    async function saveNewClient() {
+      const name = document.getElementById('newClientName').value.trim();
+      const vat = document.getElementById('newClientVat').value.trim();
+      const cf = document.getElementById('newClientCf').value.trim();
+      const btn = document.getElementById('saveClientBtn');
+
+      if (!name) {
+        alert('Inserire la denominazione del cliente');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Salvataggio…';
+
+      try {
+        const res = await fetch('/studio-parcelle-api?op=adempimenti_add_client', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Parcelle-Request': '1'
+          },
+          body: JSON.stringify({
+            payload: { name, vat, cf }
+          })
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || ('Errore HTTP ' + res.status));
+        }
+
+        closeAddClientModal();
+        await loadData();
+        showToast(`✅ Cliente ${name} inserito nel registro!`, 'success');
+      } catch (err) {
+        alert('Errore aggiunta cliente: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '💾 Salva Cliente';
+      }
+    }
+
+    // Export CSV
+    document.getElementById('exportCsvBtn').addEventListener('click', () => {
+      const year = document.getElementById('yearSelect').value;
+      window.location.href = '/studio-parcelle-api?op=adempimenti_export_csv&year=' + encodeURIComponent(year);
+    });
+
+    document.getElementById('search').addEventListener('input', render);
+    document.getElementById('yearSelect').addEventListener('change', loadData);
+    document.getElementById('refreshBtn').addEventListener('click', loadData);
+
+    // Close modals on click outside
+    document.querySelectorAll('.modal-overlay').forEach(el => {
+      el.addEventListener('click', e => {
+        if (e.target === el) {
+          el.classList.remove('open');
+        }
+      });
+    });
+
+    loadData();
+  </script>
+</body>
+</html>

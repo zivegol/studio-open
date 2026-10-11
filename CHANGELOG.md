@@ -1,3 +1,7 @@
+# Versione 0.2.0-preview
+
+Sorgenti selezionati di App Studio, Agorà AI, Revisore Nano e Cassetto Studio. Schede, requisiti, limiti e verifiche. Riferimenti dello studio sostituiti con esempi. Reguso e NC Scuola esclusi. Versione preliminare per consultazione e sviluppo; i due programmi autonomi restano invariati.
+
 # Versione 0.1.0
 
 Primo pacchetto autonomo: Calcolatrice con nastro e Forza 4 Neon.

@@ -1,0 +1,4059 @@
+{
+  "version": "0.2.0-preview",
+  "projects": [
+    {
+      "project": "studio-apps",
+      "commit": "0c3e7962c8b893cd4d44ca1510b4a2434ced8376",
+      "count": 143
+    },
+    {
+      "project": "agora-ai",
+      "commit": "c4fcbc7e794c42fa68a80386932c1017dca916a8",
+      "count": 182
+    },
+    {
+      "project": "revisore-nano",
+      "commit": "b356c8725d23c2f680a3c33453fbb503a6d16934",
+      "count": 208
+    },
+    {
+      "project": "agenzia-entrate",
+      "commit": "d1f7c4dc1af99b7ad975c730df6fd4f264b44b6f",
+      "count": 43
+    }
+  ],
+  "files": [
+    {
+      "repo": "studio-apps",
+      "file": "LICENSE",
+      "sourceSha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "LICENSING.md",
+      "sourceSha256": "1a56f5c7e218bf13930525b0b09ced1f6efc1bced02317a77fa56d371dc9d7b7",
+      "sha256": "1a56f5c7e218bf13930525b0b09ced1f6efc1bced02317a77fa56d371dc9d7b7",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "server/rag-api.php",
+      "sourceSha256": "cdc69d9cde91eb052f6120291366a09d0a72d6d94e540640f3093aae5a2aafed",
+      "sha256": "29625579f2554b81147174d1c294c751b08d18f8d8185f620cd116c0608b3e7b",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "server/studio-cessioni-api.php",
+      "sourceSha256": "8b3419018c668f71452d51f6a0296b4f482fe6372af5cf52c142a548bcfc3080",
+      "sha256": "8b3419018c668f71452d51f6a0296b4f482fe6372af5cf52c142a548bcfc3080",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "server/studio-core-storage-api.php",
+      "sourceSha256": "29f953f54040122b7335530f91d393f8df80323fb295f47f7ea14bd6b00790a3",
+      "sha256": "cfdbd702d92be0af4d2d65f2f4f4ec7d433c24581bdf2c39c6fbd209a7241063",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "server/studio-parcelle-api.php",
+      "sourceSha256": "6832c16a62aa74c7287a3fa3293df31a4a7a7ecdbee683130f6210f46224865b",
+      "sha256": "6832c16a62aa74c7287a3fa3293df31a4a7a7ecdbee683130f6210f46224865b",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/.htaccess",
+      "sourceSha256": "9f3be08fbf589842956dc8e33b3afe7c1612e644ebc91a3b98558521724ce070",
+      "sha256": "9f3be08fbf589842956dc8e33b3afe7c1612e644ebc91a3b98558521724ce070",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/adempimenti/.htaccess",
+      "sourceSha256": "972e5dca1ac413faf36e1ab7290a14abca8dfe14587ed92e3a44214390ed3717",
+      "sha256": "972e5dca1ac413faf36e1ab7290a14abca8dfe14587ed92e3a44214390ed3717",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/adempimenti/index.html",
+      "sourceSha256": "f5d35c2aa45e72047039384860b506719964da982a817bf9c84cc39c114310a6",
+      "sha256": "b6370aa458b317c02bba759635041f15b2e5195e21f329edb5f2916545f662ce",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/appmobile.html",
+      "sourceSha256": "988c5f00591feabb3ac815558c96ffb42d578ddf144d24bbb2e080e2517dbe8a",
+      "sha256": "f77d3442c43691635266fcb46a4ee829e0868141390c98c115a3c92b41676c5a",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/apps.js",
+      "sourceSha256": "fa4c0baab2953211908e331e191e2f242d89e063dea2801ac62e7b6742129233",
+      "sha256": "7dce910eef478f72056612a1e9e0a0f84bcfc8684d5e2871f94636e566beef85",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/.htaccess",
+      "sourceSha256": "9f3be08fbf589842956dc8e33b3afe7c1612e644ebc91a3b98558521724ce070",
+      "sha256": "9f3be08fbf589842956dc8e33b3afe7c1612e644ebc91a3b98558521724ce070",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/adempimenti.php",
+      "sourceSha256": "f69d28031cad0a4e4c1d67c0fec25eac09646ba5f573715d8a91cc2d06e967e1",
+      "sha256": "52939897acce476877b60095477b0fbe2f38e3078a40411b7422ea9e33ef721e",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/api.php",
+      "sourceSha256": "5d1bde730b03fee7786ba819f1f5db3b61dc405fd875e40b3ca20e5d9088c74a",
+      "sha256": "48325a73aefcb75a89c5e6c9863eeb5ae68839d4c097e7f2e9383691fa4d1ada",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/app.js",
+      "sourceSha256": "7767d1a84961097a0d0b3625564950ad7a6c608f88d25b65cd025e6519a06ab5",
+      "sha256": "feb2d2dcfb8559cefc2a304442cec322619a07a9b0816b05616494327e3fe0e2",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/db.php",
+      "sourceSha256": "6e70bc5aaeb645141c66c1a0a88e28535c40fce8300cfe1f026496d55ae715f5",
+      "sha256": "6e70bc5aaeb645141c66c1a0a88e28535c40fce8300cfe1f026496d55ae715f5",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/domain.php",
+      "sourceSha256": "d281b44192e5abdf7580d11397c82275c22047dff42d65f6a5c695a421a97c77",
+      "sha256": "d281b44192e5abdf7580d11397c82275c22047dff42d65f6a5c695a421a97c77",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/dossier-address.php",
+      "sourceSha256": "a372d9ca97870e581e9fd098c4b78423267459b633f713791e0c4c70a51cee85",
+      "sha256": "a372d9ca97870e581e9fd098c4b78423267459b633f713791e0c4c70a51cee85",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/dossier-profile.php",
+      "sourceSha256": "d5f3c4d07e6664c327cdd99f77cefa50947892079dda9bbc1f2b73669820478e",
+      "sha256": "d5f3c4d07e6664c327cdd99f77cefa50947892079dda9bbc1f2b73669820478e",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/dossier_address.py",
+      "sourceSha256": "fa8c1ce1f528969e5a84e6fcc73ee18d3b8a91cf6b7ce57b49504ea03026b78e",
+      "sha256": "987d797fde1b4fa0068c77ae7f0990a7ae406836f7ff1d99fe4eac3908b15cac",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/email.php",
+      "sourceSha256": "a2168a2e405ebc87de39b5a8aaa981fcebe4eff9d6322a1373d7a8f6144c8319",
+      "sha256": "88bd2b0cf86a75f93d0cc0eb5b27e488840737d0f6ca4feea89ee65a018b787b",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/index.html",
+      "sourceSha256": "f18b8cbf59bfbed87bdb3f9a77491a3d6e8a8412f2f9fb8cc8cf9067fa414e55",
+      "sha256": "f18b8cbf59bfbed87bdb3f9a77491a3d6e8a8412f2f9fb8cc8cf9067fa414e55",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/quarter-ui.js",
+      "sourceSha256": "fd246f0194acd4720998c694e61359eaf5abc1609968a0472a15415a13ce085a",
+      "sha256": "fd246f0194acd4720998c694e61359eaf5abc1609968a0472a15415a13ce085a",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/quarters.php",
+      "sourceSha256": "31a98b7811c0b894eb65f08d4f898f91021b2452708cc1606fc66f530ad7e3eb",
+      "sha256": "31a98b7811c0b894eb65f08d4f898f91021b2452708cc1606fc66f530ad7e3eb",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/schema/fatturapa.xsd",
+      "sourceSha256": "a82b162ae831091a3e69a15bae2fb064fa68de35fe0e538d85f87a9fc89cd167",
+      "sha256": "a82b162ae831091a3e69a15bae2fb064fa68de35fe0e538d85f87a9fc89cd167",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/schema/xmldsig-core-schema.xsd",
+      "sourceSha256": "35cf8197da812c85e40d57891b35c94187569ed474a2dac813ce5090dafcd35c",
+      "sha256": "35cf8197da812c85e40d57891b35c94187569ed474a2dac813ce5090dafcd35c",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/avvisi-parcella/style.css",
+      "sourceSha256": "3d92eaec74f6552ee7b8c38a3eb3faddc15acc644ea3c916672ec7c6780ccef9",
+      "sha256": "3d92eaec74f6552ee7b8c38a3eb3faddc15acc644ea3c916672ec7c6780ccef9",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/bilanci-analytics/app.js",
+      "sourceSha256": "690df2b835162c9fe48556e3f167c0b9febe26367e2ebd8693264daa4db1f1aa",
+      "sha256": "690df2b835162c9fe48556e3f167c0b9febe26367e2ebd8693264daa4db1f1aa",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/bilanci-analytics/build_analytics_data.py",
+      "sourceSha256": "4df12947e5acdcf2e7af6674670ec68795d88d2be7bd9bc64df69b8cf57e5ebf",
+      "sha256": "de0a446158b1b31f86b2f678cd72be837539a08a17a9a6840b494c2a525affeb",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/bilanci-analytics/files.php",
+      "sourceSha256": "6eaf50e830079bdb488781ee83e44210f89694018b05f0cac1cf9c0e0143391c",
+      "sha256": "dd15b48a61179acd698369020e3625f7e9ca0ccebfc347aa9fd480df10d2cf82",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/bilanci-analytics/index.html",
+      "sourceSha256": "4c8509998402bd221f4f769cf50e4dbc0c29d524e8afd9ced32900552eaa0642",
+      "sha256": "03682d2fba86da23d14b2a5937bf6774c68ccc1c9f2bf47dead40450850e01c7",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/bilanci-analytics/xlsx.full.min.js",
+      "sourceSha256": "c9506197caf809a075b6dee1da0d36fb19da7158ffe8a88e7b0c96c5d8623c99",
+      "sha256": "c9506197caf809a075b6dee1da0d36fb19da7158ffe8a88e7b0c96c5d8623c99",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/bilanci-anonimizzati/auto_anonymize.py",
+      "sourceSha256": "b4182fadffedc8eb2da894377f36e53414a5e99e1ebbfcbfb6ecbaa774e87045",
+      "sha256": "477387fab5764b438222f607a6c9c813804959d253f4da6ba6ed3207eeaf070f",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/bilanci-anonimizzati/index.html",
+      "sourceSha256": "65bd2844091f182d9296e1a550afa14b4fbe7cca62158b46a68935241a05c6eb",
+      "sha256": "92015e0b43b924fc28e95277b32efe1a12447ad291235c4add55d1481e5acec0",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/bilanci-anonimizzati/xlsx.full.min.js",
+      "sourceSha256": "c9506197caf809a075b6dee1da0d36fb19da7158ffe8a88e7b0c96c5d8623c99",
+      "sha256": "c9506197caf809a075b6dee1da0d36fb19da7158ffe8a88e7b0c96c5d8623c99",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/business-plan/business_plan.html",
+      "sourceSha256": "50bbe5ce2172669bc1fcbbf7565059d5e07173c6c2b16227e30355a6deb93316",
+      "sha256": "50bbe5ce2172669bc1fcbbf7565059d5e07173c6c2b16227e30355a6deb93316",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/calcolatrice/LICENSE",
+      "sourceSha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/calcolatrice/calcolatrice.html",
+      "sourceSha256": "4f0a29bf5ccf5a0be48bdbe7f46cd2497a142f83030fa37368f0c5953ebfb20b",
+      "sha256": "4f0a29bf5ccf5a0be48bdbe7f46cd2497a142f83030fa37368f0c5953ebfb20b",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/centrale-rischi/README-INTEGRAZIONE-NC.md",
+      "sourceSha256": "485b335c270a28b50dc20306cc8ed16533eabdf1ff90c52e40aea76d444e423b",
+      "sha256": "e23862c0736733a6e3f47a27b79877f0d43fc9dd6b08369e0d886b5a2f914bdf",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/centrale-rischi/centrale_rischi_server.py",
+      "sourceSha256": "860989e1918b01df2fc4bbf859f4b566af51949391e4a4b3de2832e218d6152c",
+      "sha256": "860989e1918b01df2fc4bbf859f4b566af51949391e4a4b3de2832e218d6152c",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/centrale-rischi/centrale_rischi_storica.html",
+      "sourceSha256": "1445891aeb487bcf966fa8fbe8312d87ea81dc0f0fe4f5490354aa9322a90d7c",
+      "sha256": "1445891aeb487bcf966fa8fbe8312d87ea81dc0f0fe4f5490354aa9322a90d7c",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/convenienza forfettario/comparatore reg. forfettario.html",
+      "sourceSha256": "2888c46216a34d4cfa712377d6c5e54d99848c15ec1cec68d7fb12ea59e1dd42",
+      "sha256": "2888c46216a34d4cfa712377d6c5e54d99848c15ec1cec68d7fb12ea59e1dd42",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dashboard.html",
+      "sourceSha256": "4b69e7336521ee0b8624dad670e8a9d58252c5b67ca78e6e3ed5aae00ccd4993",
+      "sha256": "60dd4a74704b5a8cc52c04481d6ba398ebc3a6db903b5ce0b74586acfb0ddbb0",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/build_client_dossiers.py",
+      "sourceSha256": "3de188e7c2a6394dfd28e4d2fe07740c74fba05f9a876809fe36975aba8b8be1",
+      "sha256": "fd093c2390ba3ef9a0c7bba7839d4f82031bf158196025f04f3cc90f373d9c66",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/data.php",
+      "sourceSha256": "76e0afb82bbc16a4d54c4967ad6d35aec597231222f8490b9a3234a6b56b2e1d",
+      "sha256": "76e0afb82bbc16a4d54c4967ad6d35aec597231222f8490b9a3234a6b56b2e1d",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/document-preview.html",
+      "sourceSha256": "ab64f238d9d0138c82f4d7266f32a02e09521de6082283f1e63d7e1a22ed49b4",
+      "sha256": "ab64f238d9d0138c82f4d7266f32a02e09521de6082283f1e63d7e1a22ed49b4",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/document-viewer-v2.html",
+      "sourceSha256": "91504fc38495fe8ca2f023df810e2bbc99277b21609df9e9c087a0dd3ecbf231",
+      "sha256": "91504fc38495fe8ca2f023df810e2bbc99277b21609df9e9c087a0dd3ecbf231",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/document-viewer-v3.html",
+      "sourceSha256": "4b3816a66e8249029f17c998afda93ce37fb3c5021a099a53f762af5df397419",
+      "sha256": "4b3816a66e8249029f17c998afda93ce37fb3c5021a099a53f762af5df397419",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/document-viewer-v4.html",
+      "sourceSha256": "51f3df8ce77deae6bdb1473929e1aa2513fa6bb18d28c00a4b96c6659d82e246",
+      "sha256": "51f3df8ce77deae6bdb1473929e1aa2513fa6bb18d28c00a4b96c6659d82e246",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/dossier-central2.html",
+      "sourceSha256": "3f27bbd994cab21383d6c55d1d9b84af1cc84e714e0431500a0a7c4fec6bf4c6",
+      "sha256": "3f27bbd994cab21383d6c55d1d9b84af1cc84e714e0431500a0a7c4fec6bf4c6",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/dossier-central3.html",
+      "sourceSha256": "becf3dd4f83c8feebedcf47d1fd754ed87fe6a9cdef463192e265aabe43c382d",
+      "sha256": "becf3dd4f83c8feebedcf47d1fd754ed87fe6a9cdef463192e265aabe43c382d",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/dossier-data.php",
+      "sourceSha256": "ae3b92874b98e2225113c87d6500a0526f2584465f9e18bf4e20bdebec076d40",
+      "sha256": "95200448f20506faa104525107702feb05c716672ae635161db42b0ca4ed5d10",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/dossier-financial1.html",
+      "sourceSha256": "82c22ca3553184f07f9aba73108b733133e1dc7fb291fd48224c0911e3270152",
+      "sha256": "82c22ca3553184f07f9aba73108b733133e1dc7fb291fd48224c0911e3270152",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/dossier-fiscal1.html",
+      "sourceSha256": "368e3c0abdbc5ddf6863ee7fafa5ac51e337b3eb8bcf87c7b56d3cbaa0bd73c9",
+      "sha256": "368e3c0abdbc5ddf6863ee7fafa5ac51e337b3eb8bcf87c7b56d3cbaa0bd73c9",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/dossier-fiscal2.html",
+      "sourceSha256": "368e3c0abdbc5ddf6863ee7fafa5ac51e337b3eb8bcf87c7b56d3cbaa0bd73c9",
+      "sha256": "368e3c0abdbc5ddf6863ee7fafa5ac51e337b3eb8bcf87c7b56d3cbaa0bd73c9",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/dossier-parcelle.js",
+      "sourceSha256": "8d82382a905cb475fe8accca6e60d9a6dc3b88c5d25b671afb4b97be8e0c0112",
+      "sha256": "8d82382a905cb475fe8accca6e60d9a6dc3b88c5d25b671afb4b97be8e0c0112",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/dossier-pilot.html",
+      "sourceSha256": "9fddfa9385bf80c1f04079bfe369d3284179dd682320fec17c0d861263a04f34",
+      "sha256": "9fddfa9385bf80c1f04079bfe369d3284179dd682320fec17c0d861263a04f34",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/dossier-pilot2.html",
+      "sourceSha256": "0cd30eb18db8f63c7c0a68895138ba0e869356d6a59921c233330d67d8917d41",
+      "sha256": "0cd30eb18db8f63c7c0a68895138ba0e869356d6a59921c233330d67d8917d41",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/dossier-pilot3.html",
+      "sourceSha256": "f3e2252b0a57f9da9284812bc59a0bb56b809f67ea138841dc017ea33d6eff7d",
+      "sha256": "f3e2252b0a57f9da9284812bc59a0bb56b809f67ea138841dc017ea33d6eff7d",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/dossier-pilot4.html",
+      "sourceSha256": "61e96599473ef754dd07abf299550971f0821fe1da33a272b17d3e4762348411",
+      "sha256": "61e96599473ef754dd07abf299550971f0821fe1da33a272b17d3e4762348411",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/dossier-v2.html",
+      "sourceSha256": "1d75bfe6b969237f8f4727cd45b3fe1e8393d82e21d216b7eb3748e448dfb86b",
+      "sha256": "1d75bfe6b969237f8f4727cd45b3fe1e8393d82e21d216b7eb3748e448dfb86b",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/dossier-v3.html",
+      "sourceSha256": "5df1567ce0f9a450b40283396c852683b169a6fb479a1d56dd3165835517b9ce",
+      "sha256": "5df1567ce0f9a450b40283396c852683b169a6fb479a1d56dd3165835517b9ce",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/dossier_auto_refresh.sh",
+      "sourceSha256": "97abf308f8fbaa04d0ef0ea2b732c6355010dfb5a85f954b65389e8e07bda951",
+      "sha256": "898c79b4d78c182dae67991cd6dc2412d097426e7f2e57abe1477b0cc47c9d62",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/incremental_dossier_update.py",
+      "sourceSha256": "6a0704ba74bf9a9f5f1b267f47b91a8c311307db8adb248d037f6fad8122e8ee",
+      "sha256": "5c49cbe21cc4ce97df8fc681b2f5b52e5e46b692c6f8fcbcf9756625390912a2",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/index.html",
+      "sourceSha256": "a3b9e88f85dbfcc562ee48d0916fc08702efe77059954b9c666042ffd77d88ed",
+      "sha256": "a3b9e88f85dbfcc562ee48d0916fc08702efe77059954b9c666042ffd77d88ed",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/revision-folder-api.php",
+      "sourceSha256": "8608f17b0096a38bae3cec114302ba56b5217d1adce7b01feb3b74f63ca80c82",
+      "sha256": "8608f17b0096a38bae3cec114302ba56b5217d1adce7b01feb3b74f63ca80c82",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/revision_folder_parser.py",
+      "sourceSha256": "40f83dad825bc01a2f52ee02a572e3e0342937eaf13643d9bb8f22cb7fa3f488",
+      "sha256": "40f83dad825bc01a2f52ee02a572e3e0342937eaf13643d9bb8f22cb7fa3f488",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/dossier-clienti/unico_fiscal_parser.py",
+      "sourceSha256": "4ee0207299db5b97737a2861a0bb86bc3a08e85a9d6342113e95ca9d5cb77bc9",
+      "sha256": "4ee0207299db5b97737a2861a0bb86bc3a08e85a9d6342113e95ca9d5cb77bc9",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/fatture-xml/app.js",
+      "sourceSha256": "1a0804a4b7c6115ea42bb0dae7ee0207f3b2ab857805b1a74b6805e98f7ab310",
+      "sha256": "1a0804a4b7c6115ea42bb0dae7ee0207f3b2ab857805b1a74b6805e98f7ab310",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/fatture-xml/index.html",
+      "sourceSha256": "8ea98f8df6491afb4573e7fec61a70fd8f5bb75f9df6b53642dc0cb3bf5c62e8",
+      "sha256": "8ea98f8df6491afb4573e7fec61a70fd8f5bb75f9df6b53642dc0cb3bf5c62e8",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/fatture-xml/style.css",
+      "sourceSha256": "9bfe62d7039f332bb66663d8dfe12ef31645f0cbf30bbc4ee7f7c84c99210a9c",
+      "sha256": "9bfe62d7039f332bb66663d8dfe12ef31645f0cbf30bbc4ee7f7c84c99210a9c",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/firma-digitale/separa_m7m.html",
+      "sourceSha256": "ccf7d184a7c16685608c1983156ef88a64b4c664773e65903cfbe08fec43829b",
+      "sha256": "45676648e6d4b1734aa4079d8bc7fd7f7c36c8bd699ab1e7ae7f9b19df25e2b0",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/giochi/.htaccess",
+      "sourceSha256": "3d733fd76f15e75ca62bcd8a525e58b45919f57417003eeae1811adb65033045",
+      "sha256": "3d733fd76f15e75ca62bcd8a525e58b45919f57417003eeae1811adb65033045",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/giochi/2grevenge-invader3.html",
+      "sourceSha256": "c2241171076bf8ba190caa07fc934c9553143677c87208638fb11cdf5a9b4309",
+      "sha256": "c2241171076bf8ba190caa07fc934c9553143677c87208638fb11cdf5a9b4309",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/giochi/LICENSE",
+      "sourceSha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/giochi/bubble-fiocco.html",
+      "sourceSha256": "7edbf57b309a7dbd4e6bccccad45ce9d0d3f5e0cefd6a625f0ba561a2f9e5ad3",
+      "sha256": "7edbf57b309a7dbd4e6bccccad45ce9d0d3f5e0cefd6a625f0ba561a2f9e5ad3",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/giochi/fiocco-warplane-45_V0001.html",
+      "sourceSha256": "12a845a7163f27c34ddaaa2988020dbab8d845448f4175e54e53d1cd81516bd8",
+      "sha256": "12a845a7163f27c34ddaaa2988020dbab8d845448f4175e54e53d1cd81516bd8",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/giochi/forza4_neon.html",
+      "sourceSha256": "fe81cb7cde29fc1548bffb003c13b27668110966d61f6e88b73d0a7a639508da",
+      "sha256": "fe81cb7cde29fc1548bffb003c13b27668110966d61f6e88b73d0a7a639508da",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/giochi/index.html",
+      "sourceSha256": "6694036c16dc8c5544de3dba20fc645c780788c6cd9c2105f51cf13d20bceb7d",
+      "sha256": "88b260d9320ab502269382de41d88a9b3c3cf6a9ff7abba1da20e946d6f48bff",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/giochi/poker.html",
+      "sourceSha256": "41d6a7083c784966a8f5afa7bd99cb7b11c18328f5c426236b599ca9eed8b371",
+      "sha256": "41d6a7083c784966a8f5afa7bd99cb7b11c18328f5c426236b599ca9eed8b371",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/giochi/pong.html",
+      "sourceSha256": "4012cadea0ce01ac42359df9538a25a1c651562c28ba31dccd7ac969dca806ab",
+      "sha256": "4012cadea0ce01ac42359df9538a25a1c651562c28ba31dccd7ac969dca806ab",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/giochi/retro_racer_80.html",
+      "sourceSha256": "bdd57d13471eaeca37d2c539347adc81680c089dd7c5554a8bde2b82b4acc72d",
+      "sha256": "bdd57d13471eaeca37d2c539347adc81680c089dd7c5554a8bde2b82b4acc72d",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/giochi/super-volley-fiocco_V0002.html",
+      "sourceSha256": "8d894e2fdfbbfc322f97e08a1523d71d0cc09e409dadc38a34b0a9e5c803a6d6",
+      "sha256": "8d894e2fdfbbfc322f97e08a1523d71d0cc09e409dadc38a34b0a9e5c803a6d6",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/infrannuali/.htaccess",
+      "sourceSha256": "fd089c87e62675836d8109118be1cd1989c42a7497d178e8aac731ad0a572029",
+      "sha256": "fd089c87e62675836d8109118be1cd1989c42a7497d178e8aac731ad0a572029",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/infrannuali/app.js",
+      "sourceSha256": "1dda2da2fd5be059f5478af7e260305c34d18b69a54ea76b3852d14fea3af37e",
+      "sha256": "640e4b01112f1fab1364ede8e5cdffffd3ea6a0013a715d4ea1e5f1c1c83a942",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/infrannuali/dashboard.js",
+      "sourceSha256": "9504351f89a4ca101df5c2dcc6f17cfb72236b6dafa4b92f98388cd755f6b278",
+      "sha256": "9504351f89a4ca101df5c2dcc6f17cfb72236b6dafa4b92f98388cd755f6b278",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/infrannuali/engine.js",
+      "sourceSha256": "c953a45a5dc8f1606e8adc80258f4bcf0fbd6d80f8253e306c8aac65cb59e95a",
+      "sha256": "c953a45a5dc8f1606e8adc80258f4bcf0fbd6d80f8253e306c8aac65cb59e95a",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/infrannuali/files.php",
+      "sourceSha256": "f93be45d9294dee44b8c030611856aadda59ca141380050c2c6093d8caff507f",
+      "sha256": "f93be45d9294dee44b8c030611856aadda59ca141380050c2c6093d8caff507f",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/infrannuali/index.html",
+      "sourceSha256": "12e431398926d5f2a5eeaad5f93f6b6628f3f1c13ea9135a4c5e1960d71b83d7",
+      "sha256": "ea1cab5ac8ce40de9cbfb6f227ab81216d3becb286e8125e54190fd9ec0b9068",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/infrannuali/insights.js",
+      "sourceSha256": "5fae90501f6ae3e8c3387590aebe99241b4fda1a725833e7d110a1b080d26fff",
+      "sha256": "5fae90501f6ae3e8c3387590aebe99241b4fda1a725833e7d110a1b080d26fff",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/infrannuali/style.css",
+      "sourceSha256": "811cfb4dda24b48f70e679c1e8fda1fbc4f78ee458434b17627561e6f5430685",
+      "sha256": "811cfb4dda24b48f70e679c1e8fda1fbc4f78ee458434b17627561e6f5430685",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/infrannuali/xlsx.full.min.js",
+      "sourceSha256": "c9506197caf809a075b6dee1da0d36fb19da7158ffe8a88e7b0c96c5d8623c99",
+      "sha256": "c9506197caf809a075b6dee1da0d36fb19da7158ffe8a88e7b0c96c5d8623c99",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/irpef/irpef.html",
+      "sourceSha256": "4cf4a1cdd60f37e55848d6e49c58794aaf5bf93cd739abdaae2aef8c5e9b4208",
+      "sha256": "4cf4a1cdd60f37e55848d6e49c58794aaf5bf93cd739abdaae2aef8c5e9b4208",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/locazioni/api.php",
+      "sourceSha256": "d799e723054bc6fad75a7682e886ed4df94ec90bb8ee7d61da70d521e2791c94",
+      "sha256": "d799e723054bc6fad75a7682e886ed4df94ec90bb8ee7d61da70d521e2791c94",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/locazioni/app.mjs",
+      "sourceSha256": "d2fb32e1c6b728b666e510ee4cec8c160a78670d7ae2e61671cb5737315902ba",
+      "sha256": "d2fb32e1c6b728b666e510ee4cec8c160a78670d7ae2e61671cb5737315902ba",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/locazioni/compilatore.html",
+      "sourceSha256": "abd25dd1d422e14df7692c59bb83f1ae2c3c9eb90b6ab3bb32ebd4e4b4348fbf",
+      "sha256": "abd25dd1d422e14df7692c59bb83f1ae2c3c9eb90b6ab3bb32ebd4e4b4348fbf",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/locazioni/domain.php",
+      "sourceSha256": "8f692c83fa3c91ade3b242d0144b0861c4fa20a17f93bb35930cbab3a00c4758",
+      "sha256": "8f692c83fa3c91ade3b242d0144b0861c4fa20a17f93bb35930cbab3a00c4758",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/locazioni/index.html",
+      "sourceSha256": "cacd19ce12f0db5343e4e3ff06408f57cdc5134d3cf3c412f1703afc52bde14a",
+      "sha256": "cacd19ce12f0db5343e4e3ff06408f57cdc5134d3cf3c412f1703afc52bde14a",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/locazioni/model.mjs",
+      "sourceSha256": "ce5040ad2140134ca365c6b23ce09b73863d5e4320c438b69c45b00fbfd99983",
+      "sha256": "ce5040ad2140134ca365c6b23ce09b73863d5e4320c438b69c45b00fbfd99983",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/locazioni/style.css",
+      "sourceSha256": "0b896bd1178c580dd5dd3ee30f49e288156e4e5effc27e1fb952d1a194f70202",
+      "sha256": "0b896bd1178c580dd5dd3ee30f49e288156e4e5effc27e1fb952d1a194f70202",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/mutui/mutui.html",
+      "sourceSha256": "0c247946518abc6c84e842c74898845fffc05681538198fd91ffe3fb8ecc8eac",
+      "sha256": "0c247946518abc6c84e842c74898845fffc05681538198fd91ffe3fb8ecc8eac",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/omniclient/omniclient.html",
+      "sourceSha256": "1c0c1cc2c9e2db592e3ca677ab999cace6292a3be8e6bf692908ced95e613ec4",
+      "sha256": "1c0c1cc2c9e2db592e3ca677ab999cace6292a3be8e6bf692908ced95e613ec4",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/omnistat/omnistat.html",
+      "sourceSha256": "410971b78676832361709c03190384721cb81d86e31bee120cd7e804aab21cc1",
+      "sha256": "410971b78676832361709c03190384721cb81d86e31bee120cd7e804aab21cc1",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/partitari/partitari_dashboard.html",
+      "sourceSha256": "00f686740b05cb4acbcfdc1aa25170bb0954a8053724e02488704a30458b7235",
+      "sha256": "00f686740b05cb4acbcfdc1aa25170bb0954a8053724e02488704a30458b7235",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/partitari/share-data.php",
+      "sourceSha256": "6fe817677e79e60d2782a0d8c655bbb3f52c0b35842323b31121d56695eba9ad",
+      "sha256": "6fe817677e79e60d2782a0d8c655bbb3f52c0b35842323b31121d56695eba9ad",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/pdf-excel/pdf_to_excel.html",
+      "sourceSha256": "1d8a0df6b56ce89612fd1d6fcff832cc43f46fc55467f72ca906ed56a94a8f43",
+      "sha256": "a4ccc719989ae37f9c0d0b67ad73b91936fcbec388b4cad34f84ea3ebd3f97cb",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/pdf-to-md/README-RAG-LOCALE.md",
+      "sourceSha256": "d230f2dad87cdd2ac4ab2bad1d10275a600966ce3f329001dca4d6335ca1aca7",
+      "sha256": "d230f2dad87cdd2ac4ab2bad1d10275a600966ce3f329001dca4d6335ca1aca7",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/pdf-to-md/pdf-to-md.html",
+      "sourceSha256": "1b5249dad108a31a59855f383ea332c1caefc5e8c006bb1034d0b63261dc976b",
+      "sha256": "1b5249dad108a31a59855f383ea332c1caefc5e8c006bb1034d0b63261dc976b",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/pdf-to-md/tools/convert_notebook_pdfs_to_md.py",
+      "sourceSha256": "d6da3c85c889ba56370a2d9936ab8f51dc0522cd8f1ec2e81bdd1188d9f5406f",
+      "sha256": "d6da3c85c889ba56370a2d9936ab8f51dc0522cd8f1ec2e81bdd1188d9f5406f",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/pdf-to-md/vendor/pdfjs/pdf.min.js",
+      "sourceSha256": "5b5799e6f8c680663207ac5b42ee14eed2a406fa7af48f50c154f0c0b1566946",
+      "sha256": "5b5799e6f8c680663207ac5b42ee14eed2a406fa7af48f50c154f0c0b1566946",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/pdf-to-md/vendor/pdfjs/pdf.worker.min.js",
+      "sourceSha256": "feabdf309770ed24bba31a5467836cdc8cf639c705af27d52b585b041bb8527b",
+      "sha256": "feabdf309770ed24bba31a5467836cdc8cf639c705af27d52b585b041bb8527b",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/portal-layout.js",
+      "sourceSha256": "eac9184db86ce2eb90de9d1bc899d8c27b396cbcda39934b724d3265ac08e358",
+      "sha256": "b9ffd1729ee25c3bfdf6a390e440f8ea3c9684780b19021f3fc6e018b1fa42be",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/previsione-chiusura/index.html",
+      "sourceSha256": "1e702cd425fb7a5ae437172d2471cfe8b612748c5c1adc725c6f7ed79a88b644",
+      "sha256": "34dece4c3e9c3906e9fb5cafff2087408daae62bb81cb51de9f9a4ed3cb13d73",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/privacy/pims-studio.html",
+      "sourceSha256": "a4f4d31653b35dccb924f40e8647293d287d48457badfcc3476b361ef9ed57b3",
+      "sha256": "a4f4d31653b35dccb924f40e8647293d287d48457badfcc3476b361ef9ed57b3",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/rag-locale/api.php",
+      "sourceSha256": "5075b2faab5b36f7ccc132ba0f312c88ba2ccb34355554b892986506c5eca7e0",
+      "sha256": "f39a85fb6f6c326cb0b23199a982bf9dd51c10c6789ac22ff199664a71afec96",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/rag-locale/index.html",
+      "sourceSha256": "fdea6b34426ed2a603c1c4cbca99b6e16d8ce8ea25acb7a6a9584e570cab1423",
+      "sha256": "fdea6b34426ed2a603c1c4cbca99b6e16d8ce8ea25acb7a6a9584e570cab1423",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/studio-core/core.js",
+      "sourceSha256": "c9ae99a82029ee8160d18ac36972257a8a6027c9226cf402faf95cfc5e84f30f",
+      "sha256": "c9ae99a82029ee8160d18ac36972257a8a6027c9226cf402faf95cfc5e84f30f",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/studio-core/schemas/v1/analysis-run.schema.json",
+      "sourceSha256": "b9b91440dbfd80f9262b04a7c17b136d84bb3fe982311f0bf8273f8038e6cb66",
+      "sha256": "ab544d3d537ef23d37f0a8e062d59f1d94d256e3f9f139d85cb120ab4951edd8",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/studio-core/schemas/v1/audit-event.schema.json",
+      "sourceSha256": "c7596fc47dbd9f352f7c9c44054d8d204a18600f35279707252088db2fb43bd6",
+      "sha256": "c1f6c97e91cfe2f16acd1b6f293b323f37eff253c721a67418271b2af4ce916a",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/studio-core/schemas/v1/client-dossier.schema.json",
+      "sourceSha256": "3c153baed88b06b2cf5ac848a28cbd651a29485bd6d8d264335b0043079e216b",
+      "sha256": "454a80b445f14a0236b0d952eaac73be3120dff720d81fe05aafb8581bdb4a80",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/studio-core/schemas/v1/document-source.schema.json",
+      "sourceSha256": "e50e62e1496582c29a5bea09cb7aa8282313920a9310fc707bdd4f2c7c50df81",
+      "sha256": "21597a5cacd66cabea2242264ded3bcfed2d8b060406fe906ac19368ff7cc5eb",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/studio-core/schemas/v1/evidence-record.schema.json",
+      "sourceSha256": "53c4824e436b03b6b9baac9e3c22f54774d71fed4f53e93e308da0d82f770a65",
+      "sha256": "4531942397a8a6f32525771573b13a30552e6bcbc23c48ede3e031d8ba72073d",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/studio-core/schemas/v1/project-manifest.schema.json",
+      "sourceSha256": "04d15d4225e21593a427fc95055ed507f4f3000c28caff708fc4076e9f608e2e",
+      "sha256": "53f46750d888061967c6cdd8dd61676e7f65f87abd36f92a1450c8ffdc1c797e",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/studio-core/schemas/v1/rule-set.schema.json",
+      "sourceSha256": "8d09b02eff2d762f242a5487d8de5368cc53bd6c3ff194a90eeca46f1a39c9ef",
+      "sha256": "ca9b087c746b19d64c87630bdc439fb87959ac659eb4cc11c7ed3b8e73b1402c",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/studio-core/schemas/v1/studio-job.schema.json",
+      "sourceSha256": "b5418b45160ccb6ddcef2e9a35e3dcf26c13f9d31627f29dd44cb121b7cf2408",
+      "sha256": "df54c442b83269d0fc5c115213ac0ee862ae368d8d4a27a89d0651a29c66ef65",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/studio-core/schemas/v1/studio-result.schema.json",
+      "sourceSha256": "9f98b89dc00211d25082ad2fcb380a13eda96444a75e059aa715703056605059",
+      "sha256": "daca9bd8a7abdfc956b1097e3e125cf068bbc616a59e68fe9bfefedc11ce73f3",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/studio-core/storage-api.php",
+      "sourceSha256": "75f033d4caf8d88119c9973186a2a26f9a4a9f5f7c19fd64fa8cd48f6ac9cb01",
+      "sha256": "086e880f1728cc577e6fa0a5abc2a04a4ccbbcc69bc010e601c6e0de53fe393b",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/studio-core/storage.js",
+      "sourceSha256": "c9ae99a82029ee8160d18ac36972257a8a6027c9226cf402faf95cfc5e84f30f",
+      "sha256": "c9ae99a82029ee8160d18ac36972257a8a6027c9226cf402faf95cfc5e84f30f",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/cessioni/Dockerfile",
+      "sourceSha256": "91f406192e8c9f7efb3dc0f58c3e5a271c0c812f5a1ac0db1b38e781d1476971",
+      "sha256": "91f406192e8c9f7efb3dc0f58c3e5a271c0c812f5a1ac0db1b38e781d1476971",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/cessioni/api.php",
+      "sourceSha256": "0e78d164e1b7c970bc2ee2e2d813dd48efcb6eb44950d2b478ef1b841011df34",
+      "sha256": "0e78d164e1b7c970bc2ee2e2d813dd48efcb6eb44950d2b478ef1b841011df34",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/cessioni/app.js",
+      "sourceSha256": "510192a4645123b0c8b57aa54e4f191e717a07095e090be38cd57f8716c66f4c",
+      "sha256": "510192a4645123b0c8b57aa54e4f191e717a07095e090be38cd57f8716c66f4c",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/cessioni/clause-defaults.js",
+      "sourceSha256": "452e42cb2d310b21b352ca348983e4b14d3f77ff3e224a1f40e134a302dddd1d",
+      "sha256": "452e42cb2d310b21b352ca348983e4b14d3f77ff3e224a1f40e134a302dddd1d",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/cessioni/clause-defaults.json",
+      "sourceSha256": "54aff27d4067c3738ec30718bec235559c4ad2111cfcadcade45dad25b228946",
+      "sha256": "54aff27d4067c3738ec30718bec235559c4ad2111cfcadcade45dad25b228946",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/cessioni/compose.yml",
+      "sourceSha256": "26978dc7c1e0c9fa66a3a0678c56bd1522fd04c6e9e5413fdff04d3f7746c2c1",
+      "sha256": "26978dc7c1e0c9fa66a3a0678c56bd1522fd04c6e9e5413fdff04d3f7746c2c1",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/cessioni/documents.py",
+      "sourceSha256": "3a9c3512ca1998e5b1c36ec16ff036f94be956c6764ef39aca67389df7e45709",
+      "sha256": "b2c7e90eb2746a2f73cdbd634233f81ea3c75bf74190d3156b918d9a48365815",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/cessioni/domain.py",
+      "sourceSha256": "eaae429254013a546de20196583be02594dd1aab8d5bcdbf0c4385af7dbc23b7",
+      "sha256": "eaae429254013a546de20196583be02594dd1aab8d5bcdbf0c4385af7dbc23b7",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/cessioni/extract.py",
+      "sourceSha256": "5359b110e5a719b12cd835f08eb559bdcbb25f32fee505be102edcf7292dc1b4",
+      "sha256": "5359b110e5a719b12cd835f08eb559bdcbb25f32fee505be102edcf7292dc1b4",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/cessioni/fiscal-code-ui.js",
+      "sourceSha256": "44d12302a7b0803f721e403590f620a0cba6e27a94ba86f93a0f9d56a1a947ec",
+      "sha256": "44d12302a7b0803f721e403590f620a0cba6e27a94ba86f93a0f9d56a1a947ec",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/cessioni/fiscal-code.js",
+      "sourceSha256": "7a3778aacdba1936dc8d8a928c1a1f1c5cccac993cda8179e19188c6abaf9528",
+      "sha256": "7a3778aacdba1936dc8d8a928c1a1f1c5cccac993cda8179e19188c6abaf9528",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/cessioni/index.html",
+      "sourceSha256": "1cc799502823e77c506c70d9da9f44d005c1dbabbdf9eb0d3b3c63f3dd63c338",
+      "sha256": "54d9a14a2e601518f1c4c1ee34c295084e933c70acee1e7859874bf3666c5f6a",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/cessioni/server.py",
+      "sourceSha256": "77a59bfd45b8d55b446b568aa863aed661461ca2b19b4df8f185066ae5d975ae",
+      "sha256": "32e995df7eb807c9b69c15df6a723577fea50e432bbba32dfee64726208e1387",
+      "modified": true
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/cessioni/style.css",
+      "sourceSha256": "8e837078c75a70bbed1d2d7989e4077b6b773c0538641ddd4c87edec9b193ae5",
+      "sha256": "8e837078c75a70bbed1d2d7989e4077b6b773c0538641ddd4c87edec9b193ae5",
+      "modified": false
+    },
+    {
+      "repo": "studio-apps",
+      "file": "web/verbali/generatore-verbali.html",
+      "sourceSha256": "6540b8c21deed8cfdd5efc6f3c805401f3c70dd11865f644a676a21e3300550b",
+      "sha256": "3c21e32ad73a514e83c0d90cbb113f04adac45369ac8d8ff59bad10a66b96006",
+      "modified": true
+    },
+    {
+      "repo": "agora-ai",
+      "file": ".dockerignore",
+      "sourceSha256": "0dd38a2ad6896cbfbfa12f71619cc64a6035fa7de2076bca1da6b01735890ad8",
+      "sha256": "0dd38a2ad6896cbfbfa12f71619cc64a6035fa7de2076bca1da6b01735890ad8",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": ".env.example",
+      "sourceSha256": "1b3ccde6bd6ef2e4bea15ba6095db2e5f28bfe74d4aca3b239887bdb882da95b",
+      "sha256": "1b3ccde6bd6ef2e4bea15ba6095db2e5f28bfe74d4aca3b239887bdb882da95b",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": ".gitignore",
+      "sourceSha256": "2195c79807a9367a52fd40f0a5129aa9cb507faf517b162205886271dac27e87",
+      "sha256": "2195c79807a9367a52fd40f0a5129aa9cb507faf517b162205886271dac27e87",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": ".prettierignore",
+      "sourceSha256": "17f593918ed38aec9deac4301d519a4349172c649d1849ce17190cedbde33228",
+      "sha256": "17f593918ed38aec9deac4301d519a4349172c649d1849ce17190cedbde33228",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": ".prettierrc",
+      "sourceSha256": "087532218269eb851c22dcc3d5234ea46bfa513b494a3d7b167b1c1f48c410c5",
+      "sha256": "087532218269eb851c22dcc3d5234ea46bfa513b494a3d7b167b1c1f48c410c5",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/index.html",
+      "sourceSha256": "a3183153df7aaee412e96db6cf1afab805c545a7d637e4da972fde597a735e0e",
+      "sha256": "a3183153df7aaee412e96db6cf1afab805c545a7d637e4da972fde597a735e0e",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/public/agora-mark.svg",
+      "sourceSha256": "df0b2b585861f2488e936c4b07d23f0ca095c7b5d50fb35b43496a46392bf1e9",
+      "sha256": "df0b2b585861f2488e936c4b07d23f0ca095c7b5d50fb35b43496a46392bf1e9",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/public/sw.js",
+      "sourceSha256": "6936846c86bccbfbe38194ec40089e56d18f7f285caa046e46348c3587b148f3",
+      "sha256": "6936846c86bccbfbe38194ec40089e56d18f7f285caa046e46348c3587b148f3",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/_core/hooks/useAuth.ts",
+      "sourceSha256": "6e84a2cd058913dd0a7e990f084300bedc0f78add2cb3ace6515c644ab48cf80",
+      "sha256": "6e84a2cd058913dd0a7e990f084300bedc0f78add2cb3ace6515c644ab48cf80",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/App.tsx",
+      "sourceSha256": "48f43e18316cae8521f7298e1b5e00965e14efbf2b69cc93c5eed3380ee2c0b8",
+      "sha256": "48f43e18316cae8521f7298e1b5e00965e14efbf2b69cc93c5eed3380ee2c0b8",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/AIChatBox.tsx",
+      "sourceSha256": "c97ae745ae8f4db0b5e1a96d851fe9fd6943c53bc1bc6c28603bce36058ce28a",
+      "sha256": "c97ae745ae8f4db0b5e1a96d851fe9fd6943c53bc1bc6c28603bce36058ce28a",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/AttachmentPicker.tsx",
+      "sourceSha256": "9d6ddb8b0dac1cafc6ad97b92ca8f1dea1d78d38fb9e6610cf4f11c1257c0984",
+      "sha256": "9d6ddb8b0dac1cafc6ad97b92ca8f1dea1d78d38fb9e6610cf4f11c1257c0984",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/DashboardLayout.tsx",
+      "sourceSha256": "6c985b8fa17f00ba2380a82919ef22bf83e8418d07f147507995f5679996249b",
+      "sha256": "6c985b8fa17f00ba2380a82919ef22bf83e8418d07f147507995f5679996249b",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/DashboardLayoutSkeleton.tsx",
+      "sourceSha256": "7b6eab8ac4d4118bdf2be88f23e7db5318d975ac03e6451f773d5eb15feb34cc",
+      "sha256": "7b6eab8ac4d4118bdf2be88f23e7db5318d975ac03e6451f773d5eb15feb34cc",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ErrorBoundary.tsx",
+      "sourceSha256": "3b0bdb7a19758fcd440138ccfb5f306b96836564f15d7c8c9663d7dd7417e972",
+      "sha256": "3b0bdb7a19758fcd440138ccfb5f306b96836564f15d7c8c9663d7dd7417e972",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/HardBudgetControl.tsx",
+      "sourceSha256": "74146d26e8458da258033da10ad9afe03ea8b112ef1851f3f8f9f2b63a1e9e11",
+      "sha256": "74146d26e8458da258033da10ad9afe03ea8b112ef1851f3f8f9f2b63a1e9e11",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ManusDialog.tsx",
+      "sourceSha256": "66237a756ee50b4195a074f689aa97dd4ec445cbbc6f0d11f12bb32a6fb4cd0d",
+      "sha256": "66237a756ee50b4195a074f689aa97dd4ec445cbbc6f0d11f12bb32a6fb4cd0d",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/Map.tsx",
+      "sourceSha256": "931413fea95936e68f872bc34733138f9e11a656446b1a56a98fba9532954e22",
+      "sha256": "931413fea95936e68f872bc34733138f9e11a656446b1a56a98fba9532954e22",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/accordion.tsx",
+      "sourceSha256": "7b96cf50388ad3d07be64924ab33ba5f63b79a6a5749ebe4d31c789c0bc00d44",
+      "sha256": "7b96cf50388ad3d07be64924ab33ba5f63b79a6a5749ebe4d31c789c0bc00d44",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/alert-dialog.tsx",
+      "sourceSha256": "aeecd7967eb0be3bad2753b6633d9a43cc4c08cb35de872ffdc0b9f2b6a9b26c",
+      "sha256": "aeecd7967eb0be3bad2753b6633d9a43cc4c08cb35de872ffdc0b9f2b6a9b26c",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/alert.tsx",
+      "sourceSha256": "eccfc7f6ca9d51407cb413a3ca4b5ac721898ac93d38e95c02c35188ad674abe",
+      "sha256": "eccfc7f6ca9d51407cb413a3ca4b5ac721898ac93d38e95c02c35188ad674abe",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/aspect-ratio.tsx",
+      "sourceSha256": "654f5d6e9ed17472305d7e6fc5de30453875ffae585f5d064aedc9e6945bdbb0",
+      "sha256": "654f5d6e9ed17472305d7e6fc5de30453875ffae585f5d064aedc9e6945bdbb0",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/avatar.tsx",
+      "sourceSha256": "c2382ff71d7ef3492096ed6ef35bf82e1fd421a81d55ca80453f5f5138eac360",
+      "sha256": "c2382ff71d7ef3492096ed6ef35bf82e1fd421a81d55ca80453f5f5138eac360",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/badge.tsx",
+      "sourceSha256": "51fd797c59e63d164ade736769f19f26e41c157daba29aa0b327b3b226f4d4ac",
+      "sha256": "51fd797c59e63d164ade736769f19f26e41c157daba29aa0b327b3b226f4d4ac",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/breadcrumb.tsx",
+      "sourceSha256": "dd84657e30691ea7f14a785c13b660d6cd626c08ba1df8439c3eca858ee3cd7e",
+      "sha256": "dd84657e30691ea7f14a785c13b660d6cd626c08ba1df8439c3eca858ee3cd7e",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/button-group.tsx",
+      "sourceSha256": "ba1d824f0f4d8b5dd78a80fa766e3543eefb9173143652be2c7cb765af1864f5",
+      "sha256": "ba1d824f0f4d8b5dd78a80fa766e3543eefb9173143652be2c7cb765af1864f5",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/button.tsx",
+      "sourceSha256": "b08b4785e03566c7a6063b3d57234deae41649676870cbbb9ab2448d816e1739",
+      "sha256": "b08b4785e03566c7a6063b3d57234deae41649676870cbbb9ab2448d816e1739",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/calendar.tsx",
+      "sourceSha256": "89308bce82e8b23b611cfbc88bc19f7b341d7109ab9a2838c04cb50922113501",
+      "sha256": "89308bce82e8b23b611cfbc88bc19f7b341d7109ab9a2838c04cb50922113501",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/card.tsx",
+      "sourceSha256": "1397e7d264d90162220ea7473b311e434651886267c71e7f58d4488be9d8ff39",
+      "sha256": "1397e7d264d90162220ea7473b311e434651886267c71e7f58d4488be9d8ff39",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/carousel.tsx",
+      "sourceSha256": "42f66e6fde568c209df5d58a4ca13c3ae92d120a04fd99f7be695d6a570ef0a9",
+      "sha256": "42f66e6fde568c209df5d58a4ca13c3ae92d120a04fd99f7be695d6a570ef0a9",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/chart.tsx",
+      "sourceSha256": "47c4de202fe1dc229af94d2c86197251d279bee131d2a6fb75ab9e58cec71aab",
+      "sha256": "47c4de202fe1dc229af94d2c86197251d279bee131d2a6fb75ab9e58cec71aab",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/checkbox.tsx",
+      "sourceSha256": "4fc309590e66d3c41e3be5fb73f988b0e916e7bf5fff321c22c3a64cd4fe97cf",
+      "sha256": "4fc309590e66d3c41e3be5fb73f988b0e916e7bf5fff321c22c3a64cd4fe97cf",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/collapsible.tsx",
+      "sourceSha256": "95b5b9ea89a4105045c58b7eba539e57a1f4abc5a54d43ea0f7168f46b645eeb",
+      "sha256": "95b5b9ea89a4105045c58b7eba539e57a1f4abc5a54d43ea0f7168f46b645eeb",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/command.tsx",
+      "sourceSha256": "47910540789d4de9e890de63bfc0046f9cf6bfaa86d496a98c79622900f8520c",
+      "sha256": "47910540789d4de9e890de63bfc0046f9cf6bfaa86d496a98c79622900f8520c",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/context-menu.tsx",
+      "sourceSha256": "fe63c0a0dcabe749874ad19e07dee8418337c62dd64452fc08b5abf27b49b9eb",
+      "sha256": "fe63c0a0dcabe749874ad19e07dee8418337c62dd64452fc08b5abf27b49b9eb",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/dialog.tsx",
+      "sourceSha256": "3ffd83bd2940c1191fde091bc47311aebc2b79d78824965a5c446115e58190aa",
+      "sha256": "3ffd83bd2940c1191fde091bc47311aebc2b79d78824965a5c446115e58190aa",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/drawer.tsx",
+      "sourceSha256": "573deecc31f90fcd96f53a37b2e5363eb326fe737cbdb28cac38a5d014734fc8",
+      "sha256": "573deecc31f90fcd96f53a37b2e5363eb326fe737cbdb28cac38a5d014734fc8",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/dropdown-menu.tsx",
+      "sourceSha256": "ede99252b737a29eb1f05370956e2b842be161b6a661f1429155ac561653d029",
+      "sha256": "ede99252b737a29eb1f05370956e2b842be161b6a661f1429155ac561653d029",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/empty.tsx",
+      "sourceSha256": "c0b612929b15fd498b984d8d98d1b082a3eb294be5aa8eb9cb53b67cf152f465",
+      "sha256": "c0b612929b15fd498b984d8d98d1b082a3eb294be5aa8eb9cb53b67cf152f465",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/field.tsx",
+      "sourceSha256": "f093424ca5eadf43d46b020ed780aee7aa5f6d90d0b48fb50c031e3d7b0528c7",
+      "sha256": "f093424ca5eadf43d46b020ed780aee7aa5f6d90d0b48fb50c031e3d7b0528c7",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/form.tsx",
+      "sourceSha256": "0157362d572713567d989b726277879e75c60c24684ade4aef854867dc2fac48",
+      "sha256": "0157362d572713567d989b726277879e75c60c24684ade4aef854867dc2fac48",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/hover-card.tsx",
+      "sourceSha256": "bdfe831708e7de6b9fbb14d8fe5af5a0985f67cff3c2b5755b4b570c3b4e7ad5",
+      "sha256": "bdfe831708e7de6b9fbb14d8fe5af5a0985f67cff3c2b5755b4b570c3b4e7ad5",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/input-group.tsx",
+      "sourceSha256": "f62f2be2ad4c2c7711e7b25b0d6c03572f7871cb4022e9f4f6860dcd77dd9e57",
+      "sha256": "f62f2be2ad4c2c7711e7b25b0d6c03572f7871cb4022e9f4f6860dcd77dd9e57",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/input-otp.tsx",
+      "sourceSha256": "45fc7fed882aa5024d8eea52d9b392d13b1d80f2b7f846365bc2586e3d16253d",
+      "sha256": "45fc7fed882aa5024d8eea52d9b392d13b1d80f2b7f846365bc2586e3d16253d",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/input.tsx",
+      "sourceSha256": "0aaad971269e84519fb14928a70777db539b4cacf9f145fecd905ba483a199c6",
+      "sha256": "0aaad971269e84519fb14928a70777db539b4cacf9f145fecd905ba483a199c6",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/item.tsx",
+      "sourceSha256": "89f2ed48c2270064d63e0a40f755c1da14e99e7db46bceac56d6dee7b45b8798",
+      "sha256": "89f2ed48c2270064d63e0a40f755c1da14e99e7db46bceac56d6dee7b45b8798",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/kbd.tsx",
+      "sourceSha256": "4f8f3e521b2b007643b8a2c8f86cf547bd87e703dc2bed067083ca48f901d6ad",
+      "sha256": "4f8f3e521b2b007643b8a2c8f86cf547bd87e703dc2bed067083ca48f901d6ad",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/label.tsx",
+      "sourceSha256": "7fdad17d8e83912ad0cfc372c551a901ab98523ef17c0792a17c592a147db732",
+      "sha256": "7fdad17d8e83912ad0cfc372c551a901ab98523ef17c0792a17c592a147db732",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/menubar.tsx",
+      "sourceSha256": "53fb1c058fabaf0cfb3fb2cfdb9b17ccc8762376d62cc011150d919209b82c1a",
+      "sha256": "53fb1c058fabaf0cfb3fb2cfdb9b17ccc8762376d62cc011150d919209b82c1a",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/navigation-menu.tsx",
+      "sourceSha256": "aafccbe2b05d9f80b7d007301b51aaede4692efc468304c5fb11b21cd0c0ef43",
+      "sha256": "aafccbe2b05d9f80b7d007301b51aaede4692efc468304c5fb11b21cd0c0ef43",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/pagination.tsx",
+      "sourceSha256": "8f0d822b4688eb131e37fbf2330e19b269ab6487583be3249b98f3b68bb07928",
+      "sha256": "8f0d822b4688eb131e37fbf2330e19b269ab6487583be3249b98f3b68bb07928",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/popover.tsx",
+      "sourceSha256": "5e7bec05904d9091a7b53963f5b49660bf3564b02a057ef8640ab6855d6e32fd",
+      "sha256": "5e7bec05904d9091a7b53963f5b49660bf3564b02a057ef8640ab6855d6e32fd",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/progress.tsx",
+      "sourceSha256": "2297e3c13d5b2a04a9164c3900c8cae2e477c07ebed35c4bbda98d1232ab7b7e",
+      "sha256": "2297e3c13d5b2a04a9164c3900c8cae2e477c07ebed35c4bbda98d1232ab7b7e",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/radio-group.tsx",
+      "sourceSha256": "025f03d81d4e304eb27d94e6517f37072a3941df8f8603ac55cfb42b17cd99ef",
+      "sha256": "025f03d81d4e304eb27d94e6517f37072a3941df8f8603ac55cfb42b17cd99ef",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/resizable.tsx",
+      "sourceSha256": "52e1027a4b4a5f70f0479f69fe40046dfa112952b7e568292727e1618348ee80",
+      "sha256": "52e1027a4b4a5f70f0479f69fe40046dfa112952b7e568292727e1618348ee80",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/scroll-area.tsx",
+      "sourceSha256": "793c5d69e6e5ce8bcbe453b8834d53f3a90839fc8e8e1f9fe5f77e7626566677",
+      "sha256": "793c5d69e6e5ce8bcbe453b8834d53f3a90839fc8e8e1f9fe5f77e7626566677",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/select.tsx",
+      "sourceSha256": "40945665ec8363e55ae38f26115ee763cbc5548bed585eed569d406cbc4b7a75",
+      "sha256": "40945665ec8363e55ae38f26115ee763cbc5548bed585eed569d406cbc4b7a75",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/separator.tsx",
+      "sourceSha256": "23bbf3f74d01f55533f6f22ebbc2b299137421e07896cb7af21245756a10c27e",
+      "sha256": "23bbf3f74d01f55533f6f22ebbc2b299137421e07896cb7af21245756a10c27e",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/sheet.tsx",
+      "sourceSha256": "ab22e38f2cf312a31a84fb91f7e912f0da66e809f6e1ae675ec6cf0c8ec0ba61",
+      "sha256": "ab22e38f2cf312a31a84fb91f7e912f0da66e809f6e1ae675ec6cf0c8ec0ba61",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/sidebar.tsx",
+      "sourceSha256": "782ec3ba8a570c9a0f6ec12d7e1c1efdee5e02eb2da7aa46131c734e7f7bbea8",
+      "sha256": "782ec3ba8a570c9a0f6ec12d7e1c1efdee5e02eb2da7aa46131c734e7f7bbea8",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/skeleton.tsx",
+      "sourceSha256": "1f75b999a5ad2f65e8fb807faa2b3fccef9eb333996fb4c9030575dac7393091",
+      "sha256": "1f75b999a5ad2f65e8fb807faa2b3fccef9eb333996fb4c9030575dac7393091",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/slider.tsx",
+      "sourceSha256": "9c458646597836916678a9bce2f3064d4d5cdb0c65d32d92bc71f57d7569fb6b",
+      "sha256": "9c458646597836916678a9bce2f3064d4d5cdb0c65d32d92bc71f57d7569fb6b",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/sonner.tsx",
+      "sourceSha256": "a65fe9ded89363ec546f28401a26caec1a3aa38c52259eb829cfa33723dbe3a5",
+      "sha256": "a65fe9ded89363ec546f28401a26caec1a3aa38c52259eb829cfa33723dbe3a5",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/spinner.tsx",
+      "sourceSha256": "ecd836d476573adb4403747c3457339276805433c20eacf3408303b76ec283ff",
+      "sha256": "ecd836d476573adb4403747c3457339276805433c20eacf3408303b76ec283ff",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/switch.tsx",
+      "sourceSha256": "688cccb52220e05f6770fb5e8296375f2a784bcf6585eb26a721a9f29361ab60",
+      "sha256": "688cccb52220e05f6770fb5e8296375f2a784bcf6585eb26a721a9f29361ab60",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/table.tsx",
+      "sourceSha256": "085566291cf03c9fea590aa9b77339feebf04cf8ce23494a3667f84bf4811e29",
+      "sha256": "085566291cf03c9fea590aa9b77339feebf04cf8ce23494a3667f84bf4811e29",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/tabs.tsx",
+      "sourceSha256": "394b62295cee5185e858bcabfafcd5a7287910944c962fbd9c1c06444b22cedb",
+      "sha256": "394b62295cee5185e858bcabfafcd5a7287910944c962fbd9c1c06444b22cedb",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/textarea.tsx",
+      "sourceSha256": "ffbad961ec02f9ca23f4157daa1a4139960c4477a245c216a793b4692dec142c",
+      "sha256": "ffbad961ec02f9ca23f4157daa1a4139960c4477a245c216a793b4692dec142c",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/toggle-group.tsx",
+      "sourceSha256": "92e7640e30c4ae3ffd775e9a3d845327c26d9ce0f9f39555c2e7cfc2c8671c4d",
+      "sha256": "92e7640e30c4ae3ffd775e9a3d845327c26d9ce0f9f39555c2e7cfc2c8671c4d",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/toggle.tsx",
+      "sourceSha256": "a922c5e0534b9fd556ff8a8b56e25f7d24544be6050472cdd1ea003b8a0f3e47",
+      "sha256": "a922c5e0534b9fd556ff8a8b56e25f7d24544be6050472cdd1ea003b8a0f3e47",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/components/ui/tooltip.tsx",
+      "sourceSha256": "6f0c581e2018d676e43c0b4b5aeb62d3fe68e65907cf748548208d75ac212677",
+      "sha256": "6f0c581e2018d676e43c0b4b5aeb62d3fe68e65907cf748548208d75ac212677",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/const.ts",
+      "sourceSha256": "f216adc0df23e904a1e7c19fe563a473dfed2482f35d26359fd75839e6fa737b",
+      "sha256": "f216adc0df23e904a1e7c19fe563a473dfed2482f35d26359fd75839e6fa737b",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/contexts/ThemeContext.tsx",
+      "sourceSha256": "e025cdb51ad747757235b16dccbb39b5e949cdf93fa9a822ff81ef6e32f65924",
+      "sha256": "e025cdb51ad747757235b16dccbb39b5e949cdf93fa9a822ff81ef6e32f65924",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/hooks/useComposition.ts",
+      "sourceSha256": "674c515075a2f318d4ec2291313ba552488de0b2c1aac7f36f3d71c4e34d434e",
+      "sha256": "674c515075a2f318d4ec2291313ba552488de0b2c1aac7f36f3d71c4e34d434e",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/hooks/useMobile.tsx",
+      "sourceSha256": "464e778a9da49481e3c6dac4f92ff589e01349b33063a74c45435cfeed81e1c0",
+      "sha256": "464e778a9da49481e3c6dac4f92ff589e01349b33063a74c45435cfeed81e1c0",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/hooks/usePersistFn.ts",
+      "sourceSha256": "60cc14f39a3f8b212d7baf4beeaf35f81e09a7c78e4154bcca3477e010879511",
+      "sha256": "60cc14f39a3f8b212d7baf4beeaf35f81e09a7c78e4154bcca3477e010879511",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/index.css",
+      "sourceSha256": "67d8c3b93d5ded334fe85781dcfd386cd099cb16cba1b1386a4d306ae33e8ef7",
+      "sha256": "67d8c3b93d5ded334fe85781dcfd386cd099cb16cba1b1386a4d306ae33e8ef7",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/lib/trpc.ts",
+      "sourceSha256": "d883ad43f46eaf73342924feaf5342ce601d04abe1a828076625071931cc0ef3",
+      "sha256": "d883ad43f46eaf73342924feaf5342ce601d04abe1a828076625071931cc0ef3",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/lib/trpcTransport.test.ts",
+      "sourceSha256": "672bce7f7b8b4b9ff52d7f5f21b3776e563e62c04fe7223b1c732840d69650b9",
+      "sha256": "672bce7f7b8b4b9ff52d7f5f21b3776e563e62c04fe7223b1c732840d69650b9",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/lib/trpcTransport.ts",
+      "sourceSha256": "f7dd31955776e24b61a6b98098b45f0ccfbb0a6b69a9f2f38b555c66cda43482",
+      "sha256": "f7dd31955776e24b61a6b98098b45f0ccfbb0a6b69a9f2f38b555c66cda43482",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/lib/utils.ts",
+      "sourceSha256": "d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+      "sha256": "d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/main.tsx",
+      "sourceSha256": "32d44258f4f893ed19ac0f8b4a87019cf70f77ddd97834ce91a41248504ce927",
+      "sha256": "32d44258f4f893ed19ac0f8b4a87019cf70f77ddd97834ce91a41248504ce927",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/pages/ComponentShowcase.tsx",
+      "sourceSha256": "d3905f3521d77e97b7d7c6198a6f915bf45f68223c74552e7e728f4fe10ca79a",
+      "sha256": "d3905f3521d77e97b7d7c6198a6f915bf45f68223c74552e7e728f4fe10ca79a",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/pages/History.tsx",
+      "sourceSha256": "c99207640adcd029cdb781a4d910e0a787acd323debbabeca087cbee8b575e36",
+      "sha256": "c99207640adcd029cdb781a4d910e0a787acd323debbabeca087cbee8b575e36",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/pages/Home.tsx",
+      "sourceSha256": "b50bf049b30cfa3345383dbfec5d0316a3c324837cc8a0d34ec1b94bf9e3d961",
+      "sha256": "b50bf049b30cfa3345383dbfec5d0316a3c324837cc8a0d34ec1b94bf9e3d961",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/pages/NotFound.tsx",
+      "sourceSha256": "4062794318dde4d0a321e0332cdee2cea68d19c1d9d81889ff425b02ed183f64",
+      "sha256": "4062794318dde4d0a321e0332cdee2cea68d19c1d9d81889ff425b02ed183f64",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/pages/Settings.tsx",
+      "sourceSha256": "c60ef813a09d8d11f238951f9999242f85853f1bdc01450ce79777748de70835",
+      "sha256": "c60ef813a09d8d11f238951f9999242f85853f1bdc01450ce79777748de70835",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/pages/Statistics.tsx",
+      "sourceSha256": "1c7635570c460fd256a2a0a590bb28c5a326697985d75acd99e9b410fc52e4f0",
+      "sha256": "1c7635570c460fd256a2a0a590bb28c5a326697985d75acd99e9b410fc52e4f0",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "client/src/pwa.ts",
+      "sourceSha256": "a65c629c40cc2ecd142586e3c903796b04e384adf8075ff723a4ee9737f3fbfa",
+      "sha256": "a65c629c40cc2ecd142586e3c903796b04e384adf8075ff723a4ee9737f3fbfa",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "components.json",
+      "sourceSha256": "8be0e54515838be398164884e96319b52bcfcbd52b2e63171d51df4131cfcb03",
+      "sha256": "8be0e54515838be398164884e96319b52bcfcbd52b2e63171d51df4131cfcb03",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "deploy/authentik-compose.official.yml",
+      "sourceSha256": "f156146a15c4100ee53ea9070322f6add66e35673ec00f02020d06502e72b2cd",
+      "sha256": "f156146a15c4100ee53ea9070322f6add66e35673ec00f02020d06502e72b2cd",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "deploy/Caddyfile.example",
+      "sourceSha256": "c9b9be9597c3d0b7e09d8c1384714e4d7b96c292bc55bef72015a632520d764b",
+      "sha256": "c9b9be9597c3d0b7e09d8c1384714e4d7b96c292bc55bef72015a632520d764b",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "deploy/docker-compose.server.yml",
+      "sourceSha256": "5cdf699d6d5afc971994c2d655896402d154b21ced253b84c8c16ee5d8ed9f6b",
+      "sha256": "5cdf699d6d5afc971994c2d655896402d154b21ced253b84c8c16ee5d8ed9f6b",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "docker-compose.yml",
+      "sourceSha256": "4136c8a15e88eb1f0717b00729f2ca530735b3b4f649be284632d4d9e6829acc",
+      "sha256": "4136c8a15e88eb1f0717b00729f2ca530735b3b4f649be284632d4d9e6829acc",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "Dockerfile",
+      "sourceSha256": "0c46614df7b0dfa5b66a156ec4f65cdaf2d79ebbe711cdea7968b5b7db9b62d6",
+      "sha256": "0c46614df7b0dfa5b66a156ec4f65cdaf2d79ebbe711cdea7968b5b7db9b62d6",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "docs/ACCEPTANCE-CHECKLIST.md",
+      "sourceSha256": "e65149c4b4f4e2e2cfc90999b434739ff0cae1965b503f12123c799addb7910a",
+      "sha256": "e65149c4b4f4e2e2cfc90999b434739ff0cae1965b503f12123c799addb7910a",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "docs/data-and-documents.md",
+      "sourceSha256": "88007aac17204373ca5cb9b5ffbf153f6f25bcdd0fc389448798fdf59d96b39b",
+      "sha256": "88007aac17204373ca5cb9b5ffbf153f6f25bcdd0fc389448798fdf59d96b39b",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle-baseline/0000_baseline.sql",
+      "sourceSha256": "e3739cfe4dc2359d6d1135053cc21c873b50f3e24c9325e65947d92311ce26c7",
+      "sha256": "e3739cfe4dc2359d6d1135053cc21c873b50f3e24c9325e65947d92311ce26c7",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle-baseline/meta/_journal.json",
+      "sourceSha256": "a7a11c1c7f67c5f0f9cb42cf1ed1659a210aade26f5cdb8899d8b2daa680853e",
+      "sha256": "a7a11c1c7f67c5f0f9cb42cf1ed1659a210aade26f5cdb8899d8b2daa680853e",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle-baseline/meta/0000_snapshot.json",
+      "sourceSha256": "7b364e6885b5904e102ceb4d79f838d6d93bc4815ab07ad10183515f4f7834f8",
+      "sha256": "7b364e6885b5904e102ceb4d79f838d6d93bc4815ab07ad10183515f4f7834f8",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle.config.ts",
+      "sourceSha256": "9610673b3fe7b6b950a8e7e54cb1e91f9dd25f87d7ae6a41d2f6ada957065d01",
+      "sha256": "9610673b3fe7b6b950a8e7e54cb1e91f9dd25f87d7ae6a41d2f6ada957065d01",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle.server.config.ts",
+      "sourceSha256": "30e374cf40edf5fe70ba6f647d304a010d5b9c1c89384b63cb06db440332e79e",
+      "sha256": "30e374cf40edf5fe70ba6f647d304a010d5b9c1c89384b63cb06db440332e79e",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0001_confused_preak.sql",
+      "sourceSha256": "d1e0b079d3bac528e70c131c95f6e450be9e9d2092371332afb52dd641c14e9f",
+      "sha256": "d1e0b079d3bac528e70c131c95f6e450be9e9d2092371332afb52dd641c14e9f",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0002_pink_cammi.sql",
+      "sourceSha256": "0b9257543075ead1b9430ea842149d72bd9bfdeec47b13d4b6ad1121b6f7581a",
+      "sha256": "0b9257543075ead1b9430ea842149d72bd9bfdeec47b13d4b6ad1121b6f7581a",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0003_lying_sage.sql",
+      "sourceSha256": "6ae50bbd2ba7f7d3af8765666db70d5c0a97b375a9c942eafe3419953b4d4036",
+      "sha256": "6ae50bbd2ba7f7d3af8765666db70d5c0a97b375a9c942eafe3419953b4d4036",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0004_third_colossus.sql",
+      "sourceSha256": "ecae25bf76ffd0de530c4cbd894ae913933b93e059c1c10192079532df215e00",
+      "sha256": "ecae25bf76ffd0de530c4cbd894ae913933b93e059c1c10192079532df215e00",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0005_redundant_goblin_queen.sql",
+      "sourceSha256": "2926026125e7e6c21421f04d8824e92ac17b11ae450e4fa57b8179e4aebe750e",
+      "sha256": "2926026125e7e6c21421f04d8824e92ac17b11ae450e4fa57b8179e4aebe750e",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0006_happy_starfox.sql",
+      "sourceSha256": "8bca7e59f5493271e54d321f2b4b52f277de4805f9f3043e56feca32cd78fe25",
+      "sha256": "8bca7e59f5493271e54d321f2b4b52f277de4805f9f3043e56feca32cd78fe25",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0007_modern_catseye.sql",
+      "sourceSha256": "8b5a2f8fca3d8f645bcbf1b5f3b2a807168cd55d5f1efe16176cfd7ab0f47db1",
+      "sha256": "8b5a2f8fca3d8f645bcbf1b5f3b2a807168cd55d5f1efe16176cfd7ab0f47db1",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0008_burly_warbird.sql",
+      "sourceSha256": "898c9dc1397f725c1c0e4fc693e964dcd25d905386507b400f54793bf91c862a",
+      "sha256": "898c9dc1397f725c1c0e4fc693e964dcd25d905386507b400f54793bf91c862a",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0009_soft_proteus.sql",
+      "sourceSha256": "10e58bdbf3788ed320eba767944569c7573e91fce974db4fcaafa325a33204eb",
+      "sha256": "10e58bdbf3788ed320eba767944569c7573e91fce974db4fcaafa325a33204eb",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0010_tired_vargas.sql",
+      "sourceSha256": "1a63d418d0ccf2aaaba899793bf649985c73317809d4705188a1904d9c6512d9",
+      "sha256": "1a63d418d0ccf2aaaba899793bf649985c73317809d4705188a1904d9c6512d9",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0011_flippant_betty_ross.sql",
+      "sourceSha256": "9dcc1f029c57754538223ba4156a427e2f71304167821accdb598e42b2931df5",
+      "sha256": "9dcc1f029c57754538223ba4156a427e2f71304167821accdb598e42b2931df5",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0012_jittery_kronos.sql",
+      "sourceSha256": "5ce65cc34429fa0ea814239bbb47bbf61ee2842ca30f18a2907f034ed09378ff",
+      "sha256": "5ce65cc34429fa0ea814239bbb47bbf61ee2842ca30f18a2907f034ed09378ff",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0013_fat_baron_zemo.sql",
+      "sourceSha256": "d864698cf1b3c136041e86168f07ac89fca50908ca1320519a2f2de7e780b984",
+      "sha256": "d864698cf1b3c136041e86168f07ac89fca50908ca1320519a2f2de7e780b984",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0014_brief_bruce_banner.sql",
+      "sourceSha256": "2bd418aa1e37d8623ec2b40f3f8aa5b994e0b0c398cee68c4a4b3bdf7fec4301",
+      "sha256": "2bd418aa1e37d8623ec2b40f3f8aa5b994e0b0c398cee68c4a4b3bdf7fec4301",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0015_clean_ricochet.sql",
+      "sourceSha256": "f32076c23827e2a19d0260db0b8d221c0182c5745b822e98102590a70fe9a7e1",
+      "sha256": "f32076c23827e2a19d0260db0b8d221c0182c5745b822e98102590a70fe9a7e1",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/0016_self_hosted_oidc_documents.sql",
+      "sourceSha256": "bd6446a85d176e8cd69dfe20b787e534062d58763d292e779a1d97d509713ca3",
+      "sha256": "bd6446a85d176e8cd69dfe20b787e534062d58763d292e779a1d97d509713ca3",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/_journal.json",
+      "sourceSha256": "bfd992cf5477e6ee97dc611c1faeaca2b92fdbe8069ce6e371585f089932a51a",
+      "sha256": "bfd992cf5477e6ee97dc611c1faeaca2b92fdbe8069ce6e371585f089932a51a",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0001_snapshot.json",
+      "sourceSha256": "a3f41c0bff3927ae1f61271eaaa018d8ca4092381887b14c6f150d71b2836111",
+      "sha256": "a3f41c0bff3927ae1f61271eaaa018d8ca4092381887b14c6f150d71b2836111",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0002_snapshot.json",
+      "sourceSha256": "97a674c58910b8825e23f701be654aad89964d36e826a78201545db1998c03a9",
+      "sha256": "97a674c58910b8825e23f701be654aad89964d36e826a78201545db1998c03a9",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0003_snapshot.json",
+      "sourceSha256": "8db44dfdd50b9f63c2b2166b586ff4d1e70415c98851ac8fd91923cb0d4f8248",
+      "sha256": "8db44dfdd50b9f63c2b2166b586ff4d1e70415c98851ac8fd91923cb0d4f8248",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0004_snapshot.json",
+      "sourceSha256": "9207a645dbe077ce9d34cb6ab7e4345e09bffc42370cfe23519cada38d7792f8",
+      "sha256": "9207a645dbe077ce9d34cb6ab7e4345e09bffc42370cfe23519cada38d7792f8",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0005_snapshot.json",
+      "sourceSha256": "8f7c86561a849d99d0af634c05470f6c3840e5853a21d92169526d2cd3362a38",
+      "sha256": "8f7c86561a849d99d0af634c05470f6c3840e5853a21d92169526d2cd3362a38",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0006_snapshot.json",
+      "sourceSha256": "26ddd9350f4da1c2c85693906e5ebb2b02e16147cc67107922bf2e71dc2742a7",
+      "sha256": "26ddd9350f4da1c2c85693906e5ebb2b02e16147cc67107922bf2e71dc2742a7",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0007_snapshot.json",
+      "sourceSha256": "8cbad634ed4c0724963dfbe1b3191a3fccda5612a7a8da04f972f9d6bf740a41",
+      "sha256": "8cbad634ed4c0724963dfbe1b3191a3fccda5612a7a8da04f972f9d6bf740a41",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0008_snapshot.json",
+      "sourceSha256": "5de0be8fe7be3c46969220ea568b921be977bc8821279b3083fb5bae3d07f162",
+      "sha256": "5de0be8fe7be3c46969220ea568b921be977bc8821279b3083fb5bae3d07f162",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0009_snapshot.json",
+      "sourceSha256": "7e5b35b1e3af62175b935c157187f8185d5549b8dcf67e2ec33f68185f3e8215",
+      "sha256": "7e5b35b1e3af62175b935c157187f8185d5549b8dcf67e2ec33f68185f3e8215",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0010_snapshot.json",
+      "sourceSha256": "5518d5fb7bae8458054dd6557443dd689115c0f8ee58e087f9982438f886eb07",
+      "sha256": "5518d5fb7bae8458054dd6557443dd689115c0f8ee58e087f9982438f886eb07",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0011_snapshot.json",
+      "sourceSha256": "703f9cd699aa617e12926534f418a64a71fa217f0c011c30dd4063b6a9db4a9e",
+      "sha256": "703f9cd699aa617e12926534f418a64a71fa217f0c011c30dd4063b6a9db4a9e",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0012_snapshot.json",
+      "sourceSha256": "f928a770ed36b0a8f50ada09e6faa3352c4e88ef980b936f43eea36b7ad35f1c",
+      "sha256": "f928a770ed36b0a8f50ada09e6faa3352c4e88ef980b936f43eea36b7ad35f1c",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0013_snapshot.json",
+      "sourceSha256": "c1e8c82ecc1e1153ec1a8739a920f259ecbc2e8c6fc6b5e8ca5184bf8ee448fa",
+      "sha256": "c1e8c82ecc1e1153ec1a8739a920f259ecbc2e8c6fc6b5e8ca5184bf8ee448fa",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0014_snapshot.json",
+      "sourceSha256": "8202bcc98cb6f2ff42ea793f4e25f7a72caca9af12587dc307584ff251e7b60a",
+      "sha256": "8202bcc98cb6f2ff42ea793f4e25f7a72caca9af12587dc307584ff251e7b60a",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/meta/0015_snapshot.json",
+      "sourceSha256": "90be6633ae6daf0d6f5a9387ffd100531ba5aa2c65f290b90ba8fe5135733932",
+      "sha256": "90be6633ae6daf0d6f5a9387ffd100531ba5aa2c65f290b90ba8fe5135733932",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/relations.ts",
+      "sourceSha256": "85acb8ece8fbb5031fc56fa8c70338d9b8b06ef3b032391fff8532c6373c7186",
+      "sha256": "85acb8ece8fbb5031fc56fa8c70338d9b8b06ef3b032391fff8532c6373c7186",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "drizzle/schema.ts",
+      "sourceSha256": "8d0a4c64473c6e5c271508c7456899ddbe30ea748e039bbb6573cb8d80439561",
+      "sha256": "8d0a4c64473c6e5c271508c7456899ddbe30ea748e039bbb6573cb8d80439561",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "INSTALL.md",
+      "sourceSha256": "9756b79487d9047de0cdaf9e96132930c9b5742cd495759b8dcd860c880b996c",
+      "sha256": "9756b79487d9047de0cdaf9e96132930c9b5742cd495759b8dcd860c880b996c",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "LICENSE",
+      "sourceSha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "LICENSING.md",
+      "sourceSha256": "a0be5ea801a864fa15f24e91673edcdfc72160d01fac5fc379114828417146dc",
+      "sha256": "a0be5ea801a864fa15f24e91673edcdfc72160d01fac5fc379114828417146dc",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "package.json",
+      "sourceSha256": "54671092ddca1230222f810a095bb3c461a9abef57d3a7592ac645d4de70c62f",
+      "sha256": "54671092ddca1230222f810a095bb3c461a9abef57d3a7592ac645d4de70c62f",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "patches/wouter@3.7.1.patch",
+      "sourceSha256": "4e16e6ff3fde7d6c1024d3e0c8605dc9eb6afb690d0d49958c2f449091813072",
+      "sha256": "4e16e6ff3fde7d6c1024d3e0c8605dc9eb6afb690d0d49958c2f449091813072",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "pnpm-lock.yaml",
+      "sourceSha256": "8e5f42ab147fc4cbd84b801c0a5e6f21500fdbc0213ccbebd472255a4bee3c34",
+      "sha256": "8e5f42ab147fc4cbd84b801c0a5e6f21500fdbc0213ccbebd472255a4bee3c34",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "pnpm-workspace.yaml",
+      "sourceSha256": "431883bf7490c3a614daf439db695f73a79b6972a24b45f5506c0709b581ed02",
+      "sha256": "431883bf7490c3a614daf439db695f73a79b6972a24b45f5506c0709b581ed02",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "RUNBOOK.md",
+      "sourceSha256": "ebd572e58c4dc0dec4a269eba9641d8aff7e9b4516e4514efb6b5b1c8533be16",
+      "sha256": "ebd572e58c4dc0dec4a269eba9641d8aff7e9b4516e4514efb6b5b1c8533be16",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "scripts/migration-counts.ts",
+      "sourceSha256": "b803bfd9c1815512a39f05e1932703965b84b6121b338e59a02c2f8d817d1608",
+      "sha256": "b803bfd9c1815512a39f05e1932703965b84b6121b338e59a02c2f8d817d1608",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "SECURITY.md",
+      "sourceSha256": "ae8721b28e78787876cc0fa4cdd735e8e75d1cc1f29fb7c544bb435ec18cb9c5",
+      "sha256": "ae8721b28e78787876cc0fa4cdd735e8e75d1cc1f29fb7c544bb435ec18cb9c5",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/_core/auth.ts",
+      "sourceSha256": "76e09403caf406c5ce9f78c37fb2e98eb4fa2c78145be84564f4dad67b136797",
+      "sha256": "76e09403caf406c5ce9f78c37fb2e98eb4fa2c78145be84564f4dad67b136797",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/_core/context.ts",
+      "sourceSha256": "cb39af4815f51c5265653170e09c4bccf9c6df218b4b440b4d392018ffd05f4e",
+      "sha256": "cb39af4815f51c5265653170e09c4bccf9c6df218b4b440b4d392018ffd05f4e",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/_core/cookies.ts",
+      "sourceSha256": "18902fb4f091de4cbfa3d41e0bf3e4a2ed6174fd9bd1c4b7f8a6c7d2776c6623",
+      "sha256": "18902fb4f091de4cbfa3d41e0bf3e4a2ed6174fd9bd1c4b7f8a6c7d2776c6623",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/_core/env.ts",
+      "sourceSha256": "96b26e222cebe9a789c4b26f8763660e6cafa37f1a3420df26a4254e7a967872",
+      "sha256": "96b26e222cebe9a789c4b26f8763660e6cafa37f1a3420df26a4254e7a967872",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/_core/index.ts",
+      "sourceSha256": "4a574c63acf1c53da4c83794e6f07e25142b4eca3edd261f4447054d536afbe3",
+      "sha256": "4a574c63acf1c53da4c83794e6f07e25142b4eca3edd261f4447054d536afbe3",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/_core/llm.ts",
+      "sourceSha256": "2a923ab472302a2c5da79809b9e1ead2a53577a1ff48188d914021ae988ece35",
+      "sha256": "2a923ab472302a2c5da79809b9e1ead2a53577a1ff48188d914021ae988ece35",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/_core/oauth.ts",
+      "sourceSha256": "8fdb5ac35728ae74980c1f0c46348c6d2ec2affa7eb534b8d3945b17a05f2d4d",
+      "sha256": "8fdb5ac35728ae74980c1f0c46348c6d2ec2affa7eb534b8d3945b17a05f2d4d",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/_core/systemRouter.ts",
+      "sourceSha256": "04bf807cbf45bce25e1551eea499ef5b927c6339981f872f1d52140379824fe6",
+      "sha256": "04bf807cbf45bce25e1551eea499ef5b927c6339981f872f1d52140379824fe6",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/_core/trpc.ts",
+      "sourceSha256": "f548aea1395e1a525131ae8df9516b55f09c2923a01d9a453c6e2802ac05ddfe",
+      "sha256": "f548aea1395e1a525131ae8df9516b55f09c2923a01d9a453c6e2802ac05ddfe",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/_core/types/cookie.d.ts",
+      "sourceSha256": "c2ed733d67b16ae4621164dbce09e99de0233b4a0ed05227bc35096822173c05",
+      "sha256": "c2ed733d67b16ae4621164dbce09e99de0233b4a0ed05227bc35096822173c05",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/_core/vite.ts",
+      "sourceSha256": "2826f5448a5ae7590686242a4e6da56e68e205d1cf044b001ea805c05133fe92",
+      "sha256": "2826f5448a5ae7590686242a4e6da56e68e205d1cf044b001ea805c05133fe92",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/agora.createSession.test.ts",
+      "sourceSha256": "3bc0dc55490d302998a2e631ada5071d633ab1eb07e31ba0f8cbdfc3b274479c",
+      "sha256": "3bc0dc55490d302998a2e631ada5071d633ab1eb07e31ba0f8cbdfc3b274479c",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/agora.test.ts",
+      "sourceSha256": "1fcb1d027f61e6c6542ffc6306557b7fbd37d1683c7367be67664d4d9447ffed",
+      "sha256": "1fcb1d027f61e6c6542ffc6306557b7fbd37d1683c7367be67664d4d9447ffed",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/auth.logout.test.ts",
+      "sourceSha256": "8943a30a752a775fa93f00aa220c9d9cf75244dc467e87938ce69ecd4bc5cb07",
+      "sha256": "8943a30a752a775fa93f00aa220c9d9cf75244dc467e87938ce69ecd4bc5cb07",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/crypto.ts",
+      "sourceSha256": "91a7a75ccf6b439f350371a33698c20c925ac553f16308718530836f40af5898",
+      "sha256": "91a7a75ccf6b439f350371a33698c20c925ac553f16308718530836f40af5898",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/db.ts",
+      "sourceSha256": "9d76b8241bed84a126b26ba1885ab4c636652e0033887d6dd576fe547be377d7",
+      "sha256": "9d76b8241bed84a126b26ba1885ab4c636652e0033887d6dd576fe547be377d7",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/documents.test.ts",
+      "sourceSha256": "dfa3d0a56c6db2e5402ff45f269b1ce4b266735905bdd8ecbfc85105646aad81",
+      "sha256": "dfa3d0a56c6db2e5402ff45f269b1ce4b266735905bdd8ecbfc85105646aad81",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/documents.ts",
+      "sourceSha256": "f9c0fbfe420a9b7b532bb7814ef905fb9ddb7f83d91574649f30cd8001702778",
+      "sha256": "f9c0fbfe420a9b7b532bb7814ef905fb9ddb7f83d91574649f30cd8001702778",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/juniorPool.test.ts",
+      "sourceSha256": "fdf4c2e4491ea3d1d9cff4ea89dee7c56eaf4f562a11494a7c6b526fd4d39676",
+      "sha256": "fdf4c2e4491ea3d1d9cff4ea89dee7c56eaf4f562a11494a7c6b526fd4d39676",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/oidc-access.test.ts",
+      "sourceSha256": "dea7f3f3593380fd694c3c12d5c16a6fff64ba5dd952b25dcf4a99d9ff458bc8",
+      "sha256": "dea7f3f3593380fd694c3c12d5c16a6fff64ba5dd952b25dcf4a99d9ff458bc8",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/providers.test.ts",
+      "sourceSha256": "a8a3cb694ebad99805fe363f03a2bb25398752b4120bc541635acb2f8364f5e9",
+      "sha256": "a8a3cb694ebad99805fe363f03a2bb25398752b4120bc541635acb2f8364f5e9",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/providers.ts",
+      "sourceSha256": "dfd004d61c1f93dc1b012b6be9523b02fafaf27e0fd193e2112bc298f02b64fc",
+      "sha256": "dfd004d61c1f93dc1b012b6be9523b02fafaf27e0fd193e2112bc298f02b64fc",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/routers.ts",
+      "sourceSha256": "6289d3a464cd77e3b18d9c4874f06c713febfe9f54fd81d90f7940f283f5b8e3",
+      "sha256": "6289d3a464cd77e3b18d9c4874f06c713febfe9f54fd81d90f7940f283f5b8e3",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/routers/agora.ts",
+      "sourceSha256": "6648ea2e1f6286a51e697d319077eb7b2541bb45ecba38f2f876c014a6271261",
+      "sha256": "6648ea2e1f6286a51e697d319077eb7b2541bb45ecba38f2f876c014a6271261",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "server/storage.ts",
+      "sourceSha256": "0c111b6643d41302a9e92abacab64a5f116a2f084744081f153d669dff5c4e5b",
+      "sha256": "0c111b6643d41302a9e92abacab64a5f116a2f084744081f153d669dff5c4e5b",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "shared/_core/errors.ts",
+      "sourceSha256": "52bee7d152045eaa009083e26a4cbc21d413c80b0403a23c4b5572141dec942a",
+      "sha256": "52bee7d152045eaa009083e26a4cbc21d413c80b0403a23c4b5572141dec942a",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "shared/agents.ts",
+      "sourceSha256": "62528545f6e9d3a4c965732ebebbc952cf1f15a39fb785bd4b18a8a95d5a870f",
+      "sha256": "62528545f6e9d3a4c965732ebebbc952cf1f15a39fb785bd4b18a8a95d5a870f",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "shared/const.ts",
+      "sourceSha256": "30a4b7bfc3369a0f98f4af263dbf8ec5c6fee95cebe8922e347eeb03ab5afccc",
+      "sha256": "30a4b7bfc3369a0f98f4af263dbf8ec5c6fee95cebe8922e347eeb03ab5afccc",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "shared/juniorPool.ts",
+      "sourceSha256": "9e7fb6a9dbac836f9359c4a62ba52603e9cfcdcb493c69ed16bf468aafe66f05",
+      "sha256": "9e7fb6a9dbac836f9359c4a62ba52603e9cfcdcb493c69ed16bf468aafe66f05",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "shared/peerReviews.ts",
+      "sourceSha256": "621c85b553d6a13f51854616192aaba9eb8ca74c55695636401bc2478a4f13e7",
+      "sha256": "621c85b553d6a13f51854616192aaba9eb8ca74c55695636401bc2478a4f13e7",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "shared/types.ts",
+      "sourceSha256": "959aeb30b032e203677e278922e97988b7cbcb56485694458298859af5589974",
+      "sha256": "959aeb30b032e203677e278922e97988b7cbcb56485694458298859af5589974",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "shared/usage.test.ts",
+      "sourceSha256": "208ab1924b3062b5e8f9503b48c1effd667e7d8394036bdc8a229f2203ad3bbc",
+      "sha256": "208ab1924b3062b5e8f9503b48c1effd667e7d8394036bdc8a229f2203ad3bbc",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "shared/usage.ts",
+      "sourceSha256": "05a9e10478387e85077ff69b26f32c27b9515dcde186ba95ebcd0e1d628865f5",
+      "sha256": "05a9e10478387e85077ff69b26f32c27b9515dcde186ba95ebcd0e1d628865f5",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "tsconfig.json",
+      "sourceSha256": "4bea0e0003e3c943f455346abc4854d1666d604adbaa6aa8eda11f94fb8f1396",
+      "sha256": "4bea0e0003e3c943f455346abc4854d1666d604adbaa6aa8eda11f94fb8f1396",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "vite.config.ts",
+      "sourceSha256": "59d2c8adad8fbb2618d4d39cedf9db1e77143e0621e60d67b795e47107e93300",
+      "sha256": "59d2c8adad8fbb2618d4d39cedf9db1e77143e0621e60d67b795e47107e93300",
+      "modified": false
+    },
+    {
+      "repo": "agora-ai",
+      "file": "vitest.config.ts",
+      "sourceSha256": "c80a37daffb6d0f47ce80a2497ef055a81bcde5484643720ebdbcf76815a04ec",
+      "sha256": "c80a37daffb6d0f47ce80a2497ef055a81bcde5484643720ebdbcf76815a04ec",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": ".env.example",
+      "sourceSha256": "c1615f4f50749499b8927c16dd69ddbba2405eaad1bff297ecdc6d4c4cc2d787",
+      "sha256": "c1615f4f50749499b8927c16dd69ddbba2405eaad1bff297ecdc6d4c4cc2d787",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": ".gitignore",
+      "sourceSha256": "698cc18b49c288192e172011bc8c17e76295fbe51abeb087110f0cd014e26089",
+      "sha256": "698cc18b49c288192e172011bc8c17e76295fbe51abeb087110f0cd014e26089",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": ".prettierignore",
+      "sourceSha256": "17f593918ed38aec9deac4301d519a4349172c649d1849ce17190cedbde33228",
+      "sha256": "17f593918ed38aec9deac4301d519a4349172c649d1849ce17190cedbde33228",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": ".prettierrc",
+      "sourceSha256": "087532218269eb851c22dcc3d5234ea46bfa513b494a3d7b167b1c1f48c410c5",
+      "sha256": "087532218269eb851c22dcc3d5234ea46bfa513b494a3d7b167b1c1f48c410c5",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/index.html",
+      "sourceSha256": "0d564fce421a772f77af16bf302f904e74d829c537b9812495b9cc5bb5f671e1",
+      "sha256": "0d564fce421a772f77af16bf302f904e74d829c537b9812495b9cc5bb5f671e1",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/public/.gitkeep",
+      "sourceSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/_core/hooks/useAuth.ts",
+      "sourceSha256": "77477fe341900c7555e5d1f1ef4797423c7400b6ac378e3162cd664877a72689",
+      "sha256": "77477fe341900c7555e5d1f1ef4797423c7400b6ac378e3162cd664877a72689",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/App.tsx",
+      "sourceSha256": "d7042ef590b58100babd98d77363387149ae99c2fa9f7f27f4b49ed79c1c9650",
+      "sha256": "d7042ef590b58100babd98d77363387149ae99c2fa9f7f27f4b49ed79c1c9650",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/AIChatBox.tsx",
+      "sourceSha256": "c97ae745ae8f4db0b5e1a96d851fe9fd6943c53bc1bc6c28603bce36058ce28a",
+      "sha256": "c97ae745ae8f4db0b5e1a96d851fe9fd6943c53bc1bc6c28603bce36058ce28a",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/DashboardLayout.tsx",
+      "sourceSha256": "63ac14f6d02d1ea727bd4f1fcb40d56d993f96a8241ee53ea8908c264ce19fbd",
+      "sha256": "63ac14f6d02d1ea727bd4f1fcb40d56d993f96a8241ee53ea8908c264ce19fbd",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/DashboardLayoutSkeleton.tsx",
+      "sourceSha256": "7b6eab8ac4d4118bdf2be88f23e7db5318d975ac03e6451f773d5eb15feb34cc",
+      "sha256": "7b6eab8ac4d4118bdf2be88f23e7db5318d975ac03e6451f773d5eb15feb34cc",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ErrorBoundary.tsx",
+      "sourceSha256": "3b0bdb7a19758fcd440138ccfb5f306b96836564f15d7c8c9663d7dd7417e972",
+      "sha256": "3b0bdb7a19758fcd440138ccfb5f306b96836564f15d7c8c9663d7dd7417e972",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ManusDialog.tsx",
+      "sourceSha256": "66237a756ee50b4195a074f689aa97dd4ec445cbbc6f0d11f12bb32a6fb4cd0d",
+      "sha256": "66237a756ee50b4195a074f689aa97dd4ec445cbbc6f0d11f12bb32a6fb4cd0d",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/Map.tsx",
+      "sourceSha256": "931413fea95936e68f872bc34733138f9e11a656446b1a56a98fba9532954e22",
+      "sha256": "931413fea95936e68f872bc34733138f9e11a656446b1a56a98fba9532954e22",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/revisione/RevisorLayout.tsx",
+      "sourceSha256": "fc568bcc4cb1936b2b30de5dbe72da1dd54c5501633a2ab43bc48ee79027a54a",
+      "sha256": "fc568bcc4cb1936b2b30de5dbe72da1dd54c5501633a2ab43bc48ee79027a54a",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/accordion.tsx",
+      "sourceSha256": "7b96cf50388ad3d07be64924ab33ba5f63b79a6a5749ebe4d31c789c0bc00d44",
+      "sha256": "7b96cf50388ad3d07be64924ab33ba5f63b79a6a5749ebe4d31c789c0bc00d44",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/alert-dialog.tsx",
+      "sourceSha256": "aeecd7967eb0be3bad2753b6633d9a43cc4c08cb35de872ffdc0b9f2b6a9b26c",
+      "sha256": "aeecd7967eb0be3bad2753b6633d9a43cc4c08cb35de872ffdc0b9f2b6a9b26c",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/alert.tsx",
+      "sourceSha256": "eccfc7f6ca9d51407cb413a3ca4b5ac721898ac93d38e95c02c35188ad674abe",
+      "sha256": "eccfc7f6ca9d51407cb413a3ca4b5ac721898ac93d38e95c02c35188ad674abe",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/aspect-ratio.tsx",
+      "sourceSha256": "654f5d6e9ed17472305d7e6fc5de30453875ffae585f5d064aedc9e6945bdbb0",
+      "sha256": "654f5d6e9ed17472305d7e6fc5de30453875ffae585f5d064aedc9e6945bdbb0",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/avatar.tsx",
+      "sourceSha256": "c2382ff71d7ef3492096ed6ef35bf82e1fd421a81d55ca80453f5f5138eac360",
+      "sha256": "c2382ff71d7ef3492096ed6ef35bf82e1fd421a81d55ca80453f5f5138eac360",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/badge.tsx",
+      "sourceSha256": "51fd797c59e63d164ade736769f19f26e41c157daba29aa0b327b3b226f4d4ac",
+      "sha256": "51fd797c59e63d164ade736769f19f26e41c157daba29aa0b327b3b226f4d4ac",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/breadcrumb.tsx",
+      "sourceSha256": "dd84657e30691ea7f14a785c13b660d6cd626c08ba1df8439c3eca858ee3cd7e",
+      "sha256": "dd84657e30691ea7f14a785c13b660d6cd626c08ba1df8439c3eca858ee3cd7e",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/button-group.tsx",
+      "sourceSha256": "ba1d824f0f4d8b5dd78a80fa766e3543eefb9173143652be2c7cb765af1864f5",
+      "sha256": "ba1d824f0f4d8b5dd78a80fa766e3543eefb9173143652be2c7cb765af1864f5",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/button.tsx",
+      "sourceSha256": "b08b4785e03566c7a6063b3d57234deae41649676870cbbb9ab2448d816e1739",
+      "sha256": "b08b4785e03566c7a6063b3d57234deae41649676870cbbb9ab2448d816e1739",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/calendar.tsx",
+      "sourceSha256": "89308bce82e8b23b611cfbc88bc19f7b341d7109ab9a2838c04cb50922113501",
+      "sha256": "89308bce82e8b23b611cfbc88bc19f7b341d7109ab9a2838c04cb50922113501",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/card.tsx",
+      "sourceSha256": "1397e7d264d90162220ea7473b311e434651886267c71e7f58d4488be9d8ff39",
+      "sha256": "1397e7d264d90162220ea7473b311e434651886267c71e7f58d4488be9d8ff39",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/carousel.tsx",
+      "sourceSha256": "42f66e6fde568c209df5d58a4ca13c3ae92d120a04fd99f7be695d6a570ef0a9",
+      "sha256": "42f66e6fde568c209df5d58a4ca13c3ae92d120a04fd99f7be695d6a570ef0a9",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/chart.tsx",
+      "sourceSha256": "47c4de202fe1dc229af94d2c86197251d279bee131d2a6fb75ab9e58cec71aab",
+      "sha256": "47c4de202fe1dc229af94d2c86197251d279bee131d2a6fb75ab9e58cec71aab",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/checkbox.tsx",
+      "sourceSha256": "4fc309590e66d3c41e3be5fb73f988b0e916e7bf5fff321c22c3a64cd4fe97cf",
+      "sha256": "4fc309590e66d3c41e3be5fb73f988b0e916e7bf5fff321c22c3a64cd4fe97cf",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/collapsible.tsx",
+      "sourceSha256": "95b5b9ea89a4105045c58b7eba539e57a1f4abc5a54d43ea0f7168f46b645eeb",
+      "sha256": "95b5b9ea89a4105045c58b7eba539e57a1f4abc5a54d43ea0f7168f46b645eeb",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/command.tsx",
+      "sourceSha256": "47910540789d4de9e890de63bfc0046f9cf6bfaa86d496a98c79622900f8520c",
+      "sha256": "47910540789d4de9e890de63bfc0046f9cf6bfaa86d496a98c79622900f8520c",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/context-menu.tsx",
+      "sourceSha256": "fe63c0a0dcabe749874ad19e07dee8418337c62dd64452fc08b5abf27b49b9eb",
+      "sha256": "fe63c0a0dcabe749874ad19e07dee8418337c62dd64452fc08b5abf27b49b9eb",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/dialog.tsx",
+      "sourceSha256": "3ffd83bd2940c1191fde091bc47311aebc2b79d78824965a5c446115e58190aa",
+      "sha256": "3ffd83bd2940c1191fde091bc47311aebc2b79d78824965a5c446115e58190aa",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/drawer.tsx",
+      "sourceSha256": "573deecc31f90fcd96f53a37b2e5363eb326fe737cbdb28cac38a5d014734fc8",
+      "sha256": "573deecc31f90fcd96f53a37b2e5363eb326fe737cbdb28cac38a5d014734fc8",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/dropdown-menu.tsx",
+      "sourceSha256": "ede99252b737a29eb1f05370956e2b842be161b6a661f1429155ac561653d029",
+      "sha256": "ede99252b737a29eb1f05370956e2b842be161b6a661f1429155ac561653d029",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/empty.tsx",
+      "sourceSha256": "c0b612929b15fd498b984d8d98d1b082a3eb294be5aa8eb9cb53b67cf152f465",
+      "sha256": "c0b612929b15fd498b984d8d98d1b082a3eb294be5aa8eb9cb53b67cf152f465",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/field.tsx",
+      "sourceSha256": "f093424ca5eadf43d46b020ed780aee7aa5f6d90d0b48fb50c031e3d7b0528c7",
+      "sha256": "f093424ca5eadf43d46b020ed780aee7aa5f6d90d0b48fb50c031e3d7b0528c7",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/form.tsx",
+      "sourceSha256": "0157362d572713567d989b726277879e75c60c24684ade4aef854867dc2fac48",
+      "sha256": "0157362d572713567d989b726277879e75c60c24684ade4aef854867dc2fac48",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/hover-card.tsx",
+      "sourceSha256": "bdfe831708e7de6b9fbb14d8fe5af5a0985f67cff3c2b5755b4b570c3b4e7ad5",
+      "sha256": "bdfe831708e7de6b9fbb14d8fe5af5a0985f67cff3c2b5755b4b570c3b4e7ad5",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/input-group.tsx",
+      "sourceSha256": "f62f2be2ad4c2c7711e7b25b0d6c03572f7871cb4022e9f4f6860dcd77dd9e57",
+      "sha256": "f62f2be2ad4c2c7711e7b25b0d6c03572f7871cb4022e9f4f6860dcd77dd9e57",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/input-otp.tsx",
+      "sourceSha256": "45fc7fed882aa5024d8eea52d9b392d13b1d80f2b7f846365bc2586e3d16253d",
+      "sha256": "45fc7fed882aa5024d8eea52d9b392d13b1d80f2b7f846365bc2586e3d16253d",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/input.tsx",
+      "sourceSha256": "0aaad971269e84519fb14928a70777db539b4cacf9f145fecd905ba483a199c6",
+      "sha256": "0aaad971269e84519fb14928a70777db539b4cacf9f145fecd905ba483a199c6",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/item.tsx",
+      "sourceSha256": "89f2ed48c2270064d63e0a40f755c1da14e99e7db46bceac56d6dee7b45b8798",
+      "sha256": "89f2ed48c2270064d63e0a40f755c1da14e99e7db46bceac56d6dee7b45b8798",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/kbd.tsx",
+      "sourceSha256": "4f8f3e521b2b007643b8a2c8f86cf547bd87e703dc2bed067083ca48f901d6ad",
+      "sha256": "4f8f3e521b2b007643b8a2c8f86cf547bd87e703dc2bed067083ca48f901d6ad",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/label.tsx",
+      "sourceSha256": "7fdad17d8e83912ad0cfc372c551a901ab98523ef17c0792a17c592a147db732",
+      "sha256": "7fdad17d8e83912ad0cfc372c551a901ab98523ef17c0792a17c592a147db732",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/menubar.tsx",
+      "sourceSha256": "53fb1c058fabaf0cfb3fb2cfdb9b17ccc8762376d62cc011150d919209b82c1a",
+      "sha256": "53fb1c058fabaf0cfb3fb2cfdb9b17ccc8762376d62cc011150d919209b82c1a",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/navigation-menu.tsx",
+      "sourceSha256": "aafccbe2b05d9f80b7d007301b51aaede4692efc468304c5fb11b21cd0c0ef43",
+      "sha256": "aafccbe2b05d9f80b7d007301b51aaede4692efc468304c5fb11b21cd0c0ef43",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/pagination.tsx",
+      "sourceSha256": "8f0d822b4688eb131e37fbf2330e19b269ab6487583be3249b98f3b68bb07928",
+      "sha256": "8f0d822b4688eb131e37fbf2330e19b269ab6487583be3249b98f3b68bb07928",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/popover.tsx",
+      "sourceSha256": "5e7bec05904d9091a7b53963f5b49660bf3564b02a057ef8640ab6855d6e32fd",
+      "sha256": "5e7bec05904d9091a7b53963f5b49660bf3564b02a057ef8640ab6855d6e32fd",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/progress.tsx",
+      "sourceSha256": "2297e3c13d5b2a04a9164c3900c8cae2e477c07ebed35c4bbda98d1232ab7b7e",
+      "sha256": "2297e3c13d5b2a04a9164c3900c8cae2e477c07ebed35c4bbda98d1232ab7b7e",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/radio-group.tsx",
+      "sourceSha256": "025f03d81d4e304eb27d94e6517f37072a3941df8f8603ac55cfb42b17cd99ef",
+      "sha256": "025f03d81d4e304eb27d94e6517f37072a3941df8f8603ac55cfb42b17cd99ef",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/resizable.tsx",
+      "sourceSha256": "52e1027a4b4a5f70f0479f69fe40046dfa112952b7e568292727e1618348ee80",
+      "sha256": "52e1027a4b4a5f70f0479f69fe40046dfa112952b7e568292727e1618348ee80",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/scroll-area.tsx",
+      "sourceSha256": "793c5d69e6e5ce8bcbe453b8834d53f3a90839fc8e8e1f9fe5f77e7626566677",
+      "sha256": "793c5d69e6e5ce8bcbe453b8834d53f3a90839fc8e8e1f9fe5f77e7626566677",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/select.tsx",
+      "sourceSha256": "40945665ec8363e55ae38f26115ee763cbc5548bed585eed569d406cbc4b7a75",
+      "sha256": "40945665ec8363e55ae38f26115ee763cbc5548bed585eed569d406cbc4b7a75",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/separator.tsx",
+      "sourceSha256": "23bbf3f74d01f55533f6f22ebbc2b299137421e07896cb7af21245756a10c27e",
+      "sha256": "23bbf3f74d01f55533f6f22ebbc2b299137421e07896cb7af21245756a10c27e",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/sheet.tsx",
+      "sourceSha256": "ab22e38f2cf312a31a84fb91f7e912f0da66e809f6e1ae675ec6cf0c8ec0ba61",
+      "sha256": "ab22e38f2cf312a31a84fb91f7e912f0da66e809f6e1ae675ec6cf0c8ec0ba61",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/sidebar.tsx",
+      "sourceSha256": "782ec3ba8a570c9a0f6ec12d7e1c1efdee5e02eb2da7aa46131c734e7f7bbea8",
+      "sha256": "782ec3ba8a570c9a0f6ec12d7e1c1efdee5e02eb2da7aa46131c734e7f7bbea8",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/skeleton.tsx",
+      "sourceSha256": "1f75b999a5ad2f65e8fb807faa2b3fccef9eb333996fb4c9030575dac7393091",
+      "sha256": "1f75b999a5ad2f65e8fb807faa2b3fccef9eb333996fb4c9030575dac7393091",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/slider.tsx",
+      "sourceSha256": "9c458646597836916678a9bce2f3064d4d5cdb0c65d32d92bc71f57d7569fb6b",
+      "sha256": "9c458646597836916678a9bce2f3064d4d5cdb0c65d32d92bc71f57d7569fb6b",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/sonner.tsx",
+      "sourceSha256": "a65fe9ded89363ec546f28401a26caec1a3aa38c52259eb829cfa33723dbe3a5",
+      "sha256": "a65fe9ded89363ec546f28401a26caec1a3aa38c52259eb829cfa33723dbe3a5",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/spinner.tsx",
+      "sourceSha256": "ecd836d476573adb4403747c3457339276805433c20eacf3408303b76ec283ff",
+      "sha256": "ecd836d476573adb4403747c3457339276805433c20eacf3408303b76ec283ff",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/switch.tsx",
+      "sourceSha256": "688cccb52220e05f6770fb5e8296375f2a784bcf6585eb26a721a9f29361ab60",
+      "sha256": "688cccb52220e05f6770fb5e8296375f2a784bcf6585eb26a721a9f29361ab60",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/table.tsx",
+      "sourceSha256": "085566291cf03c9fea590aa9b77339feebf04cf8ce23494a3667f84bf4811e29",
+      "sha256": "085566291cf03c9fea590aa9b77339feebf04cf8ce23494a3667f84bf4811e29",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/tabs.tsx",
+      "sourceSha256": "394b62295cee5185e858bcabfafcd5a7287910944c962fbd9c1c06444b22cedb",
+      "sha256": "394b62295cee5185e858bcabfafcd5a7287910944c962fbd9c1c06444b22cedb",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/textarea.tsx",
+      "sourceSha256": "ffbad961ec02f9ca23f4157daa1a4139960c4477a245c216a793b4692dec142c",
+      "sha256": "ffbad961ec02f9ca23f4157daa1a4139960c4477a245c216a793b4692dec142c",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/toggle-group.tsx",
+      "sourceSha256": "92e7640e30c4ae3ffd775e9a3d845327c26d9ce0f9f39555c2e7cfc2c8671c4d",
+      "sha256": "92e7640e30c4ae3ffd775e9a3d845327c26d9ce0f9f39555c2e7cfc2c8671c4d",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/toggle.tsx",
+      "sourceSha256": "a922c5e0534b9fd556ff8a8b56e25f7d24544be6050472cdd1ea003b8a0f3e47",
+      "sha256": "a922c5e0534b9fd556ff8a8b56e25f7d24544be6050472cdd1ea003b8a0f3e47",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/components/ui/tooltip.tsx",
+      "sourceSha256": "6f0c581e2018d676e43c0b4b5aeb62d3fe68e65907cf748548208d75ac212677",
+      "sha256": "6f0c581e2018d676e43c0b4b5aeb62d3fe68e65907cf748548208d75ac212677",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/const.ts",
+      "sourceSha256": "3601fb4c0d3f7365473d05f3e7b12493c13f12099aa0a3d3549d72ebe5f369e0",
+      "sha256": "3601fb4c0d3f7365473d05f3e7b12493c13f12099aa0a3d3549d72ebe5f369e0",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/contexts/ThemeContext.tsx",
+      "sourceSha256": "e025cdb51ad747757235b16dccbb39b5e949cdf93fa9a822ff81ef6e32f65924",
+      "sha256": "e025cdb51ad747757235b16dccbb39b5e949cdf93fa9a822ff81ef6e32f65924",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/hooks/useComposition.ts",
+      "sourceSha256": "674c515075a2f318d4ec2291313ba552488de0b2c1aac7f36f3d71c4e34d434e",
+      "sha256": "674c515075a2f318d4ec2291313ba552488de0b2c1aac7f36f3d71c4e34d434e",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/hooks/useMobile.tsx",
+      "sourceSha256": "464e778a9da49481e3c6dac4f92ff589e01349b33063a74c45435cfeed81e1c0",
+      "sha256": "464e778a9da49481e3c6dac4f92ff589e01349b33063a74c45435cfeed81e1c0",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/hooks/usePersistFn.ts",
+      "sourceSha256": "60cc14f39a3f8b212d7baf4beeaf35f81e09a7c78e4154bcca3477e010879511",
+      "sha256": "60cc14f39a3f8b212d7baf4beeaf35f81e09a7c78e4154bcca3477e010879511",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/index.css",
+      "sourceSha256": "4ecd9a56c7d63cbb3526bf26e742b2fc1566457fe276fad68f7dc86ebfe47d8e",
+      "sha256": "4ecd9a56c7d63cbb3526bf26e742b2fc1566457fe276fad68f7dc86ebfe47d8e",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/lib/revisionWorkflow.ts",
+      "sourceSha256": "6ce50c874a94657c7ec788761b6f3367f4eaa8ea4fd9554c180ed6b9e0c13d55",
+      "sha256": "6ce50c874a94657c7ec788761b6f3367f4eaa8ea4fd9554c180ed6b9e0c13d55",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/lib/trpc.ts",
+      "sourceSha256": "d883ad43f46eaf73342924feaf5342ce601d04abe1a828076625071931cc0ef3",
+      "sha256": "d883ad43f46eaf73342924feaf5342ce601d04abe1a828076625071931cc0ef3",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/lib/utils.ts",
+      "sourceSha256": "14ef17177ff14b30c74fd757b3af8304fd631fcefebb16194794f2700c5bab57",
+      "sha256": "14ef17177ff14b30c74fd757b3af8304fd631fcefebb16194794f2700c5bab57",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/main.tsx",
+      "sourceSha256": "08e6f88e61820f2aa10983e72f009236fa6c922513417b7a0eb2e8064c68100d",
+      "sha256": "08e6f88e61820f2aa10983e72f009236fa6c922513417b7a0eb2e8064c68100d",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/AnalisiVerticale.tsx",
+      "sourceSha256": "8840830938a6bc6be8b340c3c10bb8f13a97e0ad2da5ef3a00a1a01813b7d6de",
+      "sha256": "8840830938a6bc6be8b340c3c10bb8f13a97e0ad2da5ef3a00a1a01813b7d6de",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/Circolarizzazione.tsx",
+      "sourceSha256": "cd46e538bc363985d976462fd0aa443cfae9afb41da0998d8e038816c8e48b67",
+      "sha256": "cd46e538bc363985d976462fd0aa443cfae9afb41da0998d8e038816c8e48b67",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/ClienteDettaglio.tsx",
+      "sourceSha256": "57e0f6517f3cf5490f3f319c7422a10b1e5827d6f6e4f2294fa81d447c8d58d5",
+      "sha256": "57e0f6517f3cf5490f3f319c7422a10b1e5827d6f6e4f2294fa81d447c8d58d5",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/Clienti.tsx",
+      "sourceSha256": "8357d3c91f758b02d2f8af7caa77cacc2ad8ac4bbf05cb8e97b4e4e2aaaba067",
+      "sha256": "8357d3c91f758b02d2f8af7caa77cacc2ad8ac4bbf05cb8e97b4e4e2aaaba067",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/ComponentShowcase.tsx",
+      "sourceSha256": "d3905f3521d77e97b7d7c6198a6f915bf45f68223c74552e7e728f4fe10ca79a",
+      "sha256": "d3905f3521d77e97b7d7c6198a6f915bf45f68223c74552e7e728f4fe10ca79a",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/FaseAccettazione.tsx",
+      "sourceSha256": "5c0985c678651909ea40abf06ec5397b37923269b7f2db42843b39208c96811c",
+      "sha256": "5c0985c678651909ea40abf06ec5397b37923269b7f2db42843b39208c96811c",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/FaseRevisione.tsx",
+      "sourceSha256": "87c5bbba8a62b42716d7dd217e005cba88daa26351a6f65323deb8bb25f3b5cc",
+      "sha256": "87c5bbba8a62b42716d7dd217e005cba88daa26351a6f65323deb8bb25f3b5cc",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/Home.tsx",
+      "sourceSha256": "d9f615831a3a9c8ed7fb500e7c4e664af2f1a0f7b4d48a500c051f84a84c6039",
+      "sha256": "d9f615831a3a9c8ed7fb500e7c4e664af2f1a0f7b4d48a500c051f84a84c6039",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/IncaricoDettaglio.tsx",
+      "sourceSha256": "128ccb8a1abc1058005ef042b38bace719bcfa467614a0da018dd3014e825a1c",
+      "sha256": "128ccb8a1abc1058005ef042b38bace719bcfa467614a0da018dd3014e825a1c",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/moduli/Modulo1Accettazione.tsx",
+      "sourceSha256": "57e474132d9bb95cc8d28faa304e148a492949f65c5bbf5d51dad07155f88e6b",
+      "sha256": "57e474132d9bb95cc8d28faa304e148a492949f65c5bbf5d51dad07155f88e6b",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/moduli/Modulo2Comprensione.tsx",
+      "sourceSha256": "9f74072520c0ff20bc9a3b3aaa82385f2b59cc6a691ca9731ad529f5e92e7c2d",
+      "sha256": "9f74072520c0ff20bc9a3b3aaa82385f2b59cc6a691ca9731ad529f5e92e7c2d",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/moduli/Modulo3Rischio.tsx",
+      "sourceSha256": "8f807ad19e97f5dfc2e76b753259b45e42d2c16c8019a807162610ce2d799aa1",
+      "sha256": "8f807ad19e97f5dfc2e76b753259b45e42d2c16c8019a807162610ce2d799aa1",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/moduli/Modulo4Materialita.tsx",
+      "sourceSha256": "791c7bc27a1af96e22d8d61cab4ba9fbab96e3674d0321ba6f3a0aea8c571268",
+      "sha256": "791c7bc27a1af96e22d8d61cab4ba9fbab96e3674d0321ba6f3a0aea8c571268",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/moduli/Modulo5Piano.tsx",
+      "sourceSha256": "2c98311732b0d1e7cadc4ceca8b1773805b31e46184c7753fb42c77f03fde253",
+      "sha256": "2c98311732b0d1e7cadc4ceca8b1773805b31e46184c7753fb42c77f03fde253",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/NotFound.tsx",
+      "sourceSha256": "4062794318dde4d0a321e0332cdee2cea68d19c1d9d81889ff425b02ed183f64",
+      "sha256": "4062794318dde4d0a321e0332cdee2cea68d19c1d9d81889ff425b02ed183f64",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/PianoControlli.tsx",
+      "sourceSha256": "95161df8b32c0302f6a3edac9c20fbca553fd04e313755741615bcac0ab0a44f",
+      "sha256": "95161df8b32c0302f6a3edac9c20fbca553fd04e313755741615bcac0ab0a44f",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/RoadmapRevisione.tsx",
+      "sourceSha256": "383cb89543426fc8125c67de91ae1f2076eca81f833857ee97e9788f3559b744",
+      "sha256": "383cb89543426fc8125c67de91ae1f2076eca81f833857ee97e9788f3559b744",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/SchedaDisponibilitaLiquide.tsx",
+      "sourceSha256": "c692d5b1c938d73364d22b72e4da9804e14384f14ac78d2aff7a1e11132887cb",
+      "sha256": "c692d5b1c938d73364d22b72e4da9804e14384f14ac78d2aff7a1e11132887cb",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/SchedaImmobilizzazioni.tsx",
+      "sourceSha256": "0c554e4a4b42158bc4946a09a5a55915894aeea215d5a46f0c20cb4a061cdeb6",
+      "sha256": "0c554e4a4b42158bc4946a09a5a55915894aeea215d5a46f0c20cb4a061cdeb6",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/SchedaPatrimonioNetto.tsx",
+      "sourceSha256": "83f142c086cd3819defb850c18753b786dd869f56b5c011ea7993c876c316f13",
+      "sha256": "83f142c086cd3819defb850c18753b786dd869f56b5c011ea7993c876c316f13",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/SchedaRicavi.tsx",
+      "sourceSha256": "c7d893213a0c5c0ad76282a9fb391bd59182715064872fad64f1aa40fe814851",
+      "sha256": "c7d893213a0c5c0ad76282a9fb391bd59182715064872fad64f1aa40fe814851",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/SchedaRimanenze.tsx",
+      "sourceSha256": "469206a65300acb926835e1819407da832746dca4339506994dcc14e68d4a05f",
+      "sha256": "469206a65300acb926835e1819407da832746dca4339506994dcc14e68d4a05f",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/VerificaIncassi.tsx",
+      "sourceSha256": "c907d0af314f9245306fb3ea0d9c7fa674516236b6321b863ca41d61c08e7d86",
+      "sha256": "c907d0af314f9245306fb3ea0d9c7fa674516236b6321b863ca41d61c08e7d86",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/VerificaRicaviCosti.tsx",
+      "sourceSha256": "3853a6464d4d2d2e43083a43b050703b860f20c13a8330689b0ed06447c9fc15",
+      "sha256": "3853a6464d4d2d2e43083a43b050703b860f20c13a8330689b0ed06447c9fc15",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "client/src/pages/WizardRevisione.tsx",
+      "sourceSha256": "b92828007a6982bcc71871e0dd0ed24d6667b9eb8ab2a1ffc60a3fe33b5c9f94",
+      "sha256": "b92828007a6982bcc71871e0dd0ed24d6667b9eb8ab2a1ffc60a3fe33b5c9f94",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "components.json",
+      "sourceSha256": "8be0e54515838be398164884e96319b52bcfcbd52b2e63171d51df4131cfcb03",
+      "sha256": "8be0e54515838be398164884e96319b52bcfcbd52b2e63171d51df4131cfcb03",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle.config.ts",
+      "sourceSha256": "9610673b3fe7b6b950a8e7e54cb1e91f9dd25f87d7ae6a41d2f6ada957065d01",
+      "sha256": "9610673b3fe7b6b950a8e7e54cb1e91f9dd25f87d7ae6a41d2f6ada957065d01",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0000_ambiguous_gambit.sql",
+      "sourceSha256": "814a08e40d7fc2bcfd458759d18319198ca8ae394f2fa15617a78678e9c9c93b",
+      "sha256": "814a08e40d7fc2bcfd458759d18319198ca8ae394f2fa15617a78678e9c9c93b",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0001_nervous_jane_foster.sql",
+      "sourceSha256": "2e3690cb917dde4892d09f2ae25507af8c06308f3ad5330fe2ea6c249885b962",
+      "sha256": "2e3690cb917dde4892d09f2ae25507af8c06308f3ad5330fe2ea6c249885b962",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0002_graceful_owl.sql",
+      "sourceSha256": "50d2f1b0cc5da95b7630dc23e4dfafe76b5bb1491d9b795bf5af1aa65faf1d7f",
+      "sha256": "50d2f1b0cc5da95b7630dc23e4dfafe76b5bb1491d9b795bf5af1aa65faf1d7f",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0003_rich_toad_men.sql",
+      "sourceSha256": "8733c0dcb76de83df0034629739ea3a51584f9a59aaa65cd162891edde55af6c",
+      "sha256": "8733c0dcb76de83df0034629739ea3a51584f9a59aaa65cd162891edde55af6c",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0004_aberrant_black_panther.sql",
+      "sourceSha256": "93a46f5bce731badacd925b7e4f28e4970db83863723742fae9260672135ca06",
+      "sha256": "93a46f5bce731badacd925b7e4f28e4970db83863723742fae9260672135ca06",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0005_silky_joseph.sql",
+      "sourceSha256": "e997276fa18beccaa33c5c8899024ad168fb6cf9d5576afcdb7c0bc3c444d16d",
+      "sha256": "e997276fa18beccaa33c5c8899024ad168fb6cf9d5576afcdb7c0bc3c444d16d",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0006_polite_post.sql",
+      "sourceSha256": "1782be99fada9bc1db2bbdf92026c199e9d4efb2fe19d157a4c40b44a04c6ba3",
+      "sha256": "1782be99fada9bc1db2bbdf92026c199e9d4efb2fe19d157a4c40b44a04c6ba3",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0007_busy_sphinx.sql",
+      "sourceSha256": "a5508fa87e00c0e398a787f64bc460fd8cf19eb3e507262b045c4ef4e9b813c0",
+      "sha256": "a5508fa87e00c0e398a787f64bc460fd8cf19eb3e507262b045c4ef4e9b813c0",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0008_cynical_spot.sql",
+      "sourceSha256": "a6713b55257682fd851fb6a79f4f81467e9fc00dc260077f371e4c10acfd7e62",
+      "sha256": "a6713b55257682fd851fb6a79f4f81467e9fc00dc260077f371e4c10acfd7e62",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0009_massive_shocker.sql",
+      "sourceSha256": "2b8b4a7a412767f62742992bbab94d26f5f09403a0c1840c60c3c73d76963da5",
+      "sha256": "2b8b4a7a412767f62742992bbab94d26f5f09403a0c1840c60c3c73d76963da5",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0010_shiny_malcolm_colcord.sql",
+      "sourceSha256": "06fb8be722f5792c2500e801380189ddb27a739473c618e4639d6ce860856995",
+      "sha256": "06fb8be722f5792c2500e801380189ddb27a739473c618e4639d6ce860856995",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0011_fearless_scalphunter.sql",
+      "sourceSha256": "1b4c28fb35c309f25dc6725f3a206202782e92af8b79a646555a360f18e645bf",
+      "sha256": "1b4c28fb35c309f25dc6725f3a206202782e92af8b79a646555a360f18e645bf",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0012_crazy_scorpion.sql",
+      "sourceSha256": "0fce5eeeae422f073796ca0f153280c70d01bbdeec2f613fbaf8eece01f69388",
+      "sha256": "0fce5eeeae422f073796ca0f153280c70d01bbdeec2f613fbaf8eece01f69388",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0013_add_centrale_rischi.sql",
+      "sourceSha256": "c8ed18dac677320b6365ee59d9d164cd825255cd4bf86a04fc36497f714bcc0d",
+      "sha256": "c8ed18dac677320b6365ee59d9d164cd825255cd4bf86a04fc36497f714bcc0d",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0014_verifica_incassi_movimenti_mediumtext.sql",
+      "sourceSha256": "f571745c83bb6d640d8ff8963cb3357ac6acb7a2a26aae1fc8a7ebcb695cbd33",
+      "sha256": "f571745c83bb6d640d8ff8963cb3357ac6acb7a2a26aae1fc8a7ebcb695cbd33",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0015_verifica_incassi_criterio_matching.sql",
+      "sourceSha256": "ae925d485b14b2039190d57ba2cd0ee2f1780afee70839096d0699910e8fad47",
+      "sha256": "ae925d485b14b2039190d57ba2cd0ee2f1780afee70839096d0699910e8fad47",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0016_studio_core_pilot.sql",
+      "sourceSha256": "527e41741be0698e184e0d7006d0fa2848b6f48c1c8bed61ccfa3d4efdc73225",
+      "sha256": "527e41741be0698e184e0d7006d0fa2848b6f48c1c8bed61ccfa3d4efdc73225",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0017_nextcloud_dossier_source.sql",
+      "sourceSha256": "aec3ceb0004a4ebda4e957bb56bb74a3bab8392e45f2be5551b4692cb3307789",
+      "sha256": "aec3ceb0004a4ebda4e957bb56bb74a3bab8392e45f2be5551b4692cb3307789",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/0018_client_nextcloud_folder.sql",
+      "sourceSha256": "ba38ee46eda1af664b61181abf4ebd6294746ad92baac42d1c35bf172522aad9",
+      "sha256": "ba38ee46eda1af664b61181abf4ebd6294746ad92baac42d1c35bf172522aad9",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/meta/_journal.json",
+      "sourceSha256": "65b7bff6e528d60066cda071c443b07f96080720f891a68208c74ac9b535386b",
+      "sha256": "65b7bff6e528d60066cda071c443b07f96080720f891a68208c74ac9b535386b",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/meta/0000_snapshot.json",
+      "sourceSha256": "b94b46cd66f5e8c307e77895152c4e7bdab971237a2e7541dc676ef1137432c6",
+      "sha256": "b94b46cd66f5e8c307e77895152c4e7bdab971237a2e7541dc676ef1137432c6",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/meta/0001_snapshot.json",
+      "sourceSha256": "a95260ecbf6d746742af6eac0cf1deae0854b900dc6b388a84e5139395fcb1bb",
+      "sha256": "a95260ecbf6d746742af6eac0cf1deae0854b900dc6b388a84e5139395fcb1bb",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/meta/0002_snapshot.json",
+      "sourceSha256": "7c430343c5a3b8dd60e60e6277a30ec3309f40a1476fea2b07b4d85de5c8e0d6",
+      "sha256": "7c430343c5a3b8dd60e60e6277a30ec3309f40a1476fea2b07b4d85de5c8e0d6",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/meta/0003_snapshot.json",
+      "sourceSha256": "6186821adf1c40f42ee3636d88cc0bd84eb3b3836b0e13ebd1c8f8588cdecf82",
+      "sha256": "6186821adf1c40f42ee3636d88cc0bd84eb3b3836b0e13ebd1c8f8588cdecf82",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/meta/0004_snapshot.json",
+      "sourceSha256": "bf69788de64446e69923959b346072e5f3e3f89c27c32420d9db32be33d99b63",
+      "sha256": "bf69788de64446e69923959b346072e5f3e3f89c27c32420d9db32be33d99b63",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/meta/0005_snapshot.json",
+      "sourceSha256": "084d00136002db3ce8b8d165b0af70cad30e30202713fdcbddcef59cdbba623a",
+      "sha256": "084d00136002db3ce8b8d165b0af70cad30e30202713fdcbddcef59cdbba623a",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/meta/0006_snapshot.json",
+      "sourceSha256": "57aed7b54bcad1bb66ec198f7873204a781e486e5fed81bc14f603abae38e2f0",
+      "sha256": "57aed7b54bcad1bb66ec198f7873204a781e486e5fed81bc14f603abae38e2f0",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/meta/0007_snapshot.json",
+      "sourceSha256": "04978b8492c7514ffaa2e0d34ce616ac86b6a14e09d2237b3dd4284d6a040ebe",
+      "sha256": "04978b8492c7514ffaa2e0d34ce616ac86b6a14e09d2237b3dd4284d6a040ebe",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/meta/0008_snapshot.json",
+      "sourceSha256": "b3e2942db60b35b57cb5dd57b16e0482e83ffbd81ee509d36d8f401ce4948b29",
+      "sha256": "b3e2942db60b35b57cb5dd57b16e0482e83ffbd81ee509d36d8f401ce4948b29",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/meta/0009_snapshot.json",
+      "sourceSha256": "7d6df3d6350abf53e0d8aea114c1b17f1e59afe2352f5d17cbe2000f2aeeb87c",
+      "sha256": "7d6df3d6350abf53e0d8aea114c1b17f1e59afe2352f5d17cbe2000f2aeeb87c",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/meta/0010_snapshot.json",
+      "sourceSha256": "ca20823a9d8f36060b1187e648e32bfe2848d0ee71a4b277edc3b3e9c5dd3158",
+      "sha256": "ca20823a9d8f36060b1187e648e32bfe2848d0ee71a4b277edc3b3e9c5dd3158",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/meta/0011_snapshot.json",
+      "sourceSha256": "f64d08d87d7e66d7f0f6761f01a795df0e8d0edfe6604a86481825f24cb8d9a8",
+      "sha256": "f64d08d87d7e66d7f0f6761f01a795df0e8d0edfe6604a86481825f24cb8d9a8",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/meta/0012_snapshot.json",
+      "sourceSha256": "b39f95b6326fc80aa0ee8874a909b128354b6b0c4d5eb0b72c377b5c0e93ab9f",
+      "sha256": "b39f95b6326fc80aa0ee8874a909b128354b6b0c4d5eb0b72c377b5c0e93ab9f",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/relations.ts",
+      "sourceSha256": "85acb8ece8fbb5031fc56fa8c70338d9b8b06ef3b032391fff8532c6373c7186",
+      "sha256": "85acb8ece8fbb5031fc56fa8c70338d9b8b06ef3b032391fff8532c6373c7186",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "drizzle/schema.ts",
+      "sourceSha256": "c4b8fb572b0b1766a97a147059b119ca38a8a78a9b0c72c66727f3f7525d4490",
+      "sha256": "c4b8fb572b0b1766a97a147059b119ca38a8a78a9b0c72c66727f3f7525d4490",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "LICENSE",
+      "sourceSha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "LICENSING.md",
+      "sourceSha256": "a0be5ea801a864fa15f24e91673edcdfc72160d01fac5fc379114828417146dc",
+      "sha256": "a0be5ea801a864fa15f24e91673edcdfc72160d01fac5fc379114828417146dc",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "package.json",
+      "sourceSha256": "64dd3f93557579ae45bf72526b610ca807387699b1d44eec24562cc8812e31cf",
+      "sha256": "64dd3f93557579ae45bf72526b610ca807387699b1d44eec24562cc8812e31cf",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "patches/wouter@3.7.1.patch",
+      "sourceSha256": "4e16e6ff3fde7d6c1024d3e0c8605dc9eb6afb690d0d49958c2f449091813072",
+      "sha256": "4e16e6ff3fde7d6c1024d3e0c8605dc9eb6afb690d0d49958c2f449091813072",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "pnpm-lock.yaml",
+      "sourceSha256": "1076f116a1fbbc5e5907fd0727d8bea88d9d167c63154ca93281095c9ea97fe3",
+      "sha256": "1076f116a1fbbc5e5907fd0727d8bea88d9d167c63154ca93281095c9ea97fe3",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "scripts/ensure-centrale-rischi-column.mjs",
+      "sourceSha256": "ed69284b5f1d935bdf0c46eca4e3794f80ffc148a161ca02ac448b22d5949312",
+      "sha256": "ed69284b5f1d935bdf0c46eca4e3794f80ffc148a161ca02ac448b22d5949312",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "scripts/ensure-circolarizzazione-risposta-columns.mjs",
+      "sourceSha256": "48d362eadcc0bb49f8b4e1bc1883fef0471edc9921050f5dce0039f692c3e2a7",
+      "sha256": "48d362eadcc0bb49f8b4e1bc1883fef0471edc9921050f5dce0039f692c3e2a7",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "scripts/ensure-nextcloud-dossier-folder.mjs",
+      "sourceSha256": "5bc4ef1a6f30c5031692de6cae99c3950e47d85ef8c6b28c6cd5a1183bebbb0c",
+      "sha256": "5bc4ef1a6f30c5031692de6cae99c3950e47d85ef8c6b28c6cd5a1183bebbb0c",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "scripts/ensure-verifica-incassi-criterio-matching.mjs",
+      "sourceSha256": "e0cdd6289be69655f5451ebcf165ac0ecf8c9d3e4000ed79899344732265faad",
+      "sha256": "e0cdd6289be69655f5451ebcf165ac0ecf8c9d3e4000ed79899344732265faad",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "scripts/ensure-verifica-incassi-mediumtext.mjs",
+      "sourceSha256": "35dd6ca102338406360cc671fe916264a8e88584e3b7247d894fa8005f0efed1",
+      "sha256": "35dd6ca102338406360cc671fe916264a8e88584e3b7247d894fa8005f0efed1",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/anonymize.ts",
+      "sourceSha256": "566a8b87b078f8ff86addcbc7dbaf034477b0ee2c51159d47221ab6eb649653a",
+      "sha256": "566a8b87b078f8ff86addcbc7dbaf034477b0ee2c51159d47221ab6eb649653a",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/context.ts",
+      "sourceSha256": "908706d9f15e50ab30b58b959404344faf8298555dcfed25eb0d22ea17661599",
+      "sha256": "908706d9f15e50ab30b58b959404344faf8298555dcfed25eb0d22ea17661599",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/cookies.ts",
+      "sourceSha256": "8b9f416d2d3ea74b3c26cb6855d9019ad7cc4403e103a150502179874c568373",
+      "sha256": "8b9f416d2d3ea74b3c26cb6855d9019ad7cc4403e103a150502179874c568373",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/dataApi.ts",
+      "sourceSha256": "194ef8e309abde283a1132aa383af10ae583e27e983afa30dfcece3aa9ce27a7",
+      "sha256": "194ef8e309abde283a1132aa383af10ae583e27e983afa30dfcece3aa9ce27a7",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/env.ts",
+      "sourceSha256": "144a50fbcc96ddc1d925cb7c910fd6de381230a064d435a2c9f5000812a9e886",
+      "sha256": "144a50fbcc96ddc1d925cb7c910fd6de381230a064d435a2c9f5000812a9e886",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/imageGeneration.ts",
+      "sourceSha256": "ded064bba9a74a5463c6888b4b865302b3eabdbe484f13358c9508d140ed7004",
+      "sha256": "ded064bba9a74a5463c6888b4b865302b3eabdbe484f13358c9508d140ed7004",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/index.ts",
+      "sourceSha256": "cdc2b9ce0915b323d38cc0196b313bb09e2731f488fbb2a60f914d3d71f88101",
+      "sha256": "cdc2b9ce0915b323d38cc0196b313bb09e2731f488fbb2a60f914d3d71f88101",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/llm.ts",
+      "sourceSha256": "aca5064f8b0065b92f9b4539b77de026f2d440ef480d20d7f5fe4a4e129d77c2",
+      "sha256": "aca5064f8b0065b92f9b4539b77de026f2d440ef480d20d7f5fe4a4e129d77c2",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/map.ts",
+      "sourceSha256": "c04f24ee38ef6840d56053f3464091d164a6236fc36e37672d555a684461ab7e",
+      "sha256": "c04f24ee38ef6840d56053f3464091d164a6236fc36e37672d555a684461ab7e",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/notification.ts",
+      "sourceSha256": "550bf6544bf792b6d13c68539679deb363b70fbf07c0dbde189a98787f66f003",
+      "sha256": "550bf6544bf792b6d13c68539679deb363b70fbf07c0dbde189a98787f66f003",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/oauth.ts",
+      "sourceSha256": "26815f106ef7eee8d86dacb426ec16ae4925b0c0f71195b5867ddb2abca4dceb",
+      "sha256": "26815f106ef7eee8d86dacb426ec16ae4925b0c0f71195b5867ddb2abca4dceb",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/sdk.ts",
+      "sourceSha256": "9af14464a820a5e7e8e0406b35dba71dc83f43f8ad3827ac86a827aba373728d",
+      "sha256": "9af14464a820a5e7e8e0406b35dba71dc83f43f8ad3827ac86a827aba373728d",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/systemRouter.ts",
+      "sourceSha256": "61bb2c904da1fa08a425f8882aa3b23003bba7266ce00b2d9fcd685e5d4bffaf",
+      "sha256": "61bb2c904da1fa08a425f8882aa3b23003bba7266ce00b2d9fcd685e5d4bffaf",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/trpc.ts",
+      "sourceSha256": "95679492e0478938f9bab6e3388ba6a95d3ab3329e6ff2eb9686e638cd07d98e",
+      "sha256": "95679492e0478938f9bab6e3388ba6a95d3ab3329e6ff2eb9686e638cd07d98e",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/types/cookie.d.ts",
+      "sourceSha256": "c2ed733d67b16ae4621164dbce09e99de0233b4a0ed05227bc35096822173c05",
+      "sha256": "c2ed733d67b16ae4621164dbce09e99de0233b4a0ed05227bc35096822173c05",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/types/manusTypes.ts",
+      "sourceSha256": "25753a7c11b83252cec75d6ee6b5190e76a020dde493f84fdf9038ccbd75e569",
+      "sha256": "25753a7c11b83252cec75d6ee6b5190e76a020dde493f84fdf9038ccbd75e569",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/vite.ts",
+      "sourceSha256": "957da5abe4ca740e48fedf9cd3c26ce1c9eca473ed50d7e7588f2173798f6b1b",
+      "sha256": "957da5abe4ca740e48fedf9cd3c26ce1c9eca473ed50d7e7588f2173798f6b1b",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/_core/voiceTranscription.ts",
+      "sourceSha256": "c53b328b12e54adfacbc632e668c2b58b9954547ce9d3313907096c8b2db330c",
+      "sha256": "c53b328b12e54adfacbc632e668c2b58b9954547ce9d3313907096c8b2db330c",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/auth.configuration.test.ts",
+      "sourceSha256": "c3988cfd7ed3556c1e530ea3da23b716780dc291b72156f384b3126f29f81b64",
+      "sha256": "c3988cfd7ed3556c1e530ea3da23b716780dc291b72156f384b3126f29f81b64",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/auth.logout.test.ts",
+      "sourceSha256": "253f4a050743093300aa70fc0072f5fbd46cfba96ecfd1d52d434fbe7dcfb54a",
+      "sha256": "253f4a050743093300aa70fc0072f5fbd46cfba96ecfd1d52d434fbe7dcfb54a",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/cespitiParser.ts",
+      "sourceSha256": "6e2a06a5ba72187bfd941099e7ce22abb70409d909ddf3f0030577c7aabdca7b",
+      "sha256": "6e2a06a5ba72187bfd941099e7ce22abb70409d909ddf3f0030577c7aabdca7b",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/circolarizzazione.test.ts",
+      "sourceSha256": "12364a5d60077511f77f7241ebebc8e74a0030e1400f819e77b38a8266224f2d",
+      "sha256": "12364a5d60077511f77f7241ebebc8e74a0030e1400f819e77b38a8266224f2d",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/collegamento-verifica-circolarizzazione.test.ts",
+      "sourceSha256": "07b3f2c3b030ec02e832f9ddeb6a7682213daf5a8c4d248edf58e57aab35f92e",
+      "sha256": "07b3f2c3b030ec02e832f9ddeb6a7682213daf5a8c4d248edf58e57aab35f92e",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/confronto-bilanci.test.ts",
+      "sourceSha256": "b9c9d5874da9ae3e7d1e454fd26f7e9656326adfdfc72955e8ed9029a93d528d",
+      "sha256": "b9c9d5874da9ae3e7d1e454fd26f7e9656326adfdfc72955e8ed9029a93d528d",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/db.ts",
+      "sourceSha256": "c6790bd71fc393fbb986ab824b17ad77b15d5c02e8a48b92b64ad1b6ad64e639",
+      "sha256": "c6790bd71fc393fbb986ab824b17ad77b15d5c02e8a48b92b64ad1b6ad64e639",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/docxRoute.ts",
+      "sourceSha256": "e6a55624711ef22e24d2c941559b5c60b453b2358895dd39366a6d5e36226975",
+      "sha256": "e6a55624711ef22e24d2c941559b5c60b453b2358895dd39366a6d5e36226975",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/nextcloud.ts",
+      "sourceSha256": "300fcfd6a3644a9ebfe88a080fa556cf810f74861b9d6368c537a25c5c3a3959",
+      "sha256": "300fcfd6a3644a9ebfe88a080fa556cf810f74861b9d6368c537a25c5c3a3959",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/pdfGenerator.ts",
+      "sourceSha256": "35c6e3f9ff5b8a7052e168d8004a99997e8dc2ae1090dd1aff760ca28f234cae",
+      "sha256": "35c6e3f9ff5b8a7052e168d8004a99997e8dc2ae1090dd1aff760ca28f234cae",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/pdfRoute.ts",
+      "sourceSha256": "7aa2e21f330eb5f3f8cd2016e88fce897089b02ffd56b1ede923704089401f9d",
+      "sha256": "7aa2e21f330eb5f3f8cd2016e88fce897089b02ffd56b1ede923704089401f9d",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/revisione.test.ts",
+      "sourceSha256": "997945b1ac096c70abaa636195ea3a8d0e745abccb23ca7558ed118b33781a65",
+      "sha256": "997945b1ac096c70abaa636195ea3a8d0e745abccb23ca7558ed118b33781a65",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers.ts",
+      "sourceSha256": "d57c054a37dbc9b3df1c25fa509b9950a62a8994759e59c5d7f8b71071d29d51",
+      "sha256": "d57c054a37dbc9b3df1c25fa509b9950a62a8994759e59c5d7f8b71071d29d51",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/alerts.ts",
+      "sourceSha256": "9dfae12f335d70a5b19e4d4ec231e231f642b6db1c25abc9c69bc7ec3597ecd8",
+      "sha256": "9dfae12f335d70a5b19e4d4ec231e231f642b6db1c25abc9c69bc7ec3597ecd8",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/circolarizzazione.ts",
+      "sourceSha256": "3d69e1771c13109e97fb99af0b9d52d579fa8a8b0f2f8c30c61d3ca8711c5f25",
+      "sha256": "3d69e1771c13109e97fb99af0b9d52d579fa8a8b0f2f8c30c61d3ca8711c5f25",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/clienti.ts",
+      "sourceSha256": "450a9f7992e316bbff258bb793fd9b930e310c0c26ad77f1c90262794c2a3140",
+      "sha256": "450a9f7992e316bbff258bb793fd9b930e310c0c26ad77f1c90262794c2a3140",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/documenti.ts",
+      "sourceSha256": "f199d0616b734bd2145828f4bfcc29b0b424b710b7ad74d8086dfde3761f14b7",
+      "sha256": "f199d0616b734bd2145828f4bfcc29b0b424b710b7ad74d8086dfde3761f14b7",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/dossierSource.ts",
+      "sourceSha256": "c9a43777bfbfeb93b1fe962f1b551d2e12a23e1cdf05ffc2047b02eb4331e339",
+      "sha256": "c9a43777bfbfeb93b1fe962f1b551d2e12a23e1cdf05ffc2047b02eb4331e339",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/esportazione.ts",
+      "sourceSha256": "3c2ac0be87c8573d9bb910357ca812226a40e6bda4740c4a2465b41f57806f55",
+      "sha256": "3c2ac0be87c8573d9bb910357ca812226a40e6bda4740c4a2465b41f57806f55",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/incarichi.ts",
+      "sourceSha256": "935c08643898875e2bbf00ddf39ea2397261362da52dbdffcd12c47ebd7b0f3e",
+      "sha256": "935c08643898875e2bbf00ddf39ea2397261362da52dbdffcd12c47ebd7b0f3e",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/moduli.ts",
+      "sourceSha256": "05060eb272d9dd4532a4c1cfcb761f071b67376e2d109a45423c31171a6149af",
+      "sha256": "05060eb272d9dd4532a4c1cfcb761f071b67376e2d109a45423c31171a6149af",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/schedeControllo.ts",
+      "sourceSha256": "6bd38e3f461c368cce57c966949786675d44eb5f2c5bf234b19024a566c49d9e",
+      "sha256": "6bd38e3f461c368cce57c966949786675d44eb5f2c5bf234b19024a566c49d9e",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/strategia.ts",
+      "sourceSha256": "fdf8857aa706b7663997f29e1c933f973db58f00544317f44b062ee1e55e05eb",
+      "sha256": "fdf8857aa706b7663997f29e1c933f973db58f00544317f44b062ee1e55e05eb",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/studioCore.ts",
+      "sourceSha256": "8d65571d30fa1c215022c5f34a47169f568fd3fa7b97fe15f8ec35bb87a41b35",
+      "sha256": "8d65571d30fa1c215022c5f34a47169f568fd3fa7b97fe15f8ec35bb87a41b35",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/verificaIncassi.ts",
+      "sourceSha256": "b5775d710ed5378b1e4e8aad5c02f020dc3cb72c625da360ee4f51a7a159647e",
+      "sha256": "b5775d710ed5378b1e4e8aad5c02f020dc3cb72c625da360ee4f51a7a159647e",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/verificaRicaviCosti.ts",
+      "sourceSha256": "fd499d92ddfbcca043a65b64bc9c226e36463bcd029b9fe860977156a3d9d9e9",
+      "sha256": "fd499d92ddfbcca043a65b64bc9c226e36463bcd029b9fe860977156a3d9d9e9",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/wizard.ts",
+      "sourceSha256": "82cdae1729302375b718a128e95478d9d82dbae9261dc1e155d216388bf99e19",
+      "sha256": "82cdae1729302375b718a128e95478d9d82dbae9261dc1e155d216388bf99e19",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/routers/workflowRevisione.ts",
+      "sourceSha256": "60942bcd2f2229b644a6251dc5c56e95cfb2234779b49d5f881ca3061606e21e",
+      "sha256": "60942bcd2f2229b644a6251dc5c56e95cfb2234779b49d5f881ca3061606e21e",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/schede-controllo.test.ts",
+      "sourceSha256": "036ba8c9c1148d90d214432172bcdc54ca2455b37fc8d180b9deaacc9c322519",
+      "sha256": "036ba8c9c1148d90d214432172bcdc54ca2455b37fc8d180b9deaacc9c322519",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/standardAuditEngine.ts",
+      "sourceSha256": "6a24810d02adc0a02bb8a4561d37e706898a13198a7164dbdd366445da0bd3d1",
+      "sha256": "6a24810d02adc0a02bb8a4561d37e706898a13198a7164dbdd366445da0bd3d1",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/storage.ts",
+      "sourceSha256": "71cd2c6ad388de7d6336ee218c8dad9a11d24f3c4beedf625c851c79ac6a3cec",
+      "sha256": "71cd2c6ad388de7d6336ee218c8dad9a11d24f3c4beedf625c851c79ac6a3cec",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/verificaIncassi.matching.test.ts",
+      "sourceSha256": "4de1fed933b6761bf00194358456a18a8db5f5567e93a52eedeb765673b42e87",
+      "sha256": "4de1fed933b6761bf00194358456a18a8db5f5567e93a52eedeb765673b42e87",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/verificaIncassi.movimentiExcel.test.ts",
+      "sourceSha256": "e584c94e787356e3431bbafbbe997618e94ce61726561a4b47f00a1f11bf0bae",
+      "sha256": "e584c94e787356e3431bbafbbe997618e94ce61726561a4b47f00a1f11bf0bae",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "server/verificaIncassi.partitarioPdf.test.ts",
+      "sourceSha256": "3fec1b0a81773a7f147a1e84808a1affbcfa4abf16aa1b453eefc4b1040cced0",
+      "sha256": "3fec1b0a81773a7f147a1e84808a1affbcfa4abf16aa1b453eefc4b1040cced0",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "shared/_core/errors.ts",
+      "sourceSha256": "52bee7d152045eaa009083e26a4cbc21d413c80b0403a23c4b5572141dec942a",
+      "sha256": "52bee7d152045eaa009083e26a4cbc21d413c80b0403a23c4b5572141dec942a",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "shared/const.ts",
+      "sourceSha256": "11da03d221aa253356704b97fcd8ffb90975a34446dda1f3c50b528ec191583d",
+      "sha256": "11da03d221aa253356704b97fcd8ffb90975a34446dda1f3c50b528ec191583d",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "shared/types.ts",
+      "sourceSha256": "959aeb30b032e203677e278922e97988b7cbcb56485694458298859af5589974",
+      "sha256": "959aeb30b032e203677e278922e97988b7cbcb56485694458298859af5589974",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "tsconfig.json",
+      "sourceSha256": "4bea0e0003e3c943f455346abc4854d1666d604adbaa6aa8eda11f94fb8f1396",
+      "sha256": "4bea0e0003e3c943f455346abc4854d1666d604adbaa6aa8eda11f94fb8f1396",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "vite.config.ts",
+      "sourceSha256": "1b4f11ec05e426ffb9b020cf18ed5bb979b7f042ad43bfd5d9043b569843afab",
+      "sha256": "1b4f11ec05e426ffb9b020cf18ed5bb979b7f042ad43bfd5d9043b569843afab",
+      "modified": false
+    },
+    {
+      "repo": "revisore-nano",
+      "file": "vitest.config.ts",
+      "sourceSha256": "a0de83b3967226a98302bbb34aa2e1321890dba9ac1d1c8ce8a6b7989af87e44",
+      "sha256": "a0de83b3967226a98302bbb34aa2e1321890dba9ac1d1c8ce8a6b7989af87e44",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": ".gitignore",
+      "sourceSha256": "328fdbf9a0578989f015f969e687cd5a4ffdfd71c8947d2025589650313ee00e",
+      "sha256": "328fdbf9a0578989f015f969e687cd5a4ffdfd71c8947d2025589650313ee00e",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "connector/.dockerignore",
+      "sourceSha256": "12327ccc6d27ff40e0348437ddc5c49c59ac1b0d6817f498576234d1f1a72b67",
+      "sha256": "12327ccc6d27ff40e0348437ddc5c49c59ac1b0d6817f498576234d1f1a72b67",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "connector/compose.yml",
+      "sourceSha256": "45a8e335cef7c0ab28a4bfc935689d4fd0d5e753a278aa5572f7a365743ed4d4",
+      "sha256": "45a8e335cef7c0ab28a4bfc935689d4fd0d5e753a278aa5572f7a365743ed4d4",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "connector/Dockerfile",
+      "sourceSha256": "f092126202ff2bca76d30927e93935d1e42a013edbad6e0c31c4f7ca9c8e532f",
+      "sha256": "f092126202ff2bca76d30927e93935d1e42a013edbad6e0c31c4f7ca9c8e532f",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "connector/package.json",
+      "sourceSha256": "712de62a2d11fd5cff2fbd0c177b9ec73975970967d7d40f48f8e95cc855c277",
+      "sha256": "712de62a2d11fd5cff2fbd0c177b9ec73975970967d7d40f48f8e95cc855c277",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "connector/portal-driver.mjs",
+      "sourceSha256": "d2d0acd38707c9ac450293d35e2103743062f182622c4cccb5ecab2a69875c93",
+      "sha256": "d2d0acd38707c9ac450293d35e2103743062f182622c4cccb5ecab2a69875c93",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "connector/portal-driver.test.mjs",
+      "sourceSha256": "1493e5b543cb756d1554348c049bada8dc504b009b77045df7656cd817c93070",
+      "sha256": "1493e5b543cb756d1554348c049bada8dc504b009b77045df7656cd817c93070",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "connector/portal-login.mjs",
+      "sourceSha256": "76e6e627136ca3c7963fa01acca9eeb98255af6e73ee23bf90678c9f453615d2",
+      "sha256": "76e6e627136ca3c7963fa01acca9eeb98255af6e73ee23bf90678c9f453615d2",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "connector/server.mjs",
+      "sourceSha256": "aadde0b2c9c496124976eb02ad313ebced193e4895098e9c59c8beba6d9a1585",
+      "sha256": "aadde0b2c9c496124976eb02ad313ebced193e4895098e9c59c8beba6d9a1585",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "docs/INTEGRATION.md",
+      "sourceSha256": "595c3e57448aa0c9eca478f26c903d1aaf72322990eef687b8d27feda7ca0bfd",
+      "sha256": "595c3e57448aa0c9eca478f26c903d1aaf72322990eef687b8d27feda7ca0bfd",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "LICENSE",
+      "sourceSha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "LICENSING.md",
+      "sourceSha256": "445986616cbef345a288a10392f2e6e6dd1c95379796c1639a1ef1881bd1c0de",
+      "sha256": "445986616cbef345a288a10392f2e6e6dd1c95379796c1639a1ef1881bd1c0de",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/compose.yml",
+      "sourceSha256": "e0c89b77e7593cb2d4588db5a771e42486dd75d3828598a74b1fa77491ea309f",
+      "sha256": "e0c89b77e7593cb2d4588db5a771e42486dd75d3828598a74b1fa77491ea309f",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/Dockerfile",
+      "sourceSha256": "c955125486e228683f0faf28d2e1b1bc49e6057b522a41995c85ea8e138664d2",
+      "sha256": "c955125486e228683f0faf28d2e1b1bc49e6057b522a41995c85ea8e138664d2",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/nginx-snippet.conf",
+      "sourceSha256": "4904e3202eb9170753aa946c553b8e402486aca608d11988b3d899aed3958e01",
+      "sha256": "f350d8fc1f68a858155cb5c73c0f29e26f71f837b2366ded27a58ae84296de9e",
+      "modified": true
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/package.json",
+      "sourceSha256": "03642ac6bf7d6b838c12bb89f4e90e52b579c2d27242b4ffadaaa4603366fc9f",
+      "sha256": "03642ac6bf7d6b838c12bb89f4e90e52b579c2d27242b4ffadaaa4603366fc9f",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/sql/001_schema.sql",
+      "sourceSha256": "1f45c48d7ae2ec823ec390d416de6e91f31072d4484293eca0b0873cef4add4f",
+      "sha256": "482ead60ea0a8e439853c110e425dd63d92068953fd9bcf17299f1a01ab08b76",
+      "modified": true
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/sql/002_correzioni_permessi.sql",
+      "sourceSha256": "d66856d17d153ea95740687455fda3d4820272bd61aa8c48cb2d1ab5208d1c40",
+      "sha256": "d66856d17d153ea95740687455fda3d4820272bd61aa8c48cb2d1ab5208d1c40",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/sql/003_ruoli.sh",
+      "sourceSha256": "659965c3ca721ab1ef92604ea36ea80300923120f016c532036957439fcfe3c0",
+      "sha256": "659965c3ca721ab1ef92604ea36ea80300923120f016c532036957439fcfe3c0",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/sql/004_recovery_state.sql",
+      "sourceSha256": "ab2d260eb30f342c15735e758fc4fae8ecf13915690f923b9bf205387197bc83",
+      "sha256": "ab2d260eb30f342c15735e758fc4fae8ecf13915690f923b9bf205387197bc83",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/sql/005_remote_catalog.sql",
+      "sourceSha256": "57b4931498d45eedd03499a8b236092e1bcd063033b2a3dd3ccfd467d6af9e89",
+      "sha256": "57b4931498d45eedd03499a8b236092e1bcd063033b2a3dd3ccfd467d6af9e89",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/sql/test_controls.sql",
+      "sourceSha256": "1eee90520933c0ac5ce97b905f6cb41908d46da6fe735a79d621ead78f035584",
+      "sha256": "1eee90520933c0ac5ce97b905f6cb41908d46da6fe735a79d621ead78f035584",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/src/api.js",
+      "sourceSha256": "396118d920235bc49a7ff8441ac8a292aa8baccd4bff8a69facff21010f263aa",
+      "sha256": "396118d920235bc49a7ff8441ac8a292aa8baccd4bff8a69facff21010f263aa",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/src/config.js",
+      "sourceSha256": "8dd0f13dd29c0740e0785cad136b3b7eb4b10187c5fc18f5281f7b9ecb3a1554",
+      "sha256": "8dd0f13dd29c0740e0785cad136b3b7eb4b10187c5fc18f5281f7b9ecb3a1554",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/src/db.js",
+      "sourceSha256": "efee654511c5eafd82135c86808bf79094f6be46c66960878108bf77177310e1",
+      "sha256": "efee654511c5eafd82135c86808bf79094f6be46c66960878108bf77177310e1",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/src/downloaders/api_ufficiale.js",
+      "sourceSha256": "35885029abef53b1c646fcc56522b2d12f9e5c902e282c337fe4da39f8b019b2",
+      "sha256": "35885029abef53b1c646fcc56522b2d12f9e5c902e282c337fe4da39f8b019b2",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/src/downloaders/browser.js",
+      "sourceSha256": "e1a2d272667bc0b8344dd21e184e5cf0ad1380dc714d1e745f0d99e469ddbbc2",
+      "sha256": "e1a2d272667bc0b8344dd21e184e5cf0ad1380dc714d1e745f0d99e469ddbbc2",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/src/downloaders/index.js",
+      "sourceSha256": "0ff2156eb39d145e89c2c1612646ad25e92b8659edfae5a9490e4cafeebdc36e",
+      "sha256": "0ff2156eb39d145e89c2c1612646ad25e92b8659edfae5a9490e4cafeebdc36e",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/src/downloaders/mock.js",
+      "sourceSha256": "9dc20a043c80f3030aaec0e08468a717113068d483cc7118b81c8b485f67fb57",
+      "sha256": "9dc20a043c80f3030aaec0e08468a717113068d483cc7118b81c8b485f67fb57",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/src/index.js",
+      "sourceSha256": "e097af287fe92ce8e384e452e7bb33ee78736c3d446b7b7e0d13bd9c0aa0aa03",
+      "sha256": "e097af287fe92ce8e384e452e7bb33ee78736c3d446b7b7e0d13bd9c0aa0aa03",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/src/nextcloud.js",
+      "sourceSha256": "b537d08940a448104e052d01779b985d63879a459dc0737e6025b92f55dc6f7f",
+      "sha256": "b537d08940a448104e052d01779b985d63879a459dc0737e6025b92f55dc6f7f",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/src/secrets.js",
+      "sourceSha256": "993648a5250ddb16272291694f08c80e3fd5e7f83761bd75f8ff586e9b4c0082",
+      "sha256": "993648a5250ddb16272291694f08c80e3fd5e7f83761bd75f8ff586e9b4c0082",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/src/worker.js",
+      "sourceSha256": "adc06509bf964ba5c503f7cdba09c81f9b22f680f635d031ff5b1336f029253e",
+      "sha256": "adc06509bf964ba5c503f7cdba09c81f9b22f680f635d031ff5b1336f029253e",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "orchestrator/UPSTREAM.md",
+      "sourceSha256": "d60caaf630bef7a96da4d1f3597646149fb4dac3151d0535d26fc528637d8921",
+      "sha256": "d60caaf630bef7a96da4d1f3597646149fb4dac3151d0535d26fc528637d8921",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "server/studio-ade-api.php",
+      "sourceSha256": "56747189c7e5df0e534e3af09b91d3df89591723e7d8aca2f9daf9425a934e2d",
+      "sha256": "6fbb4b7aec7271bd8b0bb5cddc00a7aaa453bb05d0afdcb80fc11ecff0f9d583",
+      "modified": true
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "server/studio-ade-official.php",
+      "sourceSha256": "c4cbcec9b95a0e980b9fd5ca92564196de052610737856ee1129b4554a15417b",
+      "sha256": "2298e0e027ed39a94a46fec359182f97bcfad80f8052c7a87fcf4f137202b364",
+      "modified": true
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "server/studio-ade-workspace.php",
+      "sourceSha256": "5c9fb26476e665dd829e5436e65cfd73aab861ef6fc79b88ed5200056de340aa",
+      "sha256": "5c9fb26476e665dd829e5436e65cfd73aab861ef6fc79b88ed5200056de340aa",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "web/cu-setup.mjs",
+      "sourceSha256": "b06ffdf02b91bf7658705a515ce15829ea6e413f1476659f97e2a4a846dc3681",
+      "sha256": "1794b88e0a9c9eac771a689dfa0d32585565aff0433243fffdd049a966e2bb7b",
+      "modified": true
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "web/index.html",
+      "sourceSha256": "8df9c3d3aaf379d4abefc48e108bf43ae12b5e6d16ff5e228ac84bffbc24f8b8",
+      "sha256": "51d86957df0d1096bb0a4e079efd9b919fe984cbfd265b7c64d037c59e157192",
+      "modified": true
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "web/official.css",
+      "sourceSha256": "557c1040b60e8915e00395bc4c4c66a6b76220107cbf8f99bd909207dda96d83",
+      "sha256": "557c1040b60e8915e00395bc4c4c66a6b76220107cbf8f99bd909207dda96d83",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "web/unified-app.mjs",
+      "sourceSha256": "39cf21fcc20a69948fdfa6bd73a11b992ca6d09e099571a7f6b9aa6477e6f5a7",
+      "sha256": "c84df69cc151633abc92f25829d8749189eb8f0643d7342c6b4adbd867c77a53",
+      "modified": true
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "web/workspace.css",
+      "sourceSha256": "e9e3d5bb17bf6975504e4a9144c9d289237c22a8e6e7868307ba88995e5a0707",
+      "sha256": "e9e3d5bb17bf6975504e4a9144c9d289237c22a8e6e7868307ba88995e5a0707",
+      "modified": false
+    },
+    {
+      "repo": "agenzia-entrate",
+      "file": "web/workspace.mjs",
+      "sourceSha256": "1411a5a27ef192d5dfd876bb145b91d87b0cc7bc3f50b81f81f2971cf0f18b0c",
+      "sha256": "1411a5a27ef192d5dfd876bb145b91d87b0cc7bc3f50b81f81f2971cf0f18b0c",
+      "modified": false
+    }
+  ]
+}

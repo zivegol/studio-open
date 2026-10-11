@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generatore Verbali studio-example</title>
+
+  <!-- Libreria PDF.js caricata da CDN.
+       Nota: se vuoi usare tutto offline/intranet, puoi scaricare pdf.min.js e pdf.worker.min.js
+       e sostituire questi riferimenti con file locali. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <style>
+    :root {
+      --blu: #00457c;
+      --azzurro: #0082c9;
+      --sfondo: #f3f6f9;
+      --bianco: #ffffff;
+      --bordo: #d9e2ec;
+      --testo: #1f2933;
+      --grigio: #6b7280;
+      --verde: #1f8a5b;
+      --rosso: #b91c1c;
+      --giallo: #92400e;
+      --giallo-bg: #fef3c7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--sfondo);
+      color: var(--testo);
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--blu), var(--azzurro));
+      color: white;
+      padding: 22px 28px;
+    }
+
+    header h1 { margin: 0; font-size: 26px; }
+    header p { margin: 6px 0 0 0; opacity: 0.9; }
+
+    .container {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .card {
+      background: var(--bianco);
+      border: 1px solid var(--bordo);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 20px;
+      color: var(--blu);
+    }
+
+    .card h3 {
+      margin: 18px 0 8px 0;
+      font-size: 16px;
+      color: var(--blu);
+      border-top: 1px solid var(--bordo);
+      padding-top: 14px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid var(--bordo);
+      border-radius: 8px;
+      margin-top: 5px;
+      font-size: 14px;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .primary { background: var(--azzurro); color: white; }
+    .secondary { background: #e5edf5; color: var(--blu); }
+    .danger { background: #fee2e2; color: var(--rosso); }
+    .success { background: #dcfce7; color: var(--verde); }
+    .warning { background: var(--giallo-bg); color: var(--giallo); }
+
+    .preview {
+      background: white;
+      color: #111827;
+      line-height: 1.55;
+      font-size: 15px;
+      min-height: 760px;
+      padding: 36px;
+      border-radius: 14px;
+      border: 1px solid var(--bordo);
+      white-space: pre-wrap;
+    }
+
+    .small {
+      color: var(--grigio);
+      font-size: 13px;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    .notice {
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin: 12px 0;
+      font-size: 13px;
+      line-height: 1.4;
+      background: #eef6ff;
+      color: #0f3b63;
+      border: 1px solid #c9e3f8;
+    }
+
+    .notice.warn {
+      background: #fff7ed;
+      color: #7c2d12;
+      border-color: #fed7aa;
+    }
+
+    .found-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .found-table th, .found-table td {
+      border: 1px solid var(--bordo);
+      padding: 7px;
+      vertical-align: top;
+    }
+
+    .found-table th {
+      background: #f8fafc;
+      text-align: left;
+      color: var(--blu);
+    }
+
+    .found-table input[type="text"] {
+      margin: 0;
+      padding: 7px;
+      font-size: 13px;
+    }
+
+    .found-table input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+
+    .archive-list {
+      max-height: 220px;
+      overflow: auto;
+      border: 1px solid var(--bordo);
+      border-radius: 10px;
+      background: #fff;
+      margin-top: 8px;
+    }
+
+    .archive-item {
+      padding: 10px;
+      border-bottom: 1px solid var(--bordo);
+      cursor: pointer;
+    }
+
+    .archive-item:last-child { border-bottom: none; }
+    .archive-item:hover { background: #f8fafc; }
+    .archive-item strong { color: var(--blu); }
+    .archive-item div { font-size: 12px; color: var(--grigio); margin-top: 2px; }
+
+    .pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 3px 8px;
+      background: #e5edf5;
+      color: var(--blu);
+      font-size: 12px;
+      margin: 2px 3px 2px 0;
+    }
+
+    .hidden { display: none; }
+
+    @media print {
+      body { background: white; }
+      header, .left-panel, .buttons, .small, .notice { display: none !important; }
+      .container { display: block; padding: 0; }
+      .card { box-shadow: none; border: none; padding: 0; }
+      .preview {
+        border: none;
+        padding: 20px;
+        min-height: auto;
+        font-size: 13pt;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <a href="cessioni/index.html" style="float:right;color:white;border:1px solid #b9dff4;padding:10px 14px;border-radius:8px;text-decoration:none">Cessione quote SRL →</a>
+  <h1>Generatore Verbali studio-example</h1>
+  <p>Verbali societari con importazione dati da XBRL/PDF e archivio locale anagrafiche.</p>
+</header>
+
+<div class="container">
+
+  <div class="card left-panel">
+    <h2>Importa dati società</h2>
+
+    <div class="notice">
+      I file vengono letti dal browser. I dati non vengono inviati a server esterni.
+      Per il PDF è necessario che il file contenga testo selezionabile; le scansioni senza OCR non sono leggibili da questa versione.
+    </div>
+
+    <label>Importa bilancio XBRL/XML</label>
+    <input type="file" id="fileXbrl" accept=".xbrl,.xml,.txt" onchange="leggiXbrl(event)" />
+
+    <label>Importa visura o bilancio PDF testuale</label>
+    <input type="file" id="filePdf" accept=".pdf" onchange="leggiPdf(event)" />
+
+    <div id="importStatus" class="small">Nessun file importato.</div>
+
+    <div id="foundBox" class="hidden">
+      <h3>Dati trovati</h3>
+      <table class="found-table">
+        <thead>
+          <tr>
+            <th>Usa</th>
+            <th>Campo</th>
+            <th>Valore trovato/modificabile</th>
+          </tr>
+        </thead>
+        <tbody id="foundTableBody"></tbody>
+      </table>
+      <div class="buttons">
+        <button class="primary" onclick="applicaDatiTrovati()">Importa nei campi</button>
+        <button class="success" onclick="salvaAnagraficaDaTrovati()">Salva in archivio</button>
+        <button class="secondary" onclick="nascondiDatiTrovati()">Nascondi</button>
+      </div>
+    </div>
+
+    <h3>Archivio soggetti</h3>
+    <label>Cerca anagrafica</label>
+    <input id="archivioSearch" placeholder="Cerca per società, CF/P.IVA, sede..." oninput="renderArchivio()" />
+
+    <div class="buttons">
+      <button class="secondary" onclick="renderArchivio()">Aggiorna elenco</button>
+      <button class="success" onclick="salvaAnagraficaDaCampi()">Salva anagrafica corrente</button>
+      <button class="warning" onclick="esportaArchivio()">Esporta archivio JSON</button>
+      <button class="secondary" onclick="document.getElementById('importArchivio').click()">Importa archivio</button>
+      <button class="danger" onclick="svuotaArchivio()">Svuota archivio</button>
+    </div>
+
+    <input type="file" id="importArchivio" accept=".json" class="hidden" onchange="importaArchivio(event)" />
+    <div id="archiveList" class="archive-list"></div>
+
+    <h2 style="margin-top:22px;">Dati verbale</h2>
+
+    <label>Tipo verbale</label>
+    <select id="tipoVerbale">
+      <option value="ordinaria">Assemblea ordinaria generica</option>
+      <option value="bilancio">Approvazione bilancio SRL</option>
+      <option value="nomina">Nomina amministratore</option>
+      <option value="finanziamento">Finanziamento soci</option>
+      <option value="utili">Distribuzione utili</option>
+    </select>
+
+    <label>Denominazione società</label>
+    <input id="societa" placeholder="Es. Alfa S.r.l." />
+
+    <label>Forma giuridica</label>
+    <input id="formaGiuridica" placeholder="Es. società a responsabilità limitata" />
+
+    <label>Sede legale</label>
+    <input id="sede" placeholder="Es. Verona, Via Roma n. 1" />
+
+    <div class="row">
+      <div>
+        <label>Codice fiscale / P.IVA</label>
+        <input id="piva" placeholder="Es. 01234567890" />
+      </div>
+      <div>
+        <label>REA</label>
+        <input id="rea" placeholder="Es. VR-123456" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Capitale sociale</label>
+        <input id="capitale" placeholder="Es. 10.000,00" />
+      </div>
+      <div>
+        <label>Registro Imprese</label>
+        <input id="registroImprese" placeholder="Es. Verona" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Data assemblea</label>
+        <input id="data" type="date" />
+      </div>
+      <div>
+        <label>Ora inizio</label>
+        <input id="ora" placeholder="Es. 10:00" />
+      </div>
+    </div>
+
+    <label>Luogo assemblea</label>
+    <input id="luogo" placeholder="Es. presso la sede sociale" />
+
+    <div class="row">
+      <div>
+        <label>Presidente</label>
+        <input id="presidente" placeholder="Nome e cognome" />
+      </div>
+      <div>
+        <label>Segretario</label>
+        <input id="segretario" placeholder="Nome e cognome" />
+      </div>
+    </div>
+
+    <label>Soci presenti</label>
+    <textarea id="soci" placeholder="Es. Mario Rossi, titolare del 60%; Luigi Bianchi, titolare del 40%"></textarea>
+
+    <label>Quote/capitale rappresentato</label>
+    <input id="quote" placeholder="Es. 100% del capitale sociale" />
+
+    <label>Organo amministrativo presente</label>
+    <input id="amministratore" placeholder="Es. Amministratore unico Mario Rossi" />
+
+    <label>Revisore / sindaco presente</label>
+    <input id="revisore" placeholder="Es. Revisore assente / presente / non nominato" />
+
+    <label>Ordine del giorno</label>
+    <textarea id="odg" placeholder="Es. 1. Approvazione del bilancio; 2. Destinazione del risultato d'esercizio"></textarea>
+
+    <h3>Dati specifici</h3>
+
+    <label>Esercizio chiuso al</label>
+    <input id="esercizio" placeholder="Es. 31/12/2025" />
+
+    <label>Risultato d'esercizio</label>
+    <input id="risultato" placeholder="Es. utile di Euro 25.000,00 / perdita di Euro 8.000,00" />
+
+    <label>Patrimonio netto</label>
+    <input id="patrimonioNetto" placeholder="Es. Euro 250.000,00" />
+
+    <label>Destinazione utile / copertura perdita</label>
+    <textarea id="destinazione" placeholder="Es. a riserva legale per Euro..., a riserva straordinaria per Euro..."></textarea>
+
+    <label>Nuovo amministratore / soggetto nominato</label>
+    <input id="nuovoAmministratore" placeholder="Nome e cognome" />
+
+    <label>Durata incarico</label>
+    <input id="durata" placeholder="Es. fino all'approvazione del bilancio al 31/12/2028" />
+
+    <label>Compenso amministratore</label>
+    <input id="compenso" placeholder="Es. nessun compenso / Euro ... annui" />
+
+    <label>Importo finanziamento soci</label>
+    <input id="importoFinanziamento" placeholder="Es. Euro 50.000,00" />
+
+    <label>Condizioni finanziamento</label>
+    <textarea id="condizioniFinanziamento" placeholder="Es. infruttifero, postergato, rimborsabile compatibilmente con le esigenze finanziarie della società"></textarea>
+
+    <label>Delibera / testo libero</label>
+    <textarea id="delibera" placeholder="Inserisci eventuale testo personalizzato della delibera"></textarea>
+
+    <label>Ora chiusura</label>
+    <input id="oraChiusura" placeholder="Es. 11:00" />
+
+    <div class="buttons">
+      <button class="primary" onclick="generaVerbale()">Genera verbale</button>
+      <button class="secondary" onclick="copiaVerbale()">Copia testo</button>
+      <button class="success" onclick="salvaBozza()">Salva bozza</button>
+      <button class="secondary" onclick="caricaBozza()">Carica bozza</button>
+      <button class="secondary" onclick="window.print()">Stampa / PDF</button>
+      <button class="danger" onclick="pulisciCampi()">Svuota</button>
+    </div>
+
+    <p class="small">
+      Archivio e bozze usano il localStorage del browser. Per sicurezza puoi esportare l’archivio in JSON e salvarlo in Nextcloud.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Anteprima verbale</h2>
+    <div id="anteprima" class="preview">
+Compila i campi a sinistra e clicca su “Genera verbale”.
+    </div>
+  </div>
+
+</div>
+
+<script>
+  /***********************
+   * CONFIG PDF.JS
+   ***********************/
+  if (window.pdfjsLib) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
+
+  /***********************
+   * UTILITY GENERALI
+   ***********************/
+  let datiTrovati = {};
+
+  const campiAnagrafica = [
+    "societa", "formaGiuridica", "sede", "piva", "rea", "capitale",
+    "registroImprese", "amministratore", "soci", "esercizio",
+    "risultato", "patrimonioNetto"
+  ];
+
+  const labelCampi = {
+    societa: "Denominazione società",
+    formaGiuridica: "Forma giuridica",
+    sede: "Sede legale",
+    piva: "Codice fiscale / P.IVA",
+    rea: "REA",
+    capitale: "Capitale sociale",
+    registroImprese: "Registro Imprese",
+    amministratore: "Amministratore / legale rappresentante",
+    soci: "Soci / quote",
+    esercizio: "Esercizio chiuso al",
+    risultato: "Risultato d'esercizio",
+    patrimonioNetto: "Patrimonio netto"
+  };
+
+  function valore(id, fallback = "") {
+    const el = document.getElementById(id);
+    return el && el.value.trim() ? el.value.trim() : fallback;
+  }
+
+  function setValore(id, v) {
+    const el = document.getElementById(id);
+    if (el && v !== undefined && v !== null && String(v).trim() !== "") {
+      el.value = String(v).trim();
+    }
+  }
+
+  function normalizzaSpazi(s) {
+    return (s || "")
+      .replace(/\r/g, "\n")
+      .replace(/[ \t]+/g, " ")
+      .replace(/\n[ \t]+/g, "\n")
+      .replace(/[ \t]+\n/g, "\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+  }
+
+  function pulisciValore(s) {
+    return normalizzaSpazi(String(s || ""))
+      .replace(/^[:\-\s]+/, "")
+      .replace(/[:\-\s]+$/, "")
+      .trim();
+  }
+
+  function dataItaliana(dataIso) {
+    if (!dataIso) return "[data]";
+    const parti = dataIso.split("-");
+    if (parti.length !== 3) return dataIso;
+    return parti[2] + "/" + parti[1] + "/" + parti[0];
+  }
+
+  function formatEuroDaNumero(n) {
+    if (n === undefined || n === null || n === "") return "";
+    const num = Number(String(n).replace(",", "."));
+    if (Number.isNaN(num)) return String(n);
+    return "Euro " + num.toLocaleString("it-IT", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  function estraiPrimo(regex, testo) {
+    const m = testo.match(regex);
+    return m && m[1] ? pulisciValore(m[1]) : "";
+  }
+
+  function escapeHtml(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function aggiornaStatus(msg) {
+    document.getElementById("importStatus").innerText = msg;
+  }
+
+  /***********************
+   * IMPORT XBRL/XML
+   ***********************/
+  async function leggiXbrl(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    aggiornaStatus("Lettura XBRL/XML in corso...");
+    const text = await file.text();
+    const found = estraiDaXbrl(text);
+
+    datiTrovati = found;
+    mostraDatiTrovati(found);
+
+    const count = Object.values(found).filter(v => String(v || "").trim()).length;
+    aggiornaStatus("Import XBRL/XML completato. Campi trovati: " + count + ".");
+  }
+
+  function estraiDaXbrl(xmlText) {
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(xmlText, "text/xml");
+    const parseError = xml.querySelector("parsererror");
+
+    // Fallback testuale se il parser XML fallisce.
+    if (parseError) {
+      return estraiDaTestoGenerico(xmlText);
+    }
+
+    const found = {};
+
+    function textByLocalNames(names) {
+      for (const name of names) {
+        const nodes = Array.from(xml.getElementsByTagName("*")).filter(n => {
+          const ln = (n.localName || n.nodeName || "").toLowerCase();
+          return ln === name.toLowerCase();
+        });
+        for (const node of nodes) {
+          const val = pulisciValore(node.textContent);
+          if (val && val.length < 300) return val;
+        }
+      }
+      return "";
+    }
+
+    // Tassonomia italiana: i nomi possono variare leggermente tra versioni.
+    found.societa = textByLocalNames([
+      "Denominazione",
+      "DenominazioneSocieta",
+      "DatiAnagraficiDenominazione",
+      "EntityRegistrantName",
+      "NameOfReportingEntityOrOtherMeansOfIdentification"
+    ]);
+
+    found.piva = textByLocalNames([
+      "CodiceFiscale",
+      "CodiceFiscaleSocieta",
+      "PartitaIva",
+      "TaxIdentificationNumber",
+      "EntityTaxIdentificationNumber"
+    ]);
+
+    found.sede = costruisciSedeXbrl(xml, textByLocalNames);
+
+    found.capitale = textByLocalNames([
+      "CapitaleSociale",
+      "CapitaleSocialeInteramenteVersato",
+      "ShareCapital",
+      "IssuedCapital"
+    ]);
+
+    if (found.capitale && !found.capitale.toLowerCase().includes("euro")) {
+      found.capitale = formatEuroDaNumero(found.capitale).replace("Euro ", "");
+    }
+
+    found.risultato = textByLocalNames([
+      "UtilePerditaEsercizio",
+      "UtilePerditaDellEsercizio",
+      "ProfitLoss",
+      "ProfitLossForPeriod"
+    ]);
+    if (found.risultato) {
+      const num = Number(String(found.risultato).replace(",", "."));
+      if (!Number.isNaN(num)) {
+        found.risultato = (num >= 0 ? "utile di " : "perdita di ") + formatEuroDaNumero(Math.abs(num));
+      }
+    }
+
+    found.patrimonioNetto = textByLocalNames([
+      "TotalePatrimonioNetto",
+      "PatrimonioNetto",
+      "Equity",
+      "TotalEquity"
+    ]);
+    if (found.patrimonioNetto) found.patrimonioNetto = formatEuroDaNumero(found.patrimonioNetto);
+
+    found.esercizio = estraiDataFineEsercizioDaXbrl(xmlText);
+
+    // Se mancano dati anagrafici, proviamo anche con fallback testuale.
+    const fallback = estraiDaTestoGenerico(xmlText);
+    for (const k of Object.keys(fallback)) {
+      if (!found[k]) found[k] = fallback[k];
+    }
+
+    return pulisciOggetto(found);
+  }
+
+  function costruisciSedeXbrl(xml, textByLocalNames) {
+    const indirizzo = textByLocalNames([
+      "IndirizzoSedeLegale", "SedeLegaleIndirizzo", "AddressOfRegisteredOffice",
+      "RegisteredOfficeAddress"
+    ]);
+    const comune = textByLocalNames([
+      "ComuneSedeLegale", "SedeLegaleComune", "MunicipalityOfRegisteredOffice"
+    ]);
+    const provincia = textByLocalNames([
+      "ProvinciaSedeLegale", "SedeLegaleProvincia", "ProvinceOfRegisteredOffice"
+    ]);
+    const cap = textByLocalNames([
+      "CapSedeLegale", "CAPSedeLegale", "PostalCodeOfRegisteredOffice"
+    ]);
+
+    const parti = [];
+    if (comune) parti.push(comune + (provincia ? " (" + provincia + ")" : ""));
+    if (indirizzo) parti.push(indirizzo);
+    if (cap) parti.push("CAP " + cap);
+
+    return parti.join(", ");
+  }
+
+  function estraiDataFineEsercizioDaXbrl(xmlText) {
+    // Cerca date contesto più frequenti, prendendo la maggiore plausibile.
+    const date = Array.from(xmlText.matchAll(/<[^>]*(?:endDate|EndDate)[^>]*>(\d{4}-\d{2}-\d{2})<\/[^>]+>/gi))
+      .map(m => m[1]);
+
+    if (!date.length) {
+      const anyDates = Array.from(xmlText.matchAll(/\b(20\d{2}-\d{2}-\d{2})\b/g)).map(m => m[1]);
+      date.push(...anyDates);
+    }
+
+    if (!date.length) return "";
+
+    date.sort();
+    const last = date[date.length - 1];
+    const p = last.split("-");
+    return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : last;
+  }
+
+  /***********************
+   * IMPORT PDF TESTUALE
+   ***********************/
+  async function leggiPdf(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!window.pdfjsLib) {
+      alert("La libreria PDF.js non è caricata. Verifica la connessione o usa la versione con librerie locali.");
+      return;
+    }
+
+    aggiornaStatus("Lettura PDF in corso...");
+    const arrayBuffer = await file.arrayBuffer();
+
+    try {
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let text = "";
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        const strings = content.items.map(item => item.str);
+        text += "\n\n--- PAGINA " + i + " ---\n" + strings.join(" ");
+      }
+
+      text = normalizzaSpazi(text);
+
+      if (!text || text.length < 50) {
+        aggiornaStatus("PDF letto, ma non contiene testo sufficiente. Probabile scansione senza OCR.");
+        alert("Il PDF sembra una scansione senza testo selezionabile. Questa versione non fa OCR.");
+        return;
+      }
+
+      const found = estraiDaTestoGenerico(text);
+      datiTrovati = found;
+      mostraDatiTrovati(found);
+
+      const count = Object.values(found).filter(v => String(v || "").trim()).length;
+      aggiornaStatus("Import PDF completato. Campi trovati: " + count + ".");
+
+    } catch (err) {
+      console.error(err);
+      aggiornaStatus("Errore durante la lettura PDF.");
+      alert("Errore durante la lettura del PDF: " + err.message);
+    }
+  }
+
+  /***********************
+   * PARSER TESTUALE PDF/XBRL FALLBACK
+   ***********************/
+  function estraiDaTestoGenerico(rawText) {
+    const t = normalizzaSpazi(rawText);
+    const upper = t.toUpperCase();
+    const found = {};
+
+    found.societa =
+      estraiPrimo(/(?:denominazione|impresa|societ[aà])\s*[:\-]?\s*([A-Z0-9À-Ùa-zà-ù .'&\/\-]+?(?:S\.?R\.?L\.?|SRL|S\.?P\.?A\.?|SPA|S\.?N\.?C\.?|SNC|S\.?A\.?S\.?|SAS|COOPERATIVA|SOC\.? COOP\.?))/i, t) ||
+      estraiPrimo(/([A-Z0-9À-Ù .'&\/\-]+?(?:S\.?R\.?L\.?|SRL|S\.?P\.?A\.?|SPA|S\.?N\.?C\.?|SNC|S\.?A\.?S\.?|SAS|COOPERATIVA|SOC\.? COOP\.?))/i, t);
+
+    found.formaGiuridica =
+      estraiPrimo(/forma giuridica\s*[:\-]?\s*([^\n\r]{3,80})/i, t);
+
+    found.piva =
+      estraiPrimo(/codice fiscale\s*[:\-]?\s*([0-9A-Z]{11,16})/i, t) ||
+      estraiPrimo(/partita iva\s*[:\-]?\s*([0-9]{11})/i, t) ||
+      estraiPrimo(/\b(?:c\.f\.|cf|p\.iva|piva)\s*[:\-]?\s*([0-9A-Z]{11,16})/i, t);
+
+    const piva2 = estraiPrimo(/partita iva\s*[:\-]?\s*([0-9]{11})/i, t);
+    if (piva2 && found.piva && piva2 !== found.piva) {
+      found.piva = found.piva + " / P.IVA " + piva2;
+    }
+
+    found.rea =
+      estraiPrimo(/\bREA\s*[:\-]?\s*([A-Z]{2}\s*[-\/]?\s*[0-9]{3,8})/i, t) ||
+      estraiPrimo(/n\.\s*REA\s*[:\-]?\s*([A-Z]{2}\s*[-\/]?\s*[0-9]{3,8})/i, t);
+
+    found.capitale =
+      estraiPrimo(/capitale sociale\s*(?:deliberato|sottoscritto|versato|i\.v\.)?\s*[:\-]?\s*(?:euro|€)?\s*([0-9\.\,]+)(?:\s*euro)?/i, t);
+    if (found.capitale && !found.capitale.toLowerCase().includes("euro")) {
+      found.capitale = found.capitale;
+    }
+
+    found.registroImprese =
+      estraiPrimo(/registro imprese di\s*([A-ZÀ-Ùa-zà-ù ]{2,40})/i, t) ||
+      estraiPrimo(/iscritta.*?registro.*?imprese.*?di\s*([A-ZÀ-Ùa-zà-ù ]{2,40})/i, t);
+
+    found.sede = estraiSedeDaTesto(t);
+
+    found.amministratore =
+      estraiPrimo(/amministratore unico\s*[:\-]?\s*([A-ZÀ-Ùa-zà-ù .'’-]{5,80})/i, t) ||
+      estraiPrimo(/legale rappresentante\s*[:\-]?\s*([A-ZÀ-Ùa-zà-ù .'’-]{5,80})/i, t) ||
+      estraiPrimo(/presidente del consiglio di amministrazione\s*[:\-]?\s*([A-ZÀ-Ùa-zà-ù .'’-]{5,80})/i, t);
+
+    const soci = estraiSezione(t, /soci e titolari/i, /amministratori|organi sociali|sindaci|attivit[aà]/i, 1200);
+    if (soci) found.soci = soci.slice(0, 1000);
+
+    found.esercizio =
+      estraiPrimo(/esercizio chiuso al\s*([0-9]{2}\/[0-9]{2}\/[0-9]{4})/i, t) ||
+      estraiPrimo(/bilancio.*?al\s*([0-9]{2}\/[0-9]{2}\/[0-9]{4})/i, t) ||
+      estraiPrimo(/chiuso al\s*([0-9]{2}\/[0-9]{2}\/[0-9]{4})/i, t);
+
+    let utile =
+      estraiPrimo(/utile (?:dell['’]esercizio|di esercizio|esercizio)\s*[:\-]?\s*(?:euro|€)?\s*([0-9\.\,]+)/i, t) ||
+      estraiPrimo(/risultato (?:dell['’]esercizio|di esercizio)\s*[:\-]?\s*(?:utile)?\s*(?:euro|€)?\s*([0-9\.\,]+)/i, t);
+
+    let perdita =
+      estraiPrimo(/perdita (?:dell['’]esercizio|di esercizio|esercizio)\s*[:\-]?\s*(?:euro|€)?\s*([0-9\.\,]+)/i, t);
+
+    if (perdita) found.risultato = "perdita di Euro " + perdita;
+    else if (utile) found.risultato = "utile di Euro " + utile;
+
+    let pn =
+      estraiPrimo(/totale patrimonio netto\s*[:\-]?\s*(?:euro|€)?\s*([0-9\.\,\-]+)/i, t) ||
+      estraiPrimo(/patrimonio netto\s*[:\-]?\s*(?:euro|€)?\s*([0-9\.\,\-]+)/i, t);
+    if (pn) found.patrimonioNetto = "Euro " + pn;
+
+    return pulisciOggetto(found);
+  }
+
+  function estraiSedeDaTesto(t) {
+    let sede =
+      estraiPrimo(/sede legale\s*[:\-]?\s*([^\n\r]{8,180})/i, t) ||
+      estraiPrimo(/sede\s*[:\-]?\s*([^\n\r]{8,180})/i, t);
+
+    if (sede) {
+      sede = sede
+        .replace(/capitale sociale.*$/i, "")
+        .replace(/codice fiscale.*$/i, "")
+        .replace(/partita iva.*$/i, "")
+        .trim();
+      return sede;
+    }
+
+    // Pattern frequente nelle visure: Comune + indirizzo
+    return estraiPrimo(/([A-ZÀ-Ùa-zà-ù' ]+\s*\([A-Z]{2}\)\s+VIA\s+[^\n\r]{5,120})/i, t);
+  }
+
+  function estraiSezione(t, startRegex, endRegex, maxLen) {
+    const start = t.search(startRegex);
+    if (start < 0) return "";
+    const rest = t.slice(start);
+    const end = rest.slice(50).search(endRegex);
+    const section = end >= 0 ? rest.slice(0, end + 50) : rest.slice(0, maxLen || 1000);
+    return normalizzaSpazi(section).slice(0, maxLen || 1000);
+  }
+
+  function pulisciOggetto(obj) {
+    const out = {};
+    for (const [k, v] of Object.entries(obj || {})) {
+      const cleaned = pulisciValore(v);
+      if (cleaned && cleaned !== "[object Object]") out[k] = cleaned;
+    }
+    return out;
+  }
+
+  /***********************
+   * DATI TROVATI UI
+   ***********************/
+  function mostraDatiTrovati(found) {
+    const body = document.getElementById("foundTableBody");
+    body.innerHTML = "";
+
+    const keys = campiAnagrafica.filter(k => found[k]);
+    if (!keys.length) {
+      document.getElementById("foundBox").classList.remove("hidden");
+      body.innerHTML = `<tr><td colspan="3">Nessun dato riconosciuto automaticamente. Puoi comunque compilare i campi a mano.</td></tr>`;
+      return;
+    }
+
+    keys.forEach(k => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><input type="checkbox" data-found-check="${k}" checked></td>
+        <td>${escapeHtml(labelCampi[k] || k)}</td>
+        <td><input type="text" data-found-field="${k}" value="${escapeHtml(found[k])}"></td>
+      `;
+      body.appendChild(tr);
+    });
+
+    document.getElementById("foundBox").classList.remove("hidden");
+  }
+
+  function leggiDatiTrovatiDaTabella() {
+    const result = {};
+    const inputs = document.querySelectorAll("[data-found-field]");
+    inputs.forEach(input => {
+      const k = input.getAttribute("data-found-field");
+      const check = document.querySelector(`[data-found-check="${k}"]`);
+      if (check && check.checked) result[k] = input.value.trim();
+    });
+    return result;
+  }
+
+  function applicaDatiTrovati() {
+    const dati = leggiDatiTrovatiDaTabella();
+    for (const [k, v] of Object.entries(dati)) setValore(k, v);
+
+    // Alcuni automatismi comodi
+    if (dati.societa && !valore("luogo")) setValore("luogo", "presso la sede sociale");
+    if (dati.risultato || dati.esercizio) document.getElementById("tipoVerbale").value = "bilancio";
+
+    alert("Dati importati nei campi del verbale.");
+  }
+
+  function nascondiDatiTrovati() {
+    document.getElementById("foundBox").classList.add("hidden");
+  }
+
+  /***********************
+   * ARCHIVIO ANAGRAFICHE
+   ***********************/
+  function getArchivio() {
+    try {
+      return JSON.parse(localStorage.getItem("archivioSoggettiOmnistudio") || "[]");
+    } catch {
+      return [];
+    }
+  }
+
+  function setArchivio(arr) {
+    localStorage.setItem("archivioSoggettiOmnistudio", JSON.stringify(arr || []));
+  }
+
+  function creaIdAnagrafica(d) {
+    const base = (d.piva || d.societa || String(Date.now())).toLowerCase().replace(/[^a-z0-9]/g, "");
+    return base || String(Date.now());
+  }
+
+  function datiAnagraficaDaCampi() {
+    const d = {};
+    campiAnagrafica.forEach(k => d[k] = valore(k));
+    d.updatedAt = new Date().toISOString();
+    d.id = creaIdAnagrafica(d);
+    return pulisciOggetto(d);
+  }
+
+  function salvaAnagraficaDaCampi() {
+    const d = datiAnagraficaDaCampi();
+    if (!d.societa && !d.piva) {
+      alert("Inserisci almeno denominazione società o codice fiscale/P.IVA.");
+      return;
+    }
+    salvaAnagrafica(d);
+    renderArchivio();
+    alert("Anagrafica salvata in archivio.");
+  }
+
+  function salvaAnagraficaDaTrovati() {
+    const d = leggiDatiTrovatiDaTabella();
+    if (!d.societa && !d.piva) {
+      alert("Tra i dati trovati non c'è una denominazione o un codice fiscale/P.IVA.");
+      return;
+    }
+    d.updatedAt = new Date().toISOString();
+    d.id = creaIdAnagrafica(d);
+    salvaAnagrafica(d);
+    renderArchivio();
+    alert("Anagrafica salvata in archivio.");
+  }
+
+  function salvaAnagrafica(d) {
+    const arr = getArchivio();
+    const id = creaIdAnagrafica(d);
+    d.id = id;
+    d.updatedAt = new Date().toISOString();
+
+    const idx = arr.findIndex(x => x.id === id || (x.piva && d.piva && x.piva === d.piva));
+    if (idx >= 0) arr[idx] = { ...arr[idx], ...d };
+    else arr.push(d);
+
+    arr.sort((a, b) => (a.societa || "").localeCompare(b.societa || "", "it"));
+    setArchivio(arr);
+  }
+
+  function renderArchivio() {
+    const list = document.getElementById("archiveList");
+    const q = valore("archivioSearch").toLowerCase();
+    const arr = getArchivio();
+
+    const filtered = arr.filter(d => {
+      const blob = Object.values(d).join(" ").toLowerCase();
+      return !q || blob.includes(q);
+    });
+
+    if (!filtered.length) {
+      list.innerHTML = `<div class="archive-item"><strong>Nessuna anagrafica trovata</strong><div>Salva una società dai campi o da un import XBRL/PDF.</div></div>`;
+      return;
+    }
+
+    list.innerHTML = "";
+    filtered.forEach(d => {
+      const item = document.createElement("div");
+      item.className = "archive-item";
+      item.onclick = () => caricaAnagrafica(d.id);
+
+      const dettagli = [
+        d.piva ? "CF/P.IVA: " + d.piva : "",
+        d.sede ? d.sede : "",
+        d.capitale ? "Capitale: " + d.capitale : ""
+      ].filter(Boolean).join(" · ");
+
+      item.innerHTML = `
+        <strong>${escapeHtml(d.societa || "(senza denominazione)")}</strong>
+        <div>${escapeHtml(dettagli || "Clicca per caricare l'anagrafica")}</div>
+        <div>
+          ${d.rea ? `<span class="pill">REA ${escapeHtml(d.rea)}</span>` : ""}
+          ${d.esercizio ? `<span class="pill">Bilancio ${escapeHtml(d.esercizio)}</span>` : ""}
+        </div>
+        <div class="buttons" onclick="event.stopPropagation()">
+          <button class="secondary" onclick="caricaAnagrafica('${escapeHtml(d.id)}')">Carica</button>
+          <button class="danger" onclick="eliminaAnagrafica('${escapeHtml(d.id)}')">Elimina</button>
+        </div>
+      `;
+      list.appendChild(item);
+    });
+  }
+
+  function caricaAnagrafica(id) {
+    const arr = getArchivio();
+    const d = arr.find(x => x.id === id);
+    if (!d) return;
+
+    campiAnagrafica.forEach(k => {
+      if (d[k]) setValore(k, d[k]);
+    });
+
+    if (!valore("luogo")) setValore("luogo", "presso la sede sociale");
+    alert("Anagrafica caricata nei campi.");
+  }
+
+  function eliminaAnagrafica(id) {
+    if (!confirm("Eliminare questa anagrafica dall'archivio locale?")) return;
+    const arr = getArchivio().filter(x => x.id !== id);
+    setArchivio(arr);
+    renderArchivio();
+  }
+
+  function svuotaArchivio() {
+    if (!confirm("Vuoi svuotare tutto l'archivio locale delle anagrafiche?")) return;
+    setArchivio([]);
+    renderArchivio();
+  }
+
+  function esportaArchivio() {
+    const arr = getArchivio();
+    const blob = new Blob([JSON.stringify(arr, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const date = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = "archivio-soggetti-studio-example-" + date + ".json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function importaArchivio(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const imported = JSON.parse(text);
+      if (!Array.isArray(imported)) throw new Error("Il file non contiene un archivio valido.");
+
+      const current = getArchivio();
+      imported.forEach(d => salvaAnagrafica(d));
+      renderArchivio();
+      alert("Archivio importato/unito correttamente.");
+    } catch (err) {
+      alert("Errore import archivio: " + err.message);
+    }
+  }
+
+  /***********************
+   * VERBALI
+   ***********************/
+  function datiBase() {
+    return {
+      tipo: valore("tipoVerbale"),
+      societa: valore("societa", "[società]"),
+      formaGiuridica: valore("formaGiuridica", ""),
+      sede: valore("sede", "[sede legale]"),
+      piva: valore("piva", "[codice fiscale / partita IVA]"),
+      rea: valore("rea", ""),
+      capitale: valore("capitale", "[capitale sociale]"),
+      registroImprese: valore("registroImprese", ""),
+      data: dataItaliana(valore("data")),
+      ora: valore("ora", "[ora]"),
+      luogo: valore("luogo", "presso la sede sociale"),
+      presidente: valore("presidente", "[presidente]"),
+      segretario: valore("segretario", "[segretario]"),
+      soci: valore("soci", "[soci presenti]"),
+      quote: valore("quote", "[capitale rappresentato]"),
+      amministratore: valore("amministratore", "[organo amministrativo]"),
+      revisore: valore("revisore", "non nominato"),
+      odg: valore("odg", "[ordine del giorno]"),
+      esercizio: valore("esercizio", "[data chiusura esercizio]"),
+      risultato: valore("risultato", "[risultato d'esercizio]"),
+      patrimonioNetto: valore("patrimonioNetto", ""),
+      destinazione: valore("destinazione", "[destinazione del risultato]"),
+      nuovoAmministratore: valore("nuovoAmministratore", "[nuovo amministratore]"),
+      durata: valore("durata", "[durata incarico]"),
+      compenso: valore("compenso", "[compenso]"),
+      importoFinanziamento: valore("importoFinanziamento", "[importo finanziamento]"),
+      condizioniFinanziamento: valore("condizioniFinanziamento", "[condizioni finanziamento]"),
+      delibera: valore("delibera", ""),
+      oraChiusura: valore("oraChiusura", "[ora chiusura]")
+    };
+  }
+
+  function intestazione(d) {
+    const forma = d.formaGiuridica ? `Forma giuridica: ${d.formaGiuridica}\n` : "";
+    const rea = d.rea ? `REA: ${d.rea}\n` : "";
+    const ri = d.registroImprese ? `Registro Imprese: ${d.registroImprese}\n` : "";
+
+    return `VERBALE DI ASSEMBLEA DEI SOCI
+
+Società: ${d.societa}
+${forma}Sede legale: ${d.sede}
+Codice fiscale / Partita IVA: ${d.piva}
+${rea}${ri}Capitale sociale: Euro ${d.capitale}
+
+In data ${d.data}, alle ore ${d.ora}, presso ${d.luogo}, si è riunita l'assemblea dei soci della società ${d.societa}, per discutere e deliberare sul seguente ordine del giorno:
+
+${d.odg}
+
+Assume la presidenza dell'assemblea il Sig./la Sig.ra ${d.presidente}, il/la quale chiama a fungere da segretario il Sig./la Sig.ra ${d.segretario}, che accetta.
+
+Il Presidente constata e fa constatare che:
+- sono presenti o regolarmente rappresentati i seguenti soci:
+${d.soci}
+
+- risulta rappresentato ${d.quote};
+- è presente l'organo amministrativo: ${d.amministratore};
+- quanto all'organo di controllo/revisore: ${d.revisore}.
+
+Il Presidente dichiara pertanto l'assemblea validamente costituita e atta a deliberare sugli argomenti posti all'ordine del giorno.
+
+`;
+  }
+
+  function chiusura(d) {
+    return `
+
+Null'altro essendovi da deliberare e nessuno chiedendo la parola, il Presidente dichiara chiusa l'assemblea alle ore ${d.oraChiusura}.
+
+Letto, confermato e sottoscritto.
+
+Il Presidente
+${d.presidente}
+
+Il Segretario
+${d.segretario}`;
+  }
+
+  function verbaleOrdinario(d) {
+    let testo = intestazione(d);
+
+    testo += `Il Presidente illustra agli intervenuti gli argomenti posti all'ordine del giorno e apre la discussione.
+
+Dopo ampia ed esauriente discussione, l'assemblea delibera quanto segue:
+
+${d.delibera || "[Inserire qui il testo della delibera assunta dall'assemblea.]"}
+
+La deliberazione viene approvata con il voto favorevole dei soci presenti, secondo le maggioranze previste dalla legge e dallo statuto sociale.`;
+
+    return testo + chiusura(d);
+  }
+
+  function verbaleBilancio(d) {
+    let testo = intestazione(d);
+
+    const pn = d.patrimonioNetto ? `\nIl patrimonio netto risultante dal bilancio è pari a ${d.patrimonioNetto}.` : "";
+
+    testo += `Il Presidente passa alla trattazione del primo punto all'ordine del giorno e presenta ai soci il bilancio relativo all'esercizio chiuso al ${d.esercizio}, composto da stato patrimoniale, conto economico e nota integrativa, ove prevista, illustrandone i principali dati.
+
+Il bilancio evidenzia il seguente risultato d'esercizio: ${d.risultato}.${pn}
+
+Il Presidente fornisce ogni chiarimento richiesto dai soci e, terminata la discussione, invita l'assemblea a deliberare.
+
+L'assemblea dei soci, dopo esame e discussione,
+
+DELIBERA
+
+1. di approvare il bilancio dell'esercizio chiuso al ${d.esercizio}, così come presentato dall'organo amministrativo;
+
+2. di destinare il risultato d'esercizio come segue:
+${d.destinazione};
+
+3. di conferire all'organo amministrativo ogni più ampio potere per l'esecuzione della presente deliberazione e per gli adempimenti conseguenti.
+
+La deliberazione viene approvata con il voto favorevole dei soci presenti, secondo le maggioranze previste dalla legge e dallo statuto sociale.`;
+
+    return testo + chiusura(d);
+  }
+
+  function verbaleNomina(d) {
+    let testo = intestazione(d);
+
+    testo += `Il Presidente passa alla trattazione del punto relativo alla nomina dell'organo amministrativo.
+
+Dopo breve discussione, l'assemblea dei soci
+
+DELIBERA
+
+1. di nominare quale amministratore della società il Sig./la Sig.ra ${d.nuovoAmministratore};
+
+2. di stabilire che l'incarico avrà durata ${d.durata};
+
+3. di attribuire all'amministratore nominato tutti i poteri di ordinaria e straordinaria amministrazione previsti dalla legge e dallo statuto sociale, salvo eventuali limitazioni risultanti dallo statuto o dalla presente deliberazione;
+
+4. di stabilire, quanto al compenso, quanto segue: ${d.compenso};
+
+5. di conferire all'amministratore nominato ogni potere necessario per l'esecuzione della presente deliberazione e per gli adempimenti presso il Registro delle Imprese.
+
+Il soggetto nominato, se presente, dichiara di accettare la carica e di non trovarsi in alcuna delle cause di ineleggibilità, decadenza o incompatibilità previste dalla legge.
+
+${d.delibera ? "\nUlteriori disposizioni:\n" + d.delibera : ""}
+
+La deliberazione viene approvata con il voto favorevole dei soci presenti, secondo le maggioranze previste dalla legge e dallo statuto sociale.`;
+
+    return testo + chiusura(d);
+  }
+
+  function verbaleFinanziamento(d) {
+    let testo = intestazione(d);
+
+    testo += `Il Presidente illustra ai soci la situazione finanziaria della società e la necessità/opportunità di dotare la stessa di ulteriori risorse finanziarie per il perseguimento dell'oggetto sociale e per il sostegno dell'attività aziendale.
+
+Dopo ampia discussione, l'assemblea dei soci
+
+DELIBERA
+
+1. di autorizzare il finanziamento soci in favore della società per l'importo complessivo di ${d.importoFinanziamento};
+
+2. di stabilire che il finanziamento avrà le seguenti caratteristiche:
+${d.condizioniFinanziamento};
+
+3. di dare atto che le somme saranno versate dai soci secondo gli accordi intervenuti e risultanti dalla documentazione sociale e contabile;
+
+4. di conferire all'organo amministrativo ogni potere necessario per ricevere le somme, contabilizzarle correttamente e porre in essere ogni adempimento conseguente.
+
+Resta inteso che, ove ne ricorrano i presupposti di legge, il rimborso dei finanziamenti soci potrà essere soggetto alla disciplina di cui all'art. 2467 c.c.
+
+${d.delibera ? "\nUlteriori disposizioni:\n" + d.delibera : ""}
+
+La deliberazione viene approvata con il voto favorevole dei soci presenti, secondo le maggioranze previste dalla legge e dallo statuto sociale.`;
+
+    return testo + chiusura(d);
+  }
+
+  function verbaleUtili(d) {
+    let testo = intestazione(d);
+
+    testo += `Il Presidente passa alla trattazione del punto relativo alla destinazione e distribuzione degli utili.
+
+Il Presidente ricorda che dal bilancio relativo all'esercizio chiuso al ${d.esercizio} emerge il seguente risultato: ${d.risultato}.
+
+Dopo discussione, l'assemblea dei soci
+
+DELIBERA
+
+1. di destinare il risultato d'esercizio come segue:
+${d.destinazione};
+
+2. di autorizzare l'organo amministrativo a porre in essere tutti gli adempimenti conseguenti alla presente deliberazione, compresi quelli fiscali e contabili;
+
+3. di effettuare l'eventuale pagamento degli utili ai soci nel rispetto delle disponibilità finanziarie della società e delle norme vigenti.
+
+${d.delibera ? "\nUlteriori disposizioni:\n" + d.delibera : ""}
+
+La deliberazione viene approvata con il voto favorevole dei soci presenti, secondo le maggioranze previste dalla legge e dallo statuto sociale.`;
+
+    return testo + chiusura(d);
+  }
+
+  function generaVerbale() {
+    const d = datiBase();
+    let testo = "";
+
+    if (d.tipo === "bilancio") testo = verbaleBilancio(d);
+    else if (d.tipo === "nomina") testo = verbaleNomina(d);
+    else if (d.tipo === "finanziamento") testo = verbaleFinanziamento(d);
+    else if (d.tipo === "utili") testo = verbaleUtili(d);
+    else testo = verbaleOrdinario(d);
+
+    document.getElementById("anteprima").innerText = testo;
+  }
+
+  function copiaVerbale() {
+    const testo = document.getElementById("anteprima").innerText;
+    navigator.clipboard.writeText(testo).then(() => {
+      alert("Verbale copiato negli appunti.");
+    }).catch(() => {
+      alert("Non riesco a copiare automaticamente. Seleziona il testo e copialo manualmente.");
+    });
+  }
+
+  function salvaBozza() {
+    const campi = document.querySelectorAll("input, textarea, select");
+    const dati = {};
+    campi.forEach(campo => {
+      if (campo.type !== "file") dati[campo.id] = campo.value;
+    });
+    localStorage.setItem("bozzaVerbaleOmnistudio", JSON.stringify(dati));
+    alert("Bozza salvata nel browser.");
+  }
+
+  function caricaBozza() {
+    const datiSalvati = localStorage.getItem("bozzaVerbaleOmnistudio");
+    if (!datiSalvati) {
+      alert("Nessuna bozza salvata trovata.");
+      return;
+    }
+
+    const dati = JSON.parse(datiSalvati);
+    Object.keys(dati).forEach(id => {
+      const campo = document.getElementById(id);
+      if (campo && campo.type !== "file") campo.value = dati[id];
+    });
+
+    generaVerbale();
+    alert("Bozza caricata.");
+  }
+
+  function pulisciCampi() {
+    if (!confirm("Vuoi davvero svuotare tutti i campi del verbale? L'archivio soggetti non verrà cancellato.")) return;
+
+    const campi = document.querySelectorAll("input, textarea");
+    campi.forEach(campo => {
+      if (campo.type !== "file") campo.value = "";
+    });
+
+    document.getElementById("tipoVerbale").value = "ordinaria";
+    document.getElementById("anteprima").innerText = "Compila i campi a sinistra e clicca su “Genera verbale”.";
+  }
+
+  /***********************
+   * INIT
+   ***********************/
+  window.addEventListener("load", () => {
+    const oggi = new Date();
+    const yyyy = oggi.getFullYear();
+    const mm = String(oggi.getMonth() + 1).padStart(2, "0");
+    const dd = String(oggi.getDate()).padStart(2, "0");
+    document.getElementById("data").value = `${yyyy}-${mm}-${dd}`;
+    renderArchivio();
+  });
+</script>
+
+</body>
+</html>

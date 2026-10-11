@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Previsione di chiusura – studio-example</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:'Source Sans 3',system-ui,sans-serif;background:#f2f6f9;color:#1d2b36}
+header{background:#00457c;color:#fff;padding:14px 24px;font-size:20px;font-weight:700}
+main{max-width:1500px;margin:0 auto;padding:18px}
+.card{background:#fff;border-radius:8px;box-shadow:0 1px 3px #0002;padding:16px;margin-bottom:16px}
+.up{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.slot{border:2px dashed #0082c9;border-radius:8px;padding:12px;font-size:14px}
+.slot b{display:block;margin-bottom:6px;color:#00457c}.slot small{display:block;margin-top:6px;color:#555}
+.ok{color:#1a7f37}.ko{color:#b42318}
+.modes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.modes button,.btn{background:#fff;border:1px solid #0082c9;color:#00457c;padding:8px 14px;border-radius:6px;font:inherit;font-weight:600;cursor:pointer}
+.modes button.on,.btn.p{background:#0082c9;color:#fff}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:12px}
+.kpi div{background:#f2f6f9;border-radius:6px;padding:10px}.kpi span{font-size:12px;color:#555;display:block}.kpi b{font-size:18px}
+.tw{overflow-x:auto;max-height:70vh}table{border-collapse:collapse;width:100%;font-size:13px}
+th{background:#00457c;color:#fff;position:sticky;top:0;padding:6px 8px;text-align:right;white-space:nowrap}th:nth-child(-n+3){text-align:left}
+td{padding:4px 8px;border-bottom:1px solid #e3e9ee;text-align:right;white-space:nowrap}td:nth-child(2){text-align:left;white-space:normal;min-width:240px}td:nth-child(1),td:nth-child(3){text-align:left}
+tr.t td{background:#e6f1fa;font-weight:700}tr.s td{background:#f7f9fb;font-weight:700;color:#00457c}
+input.n{width:100px;text-align:right;font:inherit;padding:2px 4px}.pos{color:#1a7f37}.neg{color:#b42318}
+.par{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin:8px 0;font-size:14px}.par input{width:70px;font:inherit;padding:3px}
+.note{font-size:13px;color:#555;margin:6px 0}
+</style></head><body>
+<header>Previsione di chiusura da situazioni contabili</header>
+<main>
+<p><a href="../dashboard.html">← App dello studio</a></p>
+<div class="card"><div class="up" id="up"></div>
+<p class="note">Carica PDF o Excel (conti con codice a 6 cifre). Se la situazione infrannuale è già comparativa (due colonne, es. 2026 | 2025) basta il primo riquadro. Le imposte sul reddito (cod. 75xxxx) sono escluse: la previsione è <b>ante imposte</b>. Elaborazione solo nel browser.</p></div>
+<p class="note">Modello per conti a 6 cifre: ricavi 5xxxxx, costi 6xxxxx. Verificare che i documenti siano della stessa azienda, con periodi dal 1° gennaio, stessa data infrannuale nei due anni e chiusura precedente al 31 dicembre. PDF testuali a sezioni contrapposte; scansioni non supportate. Le simulazioni non vengono salvate: esportare prima di chiudere.</p>
+<div id="res" style="display:none">
+<div class="card"><p id="dateWarning" class="ko"></p><div class="modes" id="modes"></div><div class="par" id="par"></div><div class="kpi" id="kpi"></div>
+<button class="btn p" onclick="exp()">Esporta Excel</button></div>
+<div class="card tw"><table id="tb"></table></div></div>
+</main>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const $=s=>document.querySelector(s),S={hom:true,A:null,B:null,C:null,mode:1,man:{},ft:{},pR:0,pV:0};
+const SL=[['A','Infrannuale corrente (o comparativo)'],['B','Infrannuale anno precedente (se separato)'],['C','Situazione al 31.12 anno precedente']];
+const nr=s=>parseFloat(s.replace(/\./g,'').replace(',','.')),AM=/^-?\d{1,3}(?:\.\d{3})*,\d{2}$/;
+const f=v=>v==null||isNaN(v)?'—':v.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
+const pc=(a,b)=>b?(a-b)/Math.abs(b)*100:null,fp=v=>v==null?'—':v.toLocaleString('it-IT',{maximumFractionDigits:1})+'%';
+const cl=(v,rev)=>v==null||Math.abs(v)<1e-9?'':((v>0)==rev?'pos':'neg');
+SL.forEach(([k,t])=>{$('#up').insertAdjacentHTML('beforeend',`<div class="slot"><b>${t}</b><input type="file" accept=".pdf,.xlsx,.xls,.csv" onchange="load('${k}',this.files[0])"><small id="s${k}">Nessun file</small></div>`)});
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const isCE=c=>/^[56]\d{5}$/.test(c);
+async function load(k,file){
+ if(!file)return;S[k]=null;S.man={};S.ft={};$('#res').style.display='none';window._x=null;const el=$('#s'+k);el.textContent='Lettura…';
+ try{S[k]=/\.pdf$/i.test(file.name)?await rdPdf(file):await rdXls(file);
+  const n=Object.keys(S[k].a).length;if(!n)throw Error('Nessun conto 5xxxxx/6xxxxx riconosciuto: verificare formato e codici.');el.innerHTML=`<span class="ok">✔ ${n} conti CE</span> · ${S[k].per||'periodo n.d.'} · ${S[k].cols} col.`;}
+ catch(e){S[k]=null;el.innerHTML=`<span class="ko">Errore: ${esc(e.message)}</span>`}
+ build();}
+async function rdPdf(file){
+ const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise,a={};let all='',cols=1;
+ for(let p=1;p<=pdf.numPages;p++){
+  const pg=await pdf.getPage(p),W=pg.getViewport({scale:1}).width,it=(await pg.getTextContent()).items.filter(i=>i.str.trim());
+  for(const half of [0,1]){let buf=null;
+   const hi=it.filter(i=>(i.transform[4]>=W/2)==!!half).sort((x,y)=>y.transform[5]-x.transform[5]),rows=[];
+   hi.forEach(i=>{const y=i.transform[5],r=rows.find(r=>Math.abs(r.y-y)<3);r?r.i.push(i):rows.push({y,i:[i]})});
+   for(const r of rows){r.i.sort((x,y)=>x.transform[4]-y.transform[4]);
+    const isA=i=>AM.test(i.str.trim()),am=r.i.filter(isA).map(i=>nr(i.str.trim())),tx=r.i.filter(i=>!isA(i)).map(i=>i.str.trim()).join(' ');all+=tx+' ';
+    if(/^Stampata|^Situazione contabile|^VIA /.test(tx))continue;
+    const m=tx.match(/^(\d{6,8})\s+(.*)$/);
+    if(m)buf={c:m[1],d:m[2],v:null};else if(buf&&tx&&!buf.v)buf.d+=' '+tx;
+    if(buf&&am.length&&!buf.v){buf.v=am;cols=Math.max(cols,am.length);if(isCE(buf.c))a[buf.c]={d:buf.d,v:am};buf=null}}}}
+ return fin(a,all,cols)}
+async function rdXls(file){
+ const wb=XLSX.read(await file.arrayBuffer(),{type:'array'}),a={};let all='',cols=1;
+ const num=x=>typeof x==='number'?x:(typeof x==='string'&&AM.test(x.trim())?nr(x.trim()):null);
+ wb.SheetNames.forEach(n=>{const rows=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,raw:true,defval:null});
+  let sp=1e9;for(const r of rows){const i=r.findIndex(x=>typeof x==='string'&&x.trim()==='RICAVI');if(i>0){sp=i;break}}
+  rows.forEach(r=>{all+=r.filter(x=>x!=null).join(' ')+' ';
+   [[0,sp],[sp,1e9]].forEach(([lo,hi])=>{const e=Math.min(hi,r.length);let i=-1;
+    for(let j=lo;j<e;j++)if(r[j]!=null&&/^\d{6}$/.test(String(r[j]).trim())){i=j;break}
+    if(i<0)return;const c=String(r[i]).trim();if(!isCE(c))return;
+    let d=c,v=[];for(let j=i+1;j<e;j++){const x=r[j];if(x==null||x==='')continue;const nn=num(x);if(nn!=null)v.push(nn);else if(d===c)d=String(x).trim()}
+    if(v.length){v=v.slice(0,2);a[c]={d,v};cols=Math.max(cols,v.length)}})})});
+ return fin(a,all,cols)}
+function fin(a,all,cols){const d=[...all.matchAll(/\b(dal|al)\s+(\d\d\/\d\d\/\d{4})/gi)].map(x=>[x[1].toLowerCase(),x[2]]),
+ st=d.filter(x=>x[0]=='dal').map(x=>x[1]),en=d.filter(x=>x[0]=='al').map(x=>x[1]);
+ return{a,cols,per:st.length&&en.length?st[0]+' – '+en[0]:'',end:en[0]||'',end2:en[1]||''}}
+let R=[],M=9,lab={},G={R:1,C:1};S.b2='tot';
+function build(){
+ const {A,B,C}=S;$('#res').style.display='none';window._x=null;if(!A||!C||(A.cols<2&&!B))return;
+ M=A.end?+A.end.slice(3,5):9;const y=A.end?+A.end.slice(6):0;lab={cur:A.end||'Infr. corr.',prv:B?B.end:(A.cols>1&&A.end2?A.end2:(y?A.end.slice(0,6)+(y-1):'Infr. prec.')),fy:C.end||'31.12'};
+ const codes=[...new Set([...Object.keys(A.a),...(B?Object.keys(B.a):[]),...Object.keys(C.a)])].sort();
+ R=codes.map(c=>{const g=(o,i)=>o&&o.a[c]?o.a[c].v[i]??0:0;
+  let cur=g(A,0),prv=A.cols>1?g(A,1):g(B,0),fy=C.a[c]?C.a[c].v[0]:0;
+  const d=(A.a[c]||C.a[c]||(B&&B.a[c])).d;let h=0;
+  if(S.hom&&/^(614|622)/.test(c)&&fy){const q=fy/12*M;if(!cur){cur=q;h=1}if(!prv){prv=q;h=1}}
+  if(S.ft[c]==null)S.ft[c]=/^(608|610|612|614|62|604201|604206|604109|604112|604114|604230|604238|604240|606137|606119|640|6906)/.test(c);
+  return{c,d,h,rev:c[0]=='5',cur,prv,fy,q4p:fy-prv}});
+ const rv=t=>R.filter(r=>r.rev).reduce((s,r)=>s+r[t],0);S.pR=+(pc(rv('cur'),rv('prv'))||0).toFixed(1);const sm=(e,t)=>R.filter(r=>r.rev==e).reduce((a,r)=>a+r[t],0);G={R:sm(1,'prv')?sm(1,'cur')/sm(1,'prv'):1,C:sm(0,'prv')?sm(0,'cur')/sm(0,'prv'):1};
+ $('#res').style.display='block';render();$('#dateWarning').textContent=A.end?'':'Data non riconosciuta: calcolo impostato a 9 mesi. Verificare il documento prima di utilizzare la previsione.'}
+function q4(r){const k=S.mode;
+ if(k==1)return r.q4p;
+ if(k==2)return S.b2=='tot'?r.q4p*(r.rev?G.R:G.C):(r.prv?r.q4p*r.cur/r.prv:r.q4p);
+ if(k==3){if(r.rev)return r.q4p*(1+S.pR/100);
+  if(S.ft[r.c])return(r.cur==0&&r.prv==0)?r.q4p:r.cur/M*(12-M);
+  return r.q4p*(1+S.pV/100)}
+ return S.man[r.c]!=null?S.man[r.c]:r.q4p}
+function render(){
+ $('#modes').innerHTML=['1 · Replica periodo prec.','2 · Trend % infrannuale','3 · Fissi / variabili','4 · Manuale'].map((t,i)=>`<button class="${S.mode==i+1?'on':''}" onclick="S.mode=${i+1};render()">${t}</button>`).join('');
+ $('#par').innerHTML=`<label><input type="checkbox" ${S.hom?'checked':''} onchange="S.hom=this.checked;build()"> Omogeneizza TFR e ammortamenti (conti 614 e 622): valore al 31.12 ÷ 12 × mesi dell'infrannuale</label>`+(S.mode==3?`<span>Ricavi, var. % del periodo mancante vs anno prec.: <input type="number" step="0.1" value="${S.pR}" onchange="S.pR=+this.value;render()"></span><span>Costi variabili, var. %: <input type="number" step="0.1" value="${S.pV}" onchange="S.pV=+this.value;render()"></span><span class="note">Fissi: media mensile del periodo × mesi mancanti (voci di sola chiusura, es. ammortamenti: importo anno prec.). Classifica F/V per riga.</span>`:
+  S.mode==4?'<span class="note">Modifica la colonna “Stima periodo mancante” (default: valore anno prec.).</span>':
+  S.mode==1?'<span class="note">Periodo mancante = valori al 31.12 − valori infrannuali dell’anno precedente.</span>':`<span>Base della %: <select onchange="S.b2=this.value;render()"><option value="tot" ${S.b2=='tot'?'selected':''}>totale ricavi / totale costi</option><option value="conto" ${S.b2=='conto'?'selected':''}>singolo conto</option></select></span><span class="note">Periodo mancante prec. × (infrannuale corrente ÷ infrannuale prec.)${S.b2=='tot'?`: ricavi × ${G.R.toFixed(4)} (${fp((G.R-1)*100)}), costi × ${G.C.toFixed(4)} (${fp((G.C-1)*100)}).`:' per ciascun conto.'}</span>`);
+ const T=(rev)=>{const x=R.filter(r=>r.rev==rev),o={cur:0,prv:0,fy:0,q4p:0,q4:0};x.forEach(r=>{o.cur+=r.cur;o.prv+=r.prv;o.fy+=r.fy;o.q4p+=r.q4p;o.q4+=q4(r)});return o};
+ const tr=T(1),tc=T(0),tot={};['cur','prv','fy','q4p','q4'].forEach(k=>tot[k]=tr[k]-tc[k]);
+ const fc=o=>o.cur+o.q4;
+ $('#kpi').innerHTML=[['Ricavi stimati',tr,1],['Costi stimati',tc,0],['Risultato ante imposte stimato',tot,1]].map(([t,o,rv])=>`<div><span>${t}</span><b>${f(fc(o))}</b><span>Anno prec. ${f(o.fy)} · <b class="${cl(pc(fc(o),o.fy),rv)}" style="font-size:13px">${fp(pc(fc(o),o.fy))}</b></span></div>`).join('');
+ const h=`<tr><th>Codice</th><th>Descrizione</th><th>${S.mode==3?'F/V':''}</th><th>${lab.cur}</th><th>${lab.prv}</th><th>Δ ass.</th><th>Δ %</th><th>${lab.fy}</th><th>Periodo mancante anno prec.</th><th>Stima periodo mancante</th><th>Stima chiusura</th><th>Δ % vs ${lab.fy}</th></tr>`;
+ const row=(r,rev)=>{const q=q4(r),e=r.cur+q;return`<tr><td>${r.c}</td><td>${esc(r.d)}${r.h?' <i title="Valore infrannuale stimato: quota 1/12 del 31.12 × mesi" style="color:#b26a00">(stima 1/12)</i>':''}</td><td>${S.mode==3&&!rev?`<select onchange="S.ft['${r.c}']=this.value=='F';render()"><option>F</option><option ${S.ft[r.c]?'':'selected'}>V</option></select>`.replace('<option>F</option>',`<option ${S.ft[r.c]?'selected':''}>F</option>`):''}</td><td>${f(r.cur)}</td><td>${f(r.prv)}</td><td>${f(r.cur-r.prv)}</td><td class="${cl(pc(r.cur,r.prv),rev)}">${fp(pc(r.cur,r.prv))}</td><td>${f(r.fy)}</td><td>${f(r.q4p)}</td><td>${S.mode==4?`<input class="n" type="number" step="0.01" value="${q.toFixed(2)}" onchange="S.man['${r.c}']=+this.value;render()">`:f(q)}</td><td>${f(e)}</td><td class="${cl(pc(e,r.fy),rev)}">${fp(pc(e,r.fy))}</td></tr>`};
+ const sub=(t,o,rev)=>`<tr class="t"><td></td><td>${t}</td><td></td><td>${f(o.cur)}</td><td>${f(o.prv)}</td><td>${f(o.cur-o.prv)}</td><td>${fp(pc(o.cur,o.prv))}</td><td>${f(o.fy)}</td><td>${f(o.q4p)}</td><td>${f(o.q4)}</td><td>${f(fc(o))}</td><td class="${cl(pc(fc(o),o.fy),rev)}">${fp(pc(fc(o),o.fy))}</td></tr>`;
+ $('#tb').innerHTML=h+'<tr class="s"><td colspan="12">RICAVI</td></tr>'+R.filter(r=>r.rev).map(r=>row(r,1)).join('')+sub('Totale ricavi',tr,1)+'<tr class="s"><td colspan="12">COSTI</td></tr>'+R.filter(r=>!r.rev).map(r=>row(r,0)).join('')+sub('Totale costi',tc,0)+sub('RISULTATO ANTE IMPOSTE',tot,1);
+ window._x=[['Codice','Descrizione','Tipo',lab.cur,lab.prv,'Δ ass.','Δ %',lab.fy,'Periodo mancante prec.','Stima periodo mancante','Stima chiusura'],...R.map(r=>{const q=q4(r);return[r.c,r.d,r.rev?'Ricavo':(S.ft[r.c]?'Costo fisso':'Costo variabile'),r.cur,r.prv,r.cur-r.prv,pc(r.cur,r.prv),r.fy,r.q4p,q,r.cur+q]}),[],['Ricavi','','',tr.cur,tr.prv,'','',tr.fy,tr.q4p,tr.q4,fc(tr)],['Costi','','',tc.cur,tc.prv,'','',tc.fy,tc.q4p,tc.q4,fc(tc)],['Risultato ante imposte','','',tot.cur,tot.prv,'','',tot.fy,tot.q4p,tot.q4,fc(tot)]]}
+function exp(){if(!window._x)return;const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(window._x),'Previsione');XLSX.writeFile(wb,'previsione_chiusura_metodo'+S.mode+'.xlsx')}
+</script></body></html>

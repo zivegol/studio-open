@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bilanci anonimizzati</title>
+  <script src="xlsx.full.min.js"></script>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --text: #1d2733;
+      --muted: #617085;
+      --line: #dbe3ee;
+      --blue: #006aa6;
+      --blue-dark: #00527f;
+      --green: #147a46;
+      --red: #b42318;
+      --amber: #8a5a00;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 28px));
+      margin: 24px auto;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0 0 5px;
+      font-size: 26px;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      max-width: 760px;
+      line-height: 1.35;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, .92fr) minmax(380px, 1.08fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 8px 26px rgba(25, 39, 60, .07);
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 17px;
+      letter-spacing: 0;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 5px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input, select {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font: inherit;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 6px;
+      min-height: 38px;
+      padding: 8px 13px;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover { background: var(--blue-dark); }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+
+    .secondary {
+      background: #e8eef6;
+      color: #1f2d3d;
+    }
+
+    .secondary:hover { background: #dce5f0; }
+
+    .hint {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.35;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fbfdff;
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+
+    .stat strong {
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 8px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .status-ok { color: var(--green); font-weight: 700; }
+    .status-warn { color: var(--amber); font-weight: 700; }
+    .status-err { color: var(--red); font-weight: 700; }
+
+    .log {
+      height: 220px;
+      overflow: auto;
+      background: #0f1720;
+      color: #d5e3f4;
+      border-radius: 8px;
+      padding: 10px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 12px;
+      line-height: 1.45;
+      margin-top: 12px;
+    }
+
+    .progress {
+      height: 8px;
+      background: #e4ebf4;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 10px 0 0;
+    }
+
+    .bar {
+      width: 0;
+      height: 100%;
+      background: var(--blue);
+      transition: width .2s;
+    }
+
+    @media (max-width: 900px) {
+      header, .grid, .two, .stats {
+        grid-template-columns: 1fr;
+        display: block;
+      }
+
+      .panel { margin-bottom: 14px; }
+      .stat { margin-bottom: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <h1>Bilanci anonimizzati</h1>
+        <p class="subtitle">Legge i bilanci Excel da Nextcloud, associa il cliente al codice ATECO tramite anagrafica e salva copie anonimizzate in formato XLSX.</p>
+        <p class="subtitle"><strong>Archivio analitico nazionale:</strong> la pipeline condivisa genera automaticamente anche il dataset CE/SP per conto, privo di denominazione, codice fiscale, partita IVA e indirizzo, nella cartella <code>bilanci analitici/EXPORT DATABASE NAZIONALE/ARCHIVIO ANALITICO</code>.</p>
+      </div>
+      <button class="secondary" id="clearLogBtn">Pulisci log</button>
+    </header>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>Origine dati</h2>
+        <div class="two">
+          <div>
+            <label for="ncBase">URL Nextcloud</label>
+            <input id="ncBase" value="https://cloud.studio.example">
+          </div>
+          <div>
+            <label for="ncUser">Utente WebDAV</label>
+            <input id="ncUser" value="admin">
+          </div>
+        </div>
+
+        <label for="registryPath">File Excel anagrafica ATECO</label>
+        <input id="registryPath" value="studio-example/archivio studio-example/adempimenti CLIENTI.xlsx">
+        <div class="hint">Il codice fiscale o la partita IVA devono essere in colonna C. Le altre colonne vengono riconosciute dai titoli, se presenti.</div>
+
+        <label for="sourceFolder">Cartella bilanci 2025</label>
+        <input id="sourceFolder" value="studio-example/archivio studio-example/bilanci analitici/2025">
+
+        <label for="destFolder">Cartella risultati anonimizzati</label>
+        <input id="destFolder" value="studio-example/archivio studio-example/bilanci analitici/EXPORT DATABASE NAZIONALE/2025">
+
+        <div class="two">
+          <div>
+            <label for="defaultYear">Anno</label>
+            <input id="defaultYear" value="2025">
+          </div>
+          <div>
+            <label for="filenameMode">Nome file output</label>
+            <select id="filenameMode">
+              <option value="ateco">ATECO + forma + progressivo</option>
+              <option value="hash">ID anonimo stabile</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button id="testBtn">Verifica percorsi</button>
+          <button id="scanBtn">Scansiona bilanci</button>
+          <button id="processBtn" disabled>Anonimizza e salva</button>
+        </div>
+        <div class="progress"><div class="bar" id="bar"></div></div>
+        <div class="log" id="log"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Stato lavorazione</h2>
+        <div class="stats">
+          <div class="stat"><span>Anagrafica</span><strong id="statRegistry">0</strong></div>
+          <div class="stat"><span>Bilanci</span><strong id="statFiles">0</strong></div>
+          <div class="stat"><span>Abbinati</span><strong id="statMatched">0</strong></div>
+          <div class="stat"><span>Creati</span><strong id="statDone">0</strong></div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>File</th>
+              <th>Identificativo</th>
+              <th>ATECO</th>
+              <th>Forma</th>
+              <th>Stato</th>
+            </tr>
+          </thead>
+          <tbody id="resultsBody">
+            <tr><td colspan="5" class="hint">Nessun file scansionato.</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    let registry = new Map();
+    let files = [];
+    let results = [];
+    let createdCount = 0;
+
+    const CE_PATTERNS = [/conto\s*economico/i, /\bce\b/i, /economico/i, /ricavi/i, /costi/i];
+    const SP_PATTERNS = [/stato\s*patrimoniale/i, /\bsp\b/i, /patrimoniale/i, /attivo/i, /passivo/i];
+    const SENSITIVE_LABELS = [
+      /ragione\s*sociale/i, /denominazione/i, /nominativo/i, /cliente/i,
+      /codice\s*fiscale/i, /partita\s*iva/i, /\bp\.?\s*iva\b/i,
+      /indirizzo/i, /\bvia\b/i, /piazza/i, /pec/i, /email/i, /telefono/i,
+      /cellulare/i, /legale\s*rappresentante/i, /amministratore/i
+    ];
+
+    function el(id) { return document.getElementById(id); }
+    function cleanPath(path) { return String(path || '').trim().replace(/^\/+|\/+$/g, ''); }
+    function davBase() {
+      return el('ncBase').value.replace(/\/+$/g, '') + '/remote.php/dav/files/' + encodeURIComponent(el('ncUser').value.trim()) + '/';
+    }
+    function encodePath(path) { return cleanPath(path).split('/').map(encodeURIComponent).join('/'); }
+    function log(message, type) {
+      const line = document.createElement('div');
+      line.className = type ? 'status-' + type : '';
+      line.textContent = '> ' + message;
+      el('log').appendChild(line);
+      el('log').scrollTop = el('log').scrollHeight;
+    }
+    function setProgress(done, total) {
+      el('bar').style.width = total ? Math.round(done / total * 100) + '%' : '0';
+    }
+    function updateStats() {
+      el('statRegistry').textContent = registry.size;
+      el('statFiles').textContent = files.length;
+      el('statMatched').textContent = results.filter(r => r.match).length;
+      el('statDone').textContent = createdCount;
+    }
+    function statusClass(status) {
+      if (status === 'pronto' || status === 'salvato') return 'status-ok';
+      if (status === 'non abbinato') return 'status-warn';
+      return 'status-err';
+    }
+    function renderResults() {
+      const body = el('resultsBody');
+      body.innerHTML = '';
+      if (!results.length) {
+        body.innerHTML = '<tr><td colspan="5" class="hint">Nessun file scansionato.</td></tr>';
+        return;
+      }
+      for (const r of results) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + esc(r.name) + '</td>' +
+          '<td>' + esc(r.identifier || '') + '</td>' +
+          '<td>' + esc(r.match?.ateco || '') + '</td>' +
+          '<td>' + esc(r.forma || '') + '</td>' +
+          '<td class="' + statusClass(r.status) + '">' + esc(r.status) + '</td>';
+        body.appendChild(tr);
+      }
+    }
+    function esc(value) {
+      return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    async function davRequest(path, options = {}) {
+      return fetch(davBase() + encodePath(path), Object.assign({ credentials: 'include' }, options));
+    }
+    async function davGet(path) {
+      const r = await davRequest(path);
+      if (!r.ok) throw new Error('GET ' + path + ' -> HTTP ' + r.status);
+      return new Uint8Array(await r.arrayBuffer());
+    }
+    async function davPut(path, data) {
+      const r = await davRequest(path, { method: 'PUT', body: data });
+      if (!r.ok) throw new Error('PUT ' + path + ' -> HTTP ' + r.status);
+    }
+    async function davMkcol(path) {
+      const r = await davRequest(path, { method: 'MKCOL' });
+      if (!r.ok && r.status !== 405) throw new Error('MKCOL ' + path + ' -> HTTP ' + r.status);
+    }
+    async function ensureFolder(path) {
+      const parts = cleanPath(path).split('/').filter(Boolean);
+      let current = '';
+      for (const part of parts) {
+        current = current ? current + '/' + part : part;
+        try { await davMkcol(current); } catch (e) { log(e.message, 'warn'); }
+      }
+    }
+    async function listFolder(path) {
+      const r = await davRequest(path + '/', {
+        method: 'PROPFIND',
+        headers: { Depth: '1', 'OCS-APIRequest': 'true' }
+      });
+      if (r.status !== 207) throw new Error('PROPFIND ' + path + ' -> HTTP ' + r.status);
+      const xml = await r.text();
+      const doc = new DOMParser().parseFromString(xml, 'text/xml');
+      const rows = [...doc.querySelectorAll('response')];
+      const base = '/remote.php/dav/files/' + el('ncUser').value.trim() + '/' + encodePath(path) + '/';
+      return rows.map(resp => {
+        const href = resp.querySelector('href')?.textContent || '';
+        const isFolder = !!resp.querySelector('collection');
+        let name = decodeURIComponent(href).replace(decodeURIComponent(base), '').replace(/\/$/g, '');
+        if (!name || href.endsWith('/' + encodePath(path) + '/')) return null;
+        return { name, path: cleanPath(path) + '/' + name, isFolder };
+      }).filter(Boolean);
+    }
+
+    async function loadRegistry() {
+      registry = new Map();
+      const path = cleanPath(el('registryPath').value);
+      if (!path) throw new Error('Indica il file Excel anagrafica ATECO.');
+      log('Carico anagrafica: ' + path);
+      const buf = await davGet(path);
+      const wb = XLSX.read(buf, { type: 'array', cellDates: true });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+      const headerIndex = detectHeaderRow(rows);
+      const headers = (rows[headerIndex] || []).map(normalizeHeader);
+      const cols = detectRegistryColumns(headers);
+      for (const row of rows.slice(headerIndex + 1)) {
+        const identifiers = [valueAt(row, cols.piva), valueAt(row, cols.cf), valueAt(row, 2)]
+          .map(normalizeIdentifier).filter(Boolean);
+        if (!identifiers.length) continue;
+        const record = {
+          identifier: identifiers[0],
+          cap: valueAt(row, cols.cap),
+          comune: valueAt(row, cols.comune),
+          citta: valueAt(row, cols.citta),
+          ateco: valueAt(row, cols.ateco),
+          forma: normalizeForma(valueAt(row, cols.forma)),
+          rawName: valueAt(row, cols.name),
+          employees: valueAt(row, cols.employees)
+        };
+        identifiers.forEach(identifier => registry.set(identifier, record));
+      }
+      log('Anagrafica caricata: ' + registry.size + ' identificativi.', registry.size ? 'ok' : 'warn');
+      updateStats();
+    }
+
+    function detectHeaderRow(rows) {
+      let best = 0, bestScore = -1;
+      rows.slice(0, 20).forEach((row, idx) => {
+        const text = row.map(normalizeHeader).join(' ');
+        let score = 0;
+        ['ateco', 'cap', 'comune', 'citta', 'forma', 'partita', 'fiscale', 'denominazione'].forEach(w => {
+          if (text.includes(w)) score++;
+        });
+        if (score > bestScore) { best = idx; bestScore = score; }
+      });
+      return best;
+    }
+    function detectRegistryColumns(headers) {
+      return {
+        piva: findCol(headers, ['partita iva', 'p. iva', 'piva']),
+        cf: findCol(headers, ['codice fiscale', 'c.f.', 'cf']),
+        employees: findCol(headers, ['dipendenti', 'addetti', 'numero dipendenti', 'n. dipendenti']),
+        cap: findCol(headers, ['cap']),
+        comune: findCol(headers, ['comune']),
+        citta: findCol(headers, ['citta', 'provincia', 'localita']),
+        ateco: findCol(headers, ['ateco', 'codice ateco', 'attivita']),
+        forma: findCol(headers, ['forma', 'natura giuridica', 'tipo impresa']),
+        name: findCol(headers, ['denominazione', 'ragione sociale', 'cliente', 'nominativo'])
+      };
+    }
+    function findCol(headers, keys) {
+      for (const key of keys) {
+        const idx = headers.findIndex(h => h.includes(key));
+        if (idx >= 0) return idx;
+      }
+      return -1;
+    }
+    function valueAt(row, idx) { return idx >= 0 ? String(row[idx] ?? '').trim() : ''; }
+    function normalizeHeader(value) {
+      return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim();
+    }
+    function normalizeIdentifier(value) {
+      const s = String(value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (/^[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]$/.test(s)) return s;
+      if (/^[0-9]{11}$/.test(s)) return s;
+      return '';
+    }
+    function normalizeForma(value) {
+      const v = normalizeHeader(value);
+      if (/\bs\.?r\.?l\b|societa a responsabilita limitata|srl/.test(v)) return 'srl';
+      if (/\bs\.?a\.?s\b|sas/.test(v)) return 'sas';
+      if (/\bs\.?n\.?c\b|snc/.test(v)) return 'snc';
+      if (/ditta|individuale|impresa individuale/.test(v)) return 'd.i.';
+      if (/associa/.test(v)) return 'associazione';
+      return value ? String(value).trim() : '';
+    }
+
+    async function scanFiles() {
+      createdCount = 0;
+      results = [];
+      files = [];
+      updateStats();
+      renderResults();
+      await loadRegistry();
+      const source = cleanPath(el('sourceFolder').value);
+      log('Scansiono cartella bilanci: ' + source);
+      const items = await listFolder(source);
+      files = items.filter(f => !f.isFolder && /\.xls[xm]?$/i.test(f.name));
+      log('Trovati ' + files.length + ' file Excel.', files.length ? 'ok' : 'warn');
+      results = files.map(file => ({ name: file.name, path: file.path, status: 'da analizzare' }));
+      renderResults();
+      updateStats();
+
+      for (let i = 0; i < files.length; i++) {
+        setProgress(i, files.length);
+        const file = files[i];
+        try {
+          const info = await inspectWorkbook(file);
+          results[i] = info;
+          log(file.name + ': ' + info.status + (info.identifier ? ' (' + info.identifier + ')' : ''), info.match ? 'ok' : 'warn');
+        } catch (e) {
+          results[i] = { name: file.name, path: file.path, status: 'errore analisi: ' + e.message };
+          log(file.name + ': ' + e.message, 'err');
+        }
+        renderResults();
+        updateStats();
+      }
+      setProgress(files.length, files.length);
+      el('processBtn').disabled = !results.some(r => r.match);
+    }
+
+    async function inspectWorkbook(file) {
+      const buf = await davGet(file.path);
+      const wb = XLSX.read(buf, { type: 'array', cellDates: true });
+      const text = workbookText(wb) + ' ' + file.name;
+      const identifiers = extractIdentifiers(text);
+      let match = null, identifier = '';
+      for (const id of identifiers) {
+        if (registry.has(id)) {
+          match = registry.get(id);
+          identifier = id;
+          break;
+        }
+      }
+      if (!identifier && identifiers.length) identifier = identifiers[0];
+      const forma = normalizeForma(match?.forma || detectForma(file.name + ' ' + text));
+      return {
+        name: file.name,
+        path: file.path,
+        wb,
+        identifier,
+        identifiers,
+        match,
+        forma,
+        status: match ? 'pronto' : 'non abbinato'
+      };
+    }
+    function workbookText(wb) {
+      const chunks = [];
+      for (const sheetName of wb.SheetNames) {
+        chunks.push(sheetName);
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, defval: '' });
+        for (const row of rows.slice(0, 80)) chunks.push(row.join(' '));
+      }
+      return chunks.join(' ');
+    }
+    function extractIdentifiers(text) {
+      const normalized = String(text || '').toUpperCase();
+      const cf = normalized.match(/[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]/g) || [];
+      const iva = normalized.match(/(?<![0-9])[0-9]{11}(?![0-9])/g) || [];
+      return [...new Set([...cf, ...iva].map(normalizeIdentifier).filter(Boolean))];
+    }
+    function detectForma(text) {
+      const v = normalizeHeader(text);
+      if (v.includes('srl') || v.includes('s.r.l')) return 'srl';
+      if (v.includes('sas') || v.includes('s.a.s')) return 'sas';
+      if (v.includes('snc') || v.includes('s.n.c')) return 'snc';
+      if (v.includes('ditta') || v.includes('individuale')) return 'd.i.';
+      if (v.includes('associa')) return 'associazione';
+      return '';
+    }
+
+    async function processFiles() {
+      createdCount = 0;
+      await ensureFolder(cleanPath(el('destFolder').value));
+      const ready = results.filter(r => r.match);
+      log('Avvio anonimizzazione: ' + ready.length + ' file.');
+      for (let i = 0; i < ready.length; i++) {
+        setProgress(i, ready.length);
+        const r = ready[i];
+        try {
+          const wb = buildAnonymizedWorkbook(r, i + 1);
+          const out = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+          const outName = outputName(r, i + 1);
+          await davPut(cleanPath(el('destFolder').value) + '/' + outName, new Uint8Array(out));
+          r.status = 'salvato';
+          createdCount++;
+          log('Salvato: ' + outName, 'ok');
+        } catch (e) {
+          r.status = 'errore salvataggio: ' + e.message;
+          log(r.name + ': ' + e.message, 'err');
+        }
+        renderResults();
+        updateStats();
+      }
+      setProgress(ready.length, ready.length);
+    }
+
+    function buildAnonymizedWorkbook(info, index) {
+      const out = XLSX.utils.book_new();
+      const metaRows = [
+        ['campo', 'valore'],
+        ['anno', el('defaultYear').value.trim()],
+        ['cap', info.match.cap],
+        ['comune', info.match.comune],
+        ['citta', info.match.citta],
+        ['codice_ateco', info.match.ateco],
+        ['forma_giuridica', info.forma],
+        ['numero_dipendenti', info.match.employees || ''],
+        ['id_anonimo', anonymousId(info.identifier || info.name)]
+      ];
+      XLSX.utils.book_append_sheet(out, XLSX.utils.aoa_to_sheet(metaRows), 'Metadati anonimizzati');
+
+      const selected = selectSheets(info.wb, info.forma);
+      for (const sheetName of selected) {
+        const rows = XLSX.utils.sheet_to_json(info.wb.Sheets[sheetName], { header: 1, defval: '' });
+        const safeRows = anonymizeRows(rows, info);
+        const safeName = safeSheetName(sheetName);
+        XLSX.utils.book_append_sheet(out, XLSX.utils.aoa_to_sheet(safeRows), safeName);
+      }
+      if (out.SheetNames.length === 1) {
+        XLSX.utils.book_append_sheet(out, XLSX.utils.aoa_to_sheet([['avviso'], ['Nessun foglio contabile riconosciuto.']]), 'Avvisi');
+      }
+      return out;
+    }
+    function selectSheets(wb, forma) {
+      const names = wb.SheetNames;
+      const ce = names.filter(n => CE_PATTERNS.some(p => p.test(n)));
+      const sp = names.filter(n => SP_PATTERNS.some(p => p.test(n)));
+      if (forma === 'srl') {
+        const both = [...new Set([...sp, ...ce])];
+        return both.length ? both : names;
+      }
+      if (['sas', 'snc', 'd.i.', 'associazione'].includes(forma)) {
+        return ce.length ? ce : names.filter(n => !SP_PATTERNS.some(p => p.test(n)));
+      }
+      return ce.length ? ce : names;
+    }
+    function anonymizeRows(rows, info) {
+      return rows.map(row => {
+        const joined = row.map(v => String(v ?? '')).join(' ');
+        const sensitiveRow = SENSITIVE_LABELS.some(p => p.test(joined));
+        return row.map((cell, idx) => anonymizeCell(cell, idx, sensitiveRow, info));
+      });
+    }
+    function anonymizeCell(cell, idx, sensitiveRow, info) {
+      if (cell === null || cell === undefined) return cell;
+      if (typeof cell === 'number' || cell instanceof Date) return cell;
+      let value = String(cell);
+      for (const id of info.identifiers || []) {
+        if (id) value = value.replaceAll(id, '[omesso]');
+      }
+      value = value.replace(/[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]/gi, '[omesso]');
+      value = value.replace(/(?<![0-9])[0-9]{11}(?![0-9])/g, '[omesso]');
+      value = value.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[omesso]');
+      if (sensitiveRow && idx > 0 && !isAllowedMetadata(value, info)) return '[omesso]';
+      return value;
+    }
+    function isAllowedMetadata(value, info) {
+      const v = normalizeHeader(value);
+      return v === normalizeHeader(info.match.cap) ||
+        v === normalizeHeader(info.match.comune) ||
+        v === normalizeHeader(info.match.citta) ||
+        v === normalizeHeader(info.match.ateco) ||
+        v === normalizeHeader(info.forma);
+    }
+    function outputName(info, index) {
+      const suffix = String(index).padStart(3, '0');
+      if (el('filenameMode').value === 'hash') {
+        return anonymousId(info.identifier || info.name) + '.xlsx';
+      }
+      const ateco = sanitizeName(info.match.ateco || 'ateco_nd');
+      const forma = sanitizeName(info.forma || 'forma_nd');
+      return ateco + '_' + forma + '_' + suffix + '.xlsx';
+    }
+    function anonymousId(seed) {
+      let h = 2166136261;
+      const s = String(seed || '');
+      for (let i = 0; i < s.length; i++) {
+        h ^= s.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return 'anon_' + (h >>> 0).toString(16).padStart(8, '0');
+    }
+    function sanitizeName(value) {
+      return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40) || 'nd';
+    }
+    function safeSheetName(name) {
+      return String(name || 'Foglio').replace(/[\\/?*\[\]:]/g, ' ').slice(0, 31) || 'Foglio';
+    }
+
+    async function verifyPaths() {
+      try {
+        await loadRegistry();
+        const source = await listFolder(cleanPath(el('sourceFolder').value));
+        log('Cartella sorgente leggibile: ' + source.length + ' elementi.', 'ok');
+        await ensureFolder(cleanPath(el('destFolder').value));
+        log('Cartella destinazione pronta.', 'ok');
+      } catch (e) {
+        log(e.message, 'err');
+      }
+    }
+
+    el('testBtn').addEventListener('click', verifyPaths);
+    el('scanBtn').addEventListener('click', scanFiles);
+    el('processBtn').addEventListener('click', processFiles);
+    el('clearLogBtn').addEventListener('click', () => { el('log').innerHTML = ''; });
+    updateStats();
+  </script>
+</body>
+</html>

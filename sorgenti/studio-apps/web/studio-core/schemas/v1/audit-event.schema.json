@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:studio-example:studio-core:schema:v1:audit-event",
+  "title": "AuditEvent v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "eventId", "occurredAt", "correlationId", "actor", "appId", "eventType", "outcome", "target", "metrics", "privacyClass"],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "eventId": {"type": "string", "format": "uuid"},
+    "occurredAt": {"type": "string", "format": "date-time"},
+    "correlationId": {"type": "string", "format": "uuid"},
+    "actor": {"type": "object", "required": ["userId"], "properties": {"userId": {"type": "string"}}, "additionalProperties": false},
+    "appId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,63}$"},
+    "eventType": {"type": "string", "pattern": "^[a-z][a-z0-9.-]+$"},
+    "outcome": {"enum": ["started", "success", "failure", "denied"]},
+    "target": {"type": "object", "required": ["type", "id"], "properties": {"type": {"type": "string"}, "id": {"type": "string"}}, "additionalProperties": false},
+    "metrics": {"type": "object"},
+    "privacyClass": {"enum": ["internal", "confidential", "restricted"]},
+    "reasonCode": {"type": "string", "pattern": "^[a-zA-Z0-9_.-]+$"}
+  }
+}

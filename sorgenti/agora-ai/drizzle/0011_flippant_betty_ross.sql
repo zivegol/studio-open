@@ -1,0 +1,2 @@
+ALTER TABLE `agent_peer_evaluations` ADD `evaluator_tier` enum('junior','senior','unknown') DEFAULT 'unknown' NOT NULL;--> statement-breakpoint
+ALTER TABLE `agent_peer_evaluations` ADD `evaluation_type` enum('peer','cross_tier','unknown') DEFAULT 'unknown' NOT NULL;

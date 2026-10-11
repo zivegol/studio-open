@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparatore Regime Forfettario</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root {
+  --blue: #00457c;
+  --sky: #0082c9;
+  --bg: #f2f6f9;
+  --border: #dce6ed;
+  --text: #1a2b3c;
+  --muted: #62788c;
+  --green: #2d7d46;
+  --red: #b42318;
+  --amber: #8a5a00;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 20px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+.container {
+  max-width: 1180px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 22px;
+}
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+h1 {
+  margin: 0;
+  color: var(--blue);
+  font-size: 22px;
+}
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+button {
+  border: 0;
+  border-radius: 7px;
+  padding: 8px 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-blue { background: var(--sky); color: #fff; }
+.btn-green { background: var(--green); color: #fff; }
+.btn-red { background: var(--red); color: #fff; }
+.inputs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 15px;
+  margin-bottom: 18px;
+}
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: .03em;
+  margin-bottom: 6px;
+}
+input, select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 9px;
+  font-size: 14px;
+  background: #fff;
+}
+.hint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+.comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.panel {
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  overflow: hidden;
+}
+.panel-title {
+  padding: 11px 14px;
+  color: #fff;
+  font-weight: 800;
+  text-align: center;
+}
+.panel-title.forf { background: var(--sky); }
+.panel-title.ord { background: var(--blue); }
+.line {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #eef2f6;
+  font-size: 14px;
+}
+.line span:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.line.strong {
+  background: #f8fafc;
+  font-weight: 800;
+}
+.line.final {
+  background: #eef8f1;
+  color: var(--green);
+  font-weight: 900;
+  font-size: 16px;
+}
+.summary {
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: #f8fafc;
+  text-align: center;
+  font-weight: 800;
+}
+.summary.good { color: var(--green); background: #edf8f0; border-color: #c6e6cf; }
+.summary.bad { color: var(--red); background: #fff1f0; border-color: #f3c3be; }
+.details {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.card {
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 14px;
+  background: #fff;
+}
+.card h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  color: var(--blue);
+}
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 8px; border-bottom: 1px solid #edf1f5; text-align: left; }
+td:last-child, th:last-child { text-align: right; }
+.note {
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+@media (max-width: 900px) {
+  body { padding: 10px; }
+  .inputs, .comparison, .details { grid-template-columns: 1fr; }
+  .toolbar { align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+<div class="container" id="app-content">
+  <div class="toolbar" data-html2canvas-ignore="true">
+    <h1>Comparatore Forfettario / Ordinario</h1>
+    <div class="actions">
+      <button class="btn-red" onclick="exportPDF()">Esporta PDF</button>
+      <button class="btn-green" onclick="exportExcel()">Esporta Excel</button>
+      <button class="btn-blue" onclick="saveToNextcloud()">Salva PDF in Nextcloud</button>
+    </div>
+  </div>
+
+  <div class="inputs" data-html2canvas-ignore="true">
+    <div class="field">
+      <label>Fatturato annuo</label>
+      <input type="number" id="fatturato" value="60000" min="0" step="100" oninput="calc()">
+    </div>
+    <div class="field">
+      <label>Costi annui reali</label>
+      <input type="number" id="costi" value="12000" min="0" step="100" oninput="calc()">
+    </div>
+    <div class="field">
+      <label>Codice ATECO</label>
+      <input type="text" id="ateco" value="69.20" placeholder="es. 69.20" oninput="calc()">
+      <div class="hint" id="coeff-hint"></div>
+    </div>
+    <div class="field">
+      <label>Imposta sostitutiva</label>
+      <select id="sostitutiva" onchange="calc()">
+        <option value="0.05">5%</option>
+        <option value="0.15" selected>15%</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Cassa previdenziale</label>
+      <select id="previdenza" onchange="toggleCassa(); calc()">
+        <option value="gestione_separata">Gestione separata INPS 26,07%</option>
+        <option value="artigiani">INPS artigiani 24%</option>
+        <option value="commercianti">INPS commercianti 24,48%</option>
+        <option value="cassa_professionale">Cassa professionale</option>
+      </select>
+    </div>
+    <div class="field" id="cassa-field" style="display:none">
+      <label>% Cassa professionale</label>
+      <input type="number" id="cassaPercent" value="4" min="0" max="100" step="0.01" oninput="calc()">
+    </div>
+  </div>
+
+  <div class="comparison">
+    <div class="panel">
+      <div class="panel-title forf">REGIME FORFETTARIO</div>
+      <div class="line"><span>Fatturato</span><span id="f-fatturato"></span></div>
+      <div class="line"><span>Costi reali informativi</span><span id="f-costi"></span></div>
+      <div class="line strong"><span>Utile reale (fatturato - costi)</span><span id="f-utile-reale"></span></div>
+      <div class="line"><span>Coefficiente redditivita</span><span id="f-coeff"></span></div>
+      <div class="line strong"><span>Imponibile forfettario</span><span id="f-imponibile"></span></div>
+      <div class="line"><span>Contributi previdenziali</span><span id="f-contributi"></span></div>
+      <div class="line"><span>Base imposta sostitutiva</span><span id="f-base-imposta"></span></div>
+      <div class="line"><span>Imposta sostitutiva</span><span id="f-imposta"></span></div>
+      <div class="line final"><span>Disponibile stimato</span><span id="f-netto"></span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title ord">REGIME ORDINARIO</div>
+      <div class="line"><span>Ricavi</span><span id="o-ricavi"></span></div>
+      <div class="line"><span>Costi deducibili</span><span id="o-costi"></span></div>
+      <div class="line strong"><span>Utile reale</span><span id="o-utile"></span></div>
+      <div class="line"><span>Contributi previdenziali sull'utile</span><span id="o-contributi"></span></div>
+      <div class="line"><span>Base IRPEF stimata</span><span id="o-base-irpef"></span></div>
+      <div class="line"><span>IRPEF lorda stimata</span><span id="o-irpef"></span></div>
+      <div class="line final"><span>Disponibile stimato</span><span id="o-netto"></span></div>
+    </div>
+  </div>
+
+  <div id="summary" class="summary"></div>
+
+  <div class="details">
+    <div class="card">
+      <h3>Dettaglio previdenza</h3>
+      <table>
+        <tbody id="previdenza-table"></tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Scaglioni IRPEF applicati</h3>
+      <table>
+        <tbody>
+          <tr><td>Fino a 28.000 euro</td><td>23%</td></tr>
+          <tr><td>Da 28.000 a 50.000 euro</td><td>35%</td></tr>
+          <tr><td>Oltre 50.000 euro</td><td>43%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="note">
+    Calcolo orientativo per confronto interno. Nel forfettario i costi reali sono mostrati per misurare l'utile reale, ma non riducono l'imponibile fiscale. L'imposta sostitutiva e calcolata sulla base imponibile al netto dei contributi stimati. Il confronto ordinario usa IRPEF lorda per scaglioni e non considera addizionali, detrazioni, acconti, IVA, rivalse o casi particolari.
+  </div>
+</div>
+
+<script src="/studio-apps/studio-core/core.js?v=20260814-2"></script>
+<script>
+const MINIMALE_INPS = 18808;
+
+const ATECO_RULES = [
+  { label: 'Industrie alimentari e delle bevande', coeff: 0.40, match: c => hasPrefix(c, ['10', '11']) },
+  { label: "Commercio all'ingrosso e al dettaglio", coeff: 0.40, match: c => hasPrefix(c, ['45']) || inRange(c, 46.2, 46.9) || inRange(c, 47.1, 47.7) || hasExact(c, ['47.9']) },
+  { label: 'Commercio ambulante di prodotti alimentari e bevande', coeff: 0.40, match: c => hasExact(c, ['47.81']) },
+  { label: 'Commercio ambulante di altri prodotti', coeff: 0.54, match: c => hasExact(c, ['47.82', '47.89']) },
+  { label: 'Costruzioni e attivita immobiliari', coeff: 0.86, match: c => hasPrefix(c, ['41', '42', '43', '68']) },
+  { label: 'Intermediari del commercio', coeff: 0.62, match: c => hasExact(c, ['46.1']) },
+  { label: 'Servizi di alloggio e ristorazione', coeff: 0.40, match: c => hasPrefix(c, ['55', '56']) },
+  { label: 'Professionali, scientifiche, tecniche, sanitarie, istruzione, finanziarie e assicurative', coeff: 0.78, match: c => hasPrefix(c, ['64', '65', '66', '69', '70', '71', '72', '73', '74', '75', '85', '86', '87', '88']) },
+  { label: 'Altre attivita economiche', coeff: 0.67, match: c => true }
+];
+
+function cleanAteco(value) {
+  return String(value || '').trim().replace(',', '.');
+}
+
+function atecoNumber(code) {
+  const m = cleanAteco(code).match(/^(\d{1,2})(?:\.(\d{1,2}))?/);
+  if (!m) return null;
+  return parseFloat(m[1] + (m[2] ? '.' + m[2] : ''));
+}
+
+function firstTwo(code) {
+  const m = cleanAteco(code).match(/^(\d{1,2})/);
+  return m ? m[1].padStart(2, '0') : '';
+}
+
+function normalizedPrefix(code, decimals) {
+  const n = atecoNumber(code);
+  return n === null ? '' : n.toFixed(decimals).replace(/0+$/, '').replace(/\.$/, '');
+}
+
+function hasPrefix(code, prefixes) {
+  const p = firstTwo(code);
+  return prefixes.includes(p);
+}
+
+function hasExact(code, values) {
+  const c1 = normalizedPrefix(code, 2);
+  const c2 = normalizedPrefix(code, 1);
+  return values.some(v => v === c1 || v === c2);
+}
+
+function inRange(code, min, max) {
+  const n = atecoNumber(code);
+  return n !== null && n >= min && n <= max;
+}
+
+function findAtecoRule(code) {
+  const cleaned = cleanAteco(code);
+  if (!cleaned) return ATECO_RULES[8];
+  return ATECO_RULES.find(rule => rule.match(cleaned)) || ATECO_RULES[8];
+}
+
+function money(n) {
+  return new Intl.NumberFormat('it-IT', { style: 'currency', currency: 'EUR' }).format(Number(n) || 0);
+}
+
+function pct(n) {
+  return new Intl.NumberFormat('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format((Number(n) || 0) * 100) + '%';
+}
+
+function calcIrpef(base) {
+  const x = Math.max(0, Number(base) || 0);
+  const first = Math.min(x, 28000) * 0.23;
+  const second = Math.max(0, Math.min(x, 50000) - 28000) * 0.35;
+  const third = Math.max(0, x - 50000) * 0.43;
+  return first + second + third;
+}
+
+function getContribuzione(base) {
+  const type = document.getElementById('previdenza').value;
+  const cassaPct = (parseFloat(document.getElementById('cassaPercent').value) || 0) / 100;
+  const positiveBase = Math.max(0, Number(base) || 0);
+
+  if (type === 'gestione_separata') {
+    return { label: 'Gestione separata INPS', rate: 0.2607, base: positiveBase, amount: positiveBase * 0.2607, note: 'Nessun minimale' };
+  }
+  if (type === 'artigiani') {
+    const contributionBase = Math.max(positiveBase, positiveBase > 0 ? MINIMALE_INPS : 0);
+    return { label: 'INPS artigiani', rate: 0.24, base: contributionBase, amount: contributionBase * 0.24, note: 'Minimale ' + money(MINIMALE_INPS) };
+  }
+  if (type === 'commercianti') {
+    const contributionBase = Math.max(positiveBase, positiveBase > 0 ? MINIMALE_INPS : 0);
+    return { label: 'INPS commercianti', rate: 0.2448, base: contributionBase, amount: contributionBase * 0.2448, note: 'Minimale ' + money(MINIMALE_INPS) };
+  }
+  return { label: 'Cassa professionale', rate: cassaPct, base: positiveBase, amount: positiveBase * cassaPct, note: 'Percentuale inserita manualmente' };
+}
+
+function toggleCassa() {
+  document.getElementById('cassa-field').style.display = document.getElementById('previdenza').value === 'cassa_professionale' ? 'block' : 'none';
+}
+
+function calc() {
+  const fatturato = Math.max(0, parseFloat(document.getElementById('fatturato').value) || 0);
+  const costi = Math.max(0, parseFloat(document.getElementById('costi').value) || 0);
+  const utileReale = fatturato - costi;
+  const rule = findAtecoRule(document.getElementById('ateco').value);
+  const impostaRate = parseFloat(document.getElementById('sostitutiva').value) || 0.15;
+
+  const imponibileForf = fatturato * rule.coeff;
+  const contribForf = getContribuzione(imponibileForf);
+  const baseSostitutiva = Math.max(0, imponibileForf - contribForf.amount);
+  const impostaSostitutiva = baseSostitutiva * impostaRate;
+  const nettoForf = utileReale - contribForf.amount - impostaSostitutiva;
+
+  const contribOrd = getContribuzione(utileReale);
+  const baseIrpef = Math.max(0, utileReale - contribOrd.amount);
+  const irpef = calcIrpef(baseIrpef);
+  const nettoOrd = utileReale - contribOrd.amount - irpef;
+
+  document.getElementById('coeff-hint').textContent = rule.label + ' - coefficiente ' + pct(rule.coeff);
+
+  setText('f-fatturato', money(fatturato));
+  setText('f-costi', money(costi));
+  setText('f-utile-reale', money(utileReale));
+  setText('f-coeff', pct(rule.coeff));
+  setText('f-imponibile', money(imponibileForf));
+  setText('f-contributi', money(contribForf.amount));
+  setText('f-base-imposta', money(baseSostitutiva));
+  setText('f-imposta', money(impostaSostitutiva) + ' (' + pct(impostaRate) + ')');
+  setText('f-netto', money(nettoForf));
+
+  setText('o-ricavi', money(fatturato));
+  setText('o-costi', money(costi));
+  setText('o-utile', money(utileReale));
+  setText('o-contributi', money(contribOrd.amount));
+  setText('o-base-irpef', money(baseIrpef));
+  setText('o-irpef', money(irpef));
+  setText('o-netto', money(nettoOrd));
+
+  const diff = nettoForf - nettoOrd;
+  const summary = document.getElementById('summary');
+  summary.className = 'summary ' + (diff >= 0 ? 'good' : 'bad');
+  summary.textContent = diff >= 0
+    ? 'Forfettario piu conveniente di ' + money(diff)
+    : 'Ordinario piu conveniente di ' + money(Math.abs(diff));
+
+  document.getElementById('previdenza-table').innerHTML = [
+    row('Cassa selezionata', contribForf.label),
+    row('Aliquota', pct(contribForf.rate)),
+    row('Base contributi forfettario', money(contribForf.base)),
+    row('Base contributi ordinario', money(contribOrd.base)),
+    row('Nota', contribForf.note)
+  ].join('');
+}
+
+function row(label, value) {
+  return '<tr><td>' + label + '</td><td>' + value + '</td></tr>';
+}
+
+function setText(id, value) {
+  document.getElementById(id).textContent = value;
+}
+
+function exportRows() {
+  return [
+    ['Voce', 'Forfettario', 'Ordinario'],
+    ['Fatturato / ricavi', text('f-fatturato'), text('o-ricavi')],
+    ['Costi reali', text('f-costi'), text('o-costi')],
+    ['Utile reale', text('f-utile-reale'), text('o-utile')],
+    ['Imponibile / base IRPEF', text('f-imponibile'), text('o-base-irpef')],
+    ['Contributi', text('f-contributi'), text('o-contributi')],
+    ['Imposta', text('f-imposta'), text('o-irpef')],
+    ['Disponibile stimato', text('f-netto'), text('o-netto')],
+    ['Esito', document.getElementById('summary').textContent, '']
+  ];
+}
+
+function text(id) {
+  return document.getElementById(id).textContent;
+}
+
+function exportExcel() {
+  const ws = XLSX.utils.aoa_to_sheet(exportRows());
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Confronto');
+  XLSX.writeFile(wb, 'Comparatore_Forfettario.xlsx');
+}
+
+function exportPDF() {
+  html2pdf().from(document.getElementById('app-content')).save('Comparatore_Forfettario.pdf');
+}
+
+async function saveToNextcloud() {
+  try {
+    if (!window.StudioStorage) throw new Error('Modulo Studio Storage non disponibile.');
+    const user = await StudioStorage.getCurrentUser();
+    await StudioStorage.ensureFolder('Documents');
+    const fileName = 'Comparatore_Forfettario_' + Date.now() + '.pdf';
+    const pdfBlob = await html2pdf().from(document.getElementById('app-content')).output('blob');
+    await StudioStorage.put('Documents/' + fileName, pdfBlob, { contentType: 'application/pdf' });
+    alert('Salvato in Nextcloud/Documents per l\'utente ' + user.displayName);
+  } catch (error) {
+    alert(error && error.message ? error.message : 'Salvataggio non riuscito');
+  }
+}
+
+toggleCassa();
+calc();
+</script>
+</body>
+</html>

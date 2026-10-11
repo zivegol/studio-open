@@ -1,5 +1,3 @@
-# Repository di distribuzione
+# Distribuzione generata
 
-Questo contenuto è generato da Studio Apps, non è la cartella ufficiale di sviluppo. Il manutentore aggiorna i sorgenti nel repository originale e rigenera il pacchetto con scripts/build-public-release.mjs. Non copiare qui configurazioni, cronologia privata o dati operativi. SOURCE.json registra origine e hash.
-
-Gli utenti possono creare proprie copie e modifiche nel rispetto della GPLv3. Le proposte ricevute devono essere riportate nei sorgenti ufficiali prima del successivo rilascio mantenuto dal progetto.
+I quattro progetti in sorgenti/ provengono dai repository ufficiali dello stesso nome. Per il manutentore: modificare i repository ufficiali, verificare e committare, poi rigenerare tramite scripts/build-public-catalog.mjs nel repository studio-apps. Non sviluppare sulle esportazioni; non includere cronologia privata, dati o configurazioni reali. Reguso e NC Scuola esclusi. Chi scarica può creare un proprio fork rispettando le licenze dei singoli progetti.

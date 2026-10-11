@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIMS Studio — Privacy Information Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F3EE;
+    --surface: #FDFCFA;
+    --surface2: #EEE9E0;
+    --border: #D9D2C5;
+    --accent: #8B1F1F;
+    --accent2: #B8361E;
+    --accent-light: #F7EDE8;
+    --text: #1C1A18;
+    --text2: #5A554E;
+    --text3: #8A837A;
+    --green: #2A6041;
+    --green-bg: #EAF3EE;
+    --yellow: #7A5A10;
+    --yellow-bg: #FEF7E6;
+    --red: #8B1F1F;
+    --red-bg: #FDEDED;
+    --radius: 4px;
+    --radius-lg: 8px;
+    --shadow: 0 1px 3px rgba(28,26,24,0.08), 0 4px 12px rgba(28,26,24,0.04);
+    --shadow-lg: 0 4px 16px rgba(28,26,24,0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* LAYOUT */
+  .app { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+    background: var(--text);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 100;
+  }
+  .sidebar-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .sidebar-logo h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: #fff;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .sidebar-logo span {
+    font-size: 10px;
+    color: rgba(255,255,255,0.4);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 4px;
+  }
+
+  .sidebar-nav { padding: 16px 0; flex: 1; }
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    padding: 12px 20px 6px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 20px;
+    cursor: pointer;
+    color: rgba(255,255,255,0.6);
+    font-size: 13.5px;
+    font-weight: 400;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  .nav-item:hover { color: #fff; background: rgba(255,255,255,0.05); }
+  .nav-item.active {
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+    border-left-color: var(--accent2);
+    font-weight: 500;
+  }
+  .nav-icon { width: 16px; text-align: center; font-size: 14px; }
+
+  .sidebar-footer {
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    line-height: 1.5;
+  }
+
+  /* MAIN */
+  .main {
+    margin-left: 240px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar-title { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--text); }
+  .topbar-meta { font-size: 12px; color: var(--text3); }
+  .topbar-badge {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.04em;
+  }
+
+  .content { padding: 32px; flex: 1; }
+
+  /* SECTION */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+  }
+  .card-header {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    color: var(--text);
+  }
+  .card-body { padding: 20px 24px; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+
+  /* STAT CARDS */
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  .stat-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+  .stat-value { font-family: 'DM Serif Display', serif; font-size: 32px; color: var(--text); line-height: 1; }
+  .stat-sub { font-size: 12px; color: var(--text3); margin-top: 6px; }
+  .stat-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 12px; overflow: hidden; }
+  .stat-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
+  .stat-bar-fill.green { background: var(--green); }
+  .stat-bar-fill.yellow { background: #E8A020; }
+  .stat-bar-fill.red { background: var(--red); }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 0.03em;
+  }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-yellow { background: var(--yellow-bg); color: var(--yellow); }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+  .badge-gray { background: var(--surface2); color: var(--text3); }
+
+  /* CHECK ITEMS */
+  .check-group { margin-bottom: 24px; }
+  .check-group-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--surface2);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-item:hover { background: var(--accent-light); border-radius: var(--radius); padding: 10px 8px; margin: 0 -8px; }
+
+  .check-box {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    transition: all 0.15s;
+    margin-top: 1px;
+    cursor: pointer;
+  }
+  .check-box.checked { background: var(--green); border-color: var(--green); color: #fff; }
+  .check-box.partial { background: #E8A020; border-color: #E8A020; color: #fff; }
+  .check-box.no { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+
+  .check-text { flex: 1; }
+  .check-text strong { font-size: 13.5px; font-weight: 500; color: var(--text); display: block; }
+  .check-text small { font-size: 12px; color: var(--text3); }
+
+  .check-status {
+    display: flex;
+    gap: 6px;
+  }
+  .status-btn {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    background: var(--surface);
+    color: var(--text2);
+    transition: all 0.15s;
+  }
+  .status-btn:hover { border-color: var(--text2); }
+  .status-btn.active-si { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+  .status-btn.active-parziale { background: var(--yellow-bg); border-color: #E8A020; color: var(--yellow); }
+  .status-btn.active-no { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+
+  /* PROGRESS */
+  .progress-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 8px 0;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    padding: 10px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--surface2);
+    font-size: 13.5px;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--accent-light); }
+
+  /* FORM */
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 6px;
+    letter-spacing: 0.03em;
+  }
+  .form-control {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  .form-control:focus { border-color: var(--accent); }
+  select.form-control { cursor: pointer; }
+
+  /* BUTTON */
+  .btn {
+    padding: 9px 18px;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #701818; }
+  .btn-secondary { background: var(--surface2); color: var(--text2); border: 1px solid var(--border); }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+  /* RISK MATRIX */
+  .risk-matrix { display: grid; grid-template-columns: auto repeat(3,1fr); gap: 4px; font-size: 12px; }
+  .rm-label { font-size: 11px; font-weight: 600; color: var(--text3); display: flex; align-items: center; justify-content: center; padding: 6px; }
+  .rm-cell {
+    height: 56px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .rm-cell:hover { opacity: 0.8; }
+  .rm-low { background: var(--green-bg); color: var(--green); }
+  .rm-medium { background: var(--yellow-bg); color: var(--yellow); }
+  .rm-high { background: #FDECEA; color: #C0392B; }
+  .rm-critical { background: #8B1F1F; color: #fff; }
+
+  /* ALERT */
+  .alert {
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .alert-warning { background: var(--yellow-bg); color: var(--yellow); border: 1px solid #E8C068; }
+  .alert-info { background: #EAF2FB; color: #1A5276; border: 1px solid #AED6F1; }
+
+  /* KPI ROW */
+  .kpi-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+  .kpi-pill {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text2);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .kpi-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .kpi-dot.green { background: var(--green); }
+  .kpi-dot.yellow { background: #E8A020; }
+  .kpi-dot.red { background: var(--red); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(28,26,24,0.5);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 560px;
+    max-width: 95vw;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 17px; }
+  .modal-close { cursor: pointer; font-size: 20px; color: var(--text3); background: none; border: none; }
+  .modal-body { padding: 24px; }
+  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+  .tab {
+    padding: 10px 18px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text3);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* MISC */
+  .mt-4 { margin-top: 16px; }
+  .mt-6 { margin-top: 24px; }
+  .mb-4 { margin-bottom: 16px; }
+  .mb-6 { margin-bottom: 24px; }
+  .flex { display: flex; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .gap-2 { gap: 8px; }
+  .gap-3 { gap: 12px; }
+  .text-sm { font-size: 12px; }
+  .text-muted { color: var(--text3); }
+  .font-serif { font-family: 'DM Serif Display', serif; }
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* SCORE RING */
+  .score-ring-wrapper { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+  .score-inner { position: absolute; text-align: center; }
+  .score-num { font-family: 'DM Serif Display', serif; font-size: 28px; line-height: 1; }
+  .score-max { font-size: 11px; color: var(--text3); }
+
+  /* REGISTRO TRATTAMENTI */
+  .tratamento-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tratamento-card:hover { border-color: var(--accent); box-shadow: var(--shadow); }
+  .tratt-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .tratt-name { font-weight: 500; font-size: 14px; }
+  .tratt-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+  .tratt-meta-item { font-size: 12px; color: var(--text3); display: flex; align-items: center; gap: 4px; }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section.active { animation: fadeIn 0.25s ease; }
+
+  /* Risk slider */
+  .risk-input { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .risk-scale { display: flex; gap: 4px; margin-top: 6px; }
+  .risk-scale-btn {
+    flex: 1;
+    padding: 6px 4px;
+    text-align: center;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text3);
+    transition: all 0.15s;
+  }
+  .risk-scale-btn.selected-1 { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+  .risk-scale-btn.selected-2 { background: var(--yellow-bg); border-color: #E8A020; color: var(--yellow); }
+  .risk-scale-btn.selected-3 { background: #FDECEA; border-color: #E74C3C; color: #C0392B; }
+  .risk-scale-btn.selected-4 { background: var(--red); border-color: var(--red); color: #fff; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>PIMS Studio</h1>
+      <span>Privacy Information Management</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Panoramica</div>
+      <div class="nav-item active" onclick="showSection('dashboard')">
+        <span class="nav-icon">◉</span> Dashboard
+      </div>
+      <div class="nav-section-label">Strumenti</div>
+      <div class="nav-item" onclick="showSection('leadership')">
+        <span class="nav-icon">▦</span> Modulo Leadership
+      </div>
+      <div class="nav-item" onclick="showSection('checklist')">
+        <span class="nav-icon">☑</span> Check-list GDPR
+      </div>
+      <div class="nav-item" onclick="showSection('rischi')">
+        <span class="nav-icon">◈</span> Analisi dei Rischi
+      </div>
+      <div class="nav-item" onclick="showSection('registro')">
+        <span class="nav-icon">≡</span> Registro Trattamenti
+      </div>
+      <div class="nav-section-label">Gestione</div>
+      <div class="nav-item" onclick="showSection('databreach')">
+        <span class="nav-icon">⚠</span> Data Breach
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      Basato su ISO/IEC 27701:2025<br>
+      GDPR (UE) 2016/679<br>
+      Guida CNDCEC 2022 · 2026
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-meta" id="topbar-meta">Panoramica stato compliance privacy dello studio</div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="topbar-badge" id="topbar-badge">ISO 27701:2025</span>
+        <span class="text-sm text-muted" id="current-date"></span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ===================== DASHBOARD ===================== -->
+      <section id="section-dashboard" class="section active">
+        <div class="grid-4 mb-6">
+          <div class="stat-card">
+            <div class="stat-label">Score Compliance</div>
+            <div class="stat-value" id="score-val">—</div>
+            <div class="stat-sub">Check-list GDPR completata</div>
+            <div class="stat-bar"><div class="stat-bar-fill green" id="score-bar" style="width:0%"></div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Trattamenti Mappati</div>
+            <div class="stat-value" id="tratt-count">0</div>
+            <div class="stat-sub">nel Registro attivo</div>
+            <div class="stat-bar"><div class="stat-bar-fill green" style="width:30%"></div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Rischi Rilevati</div>
+            <div class="stat-value" id="risk-count">0</div>
+            <div class="stat-sub">da analisi dei trattamenti</div>
+            <div class="stat-bar"><div class="stat-bar-fill yellow" id="risk-bar" style="width:0%"></div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Data Breach Attivi</div>
+            <div class="stat-value">0</div>
+            <div class="stat-sub">incidenti aperti</div>
+            <div class="stat-bar"><div class="stat-bar-fill red" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <div class="grid-2 mb-6">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">KPI Privacy — Obiettivi Studio</div>
+              <span class="badge badge-yellow">Da monitorare</span>
+            </div>
+            <div class="card-body">
+              <div style="margin-bottom:16px">
+                <div class="flex justify-between" style="margin-bottom:4px">
+                  <span style="font-size:13px">Risposta richieste DSAR</span>
+                  <span class="badge badge-green">≤ 15 gg lav.</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--green)"></div></div>
+                <div class="text-sm text-muted" style="margin-top:2px">Obiettivo: &lt; 15 giorni lavorativi (target KPI)</div>
+              </div>
+              <div style="margin-bottom:16px">
+                <div class="flex justify-between" style="margin-bottom:4px">
+                  <span style="font-size:13px">Formazione collaboratori</span>
+                  <span class="badge badge-gray">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="kpi-formazione" style="width:0%;background:var(--green)"></div></div>
+                <div class="text-sm text-muted" style="margin-top:2px">Obiettivo: 100% entro il 1° semestre</div>
+              </div>
+              <div>
+                <div class="flex justify-between" style="margin-bottom:4px">
+                  <span style="font-size:13px">MFA su accessi remoti</span>
+                  <span class="badge badge-red">Non verificato</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--red)"></div></div>
+                <div class="text-sm text-muted" style="margin-top:2px">Obiettivo: 100% accessi con autenticazione multi-fattore</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Adempimenti Prioritari</div>
+              <span class="badge badge-red">Azioni richieste</span>
+            </div>
+            <div class="card-body">
+              <div id="priority-list">
+                <div class="alert alert-warning">
+                  <span>⚠</span>
+                  <div>Completa la <strong>Check-list GDPR</strong> per calcolare lo score di compliance e individuare le priorità.</div>
+                </div>
+                <div class="alert alert-info">
+                  <span>ℹ</span>
+                  <div>Aggiorna il <strong>Registro dei Trattamenti</strong> (art. 30 GDPR) e imposta i KPI di studio nella sezione Leadership.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Stato Adempimenti PIMS — Sintesi</div>
+            <button class="btn btn-secondary btn-sm" onclick="showSection('checklist')">Vai alla Check-list</button>
+          </div>
+          <div class="card-body">
+            <table>
+              <thead>
+                <tr>
+                  <th>Area</th>
+                  <th>Riferimento</th>
+                  <th>Stato</th>
+                  <th>Azione</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-table">
+                <tr><td>Registro dei Trattamenti</td><td>Art. 30 GDPR</td><td><span class="badge badge-gray">Non avviato</span></td><td><span style="font-size:12px;color:var(--accent);cursor:pointer" onclick="showSection('registro')">Compila →</span></td></tr>
+                <tr><td>Informativa Privacy</td><td>Art. 13-14 GDPR</td><td><span class="badge badge-gray">Non avviato</span></td><td><span style="font-size:12px;color:var(--accent);cursor:pointer" onclick="showSection('checklist')">Verifica →</span></td></tr>
+                <tr><td>Nomina Responsabili Esterni</td><td>Art. 28 GDPR</td><td><span class="badge badge-gray">Non avviato</span></td><td><span style="font-size:12px;color:var(--accent);cursor:pointer" onclick="showSection('checklist')">Verifica →</span></td></tr>
+                <tr><td>Analisi dei Rischi Trattamenti</td><td>Artt. 24-25 + ISO 27701</td><td><span class="badge badge-gray">Non avviato</span></td><td><span style="font-size:12px;color:var(--accent);cursor:pointer" onclick="showSection('rischi')">Avvia →</span></td></tr>
+                <tr><td>Formazione Personale</td><td>Artt. 29 GDPR + ISO 27701 §4.4</td><td><span class="badge badge-gray">Non avviato</span></td><td><span style="font-size:12px;color:var(--accent);cursor:pointer">Pianifica →</span></td></tr>
+                <tr><td>Procedura Data Breach</td><td>Artt. 33-34 GDPR</td><td><span class="badge badge-gray">Non avviato</span></td><td><span style="font-size:12px;color:var(--accent);cursor:pointer" onclick="showSection('databreach')">Configura →</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== LEADERSHIP ===================== -->
+      <section id="section-leadership" class="section">
+        <div class="alert alert-info mb-4">
+          <span>ℹ</span>
+          <div>Questo modulo è basato sul modulo di verifica per la leadership della <strong>ISO/IEC 27701:2025 §4</strong> e sul documento CNDCEC Marzo 2026. Il vertice dello studio (soci o titolare) non può delegare le responsabilità di governance privacy.</div>
+        </div>
+
+        <div class="tabs" id="lead-tabs">
+          <div class="tab active" onclick="showTab('lead','lead-leadership')">1. Leadership</div>
+          <div class="tab" onclick="showTab('lead','lead-obiettivi')">2. Obiettivi & KPI</div>
+          <div class="tab" onclick="showTab('lead','lead-rischio')">3. Rischio</div>
+          <div class="tab" onclick="showTab('lead','lead-operativa')">4. Operatività</div>
+        </div>
+
+        <!-- TAB: Leadership -->
+        <div id="lead-leadership" class="lead-tab-content">
+          <div class="card mb-6">
+            <div class="card-header">
+              <div class="card-title">1. Leadership — Clausola 5 ISO 27701:2025</div>
+              <span id="lead-score-badge" class="badge badge-gray">0 / 6 completati</span>
+            </div>
+            <div class="card-body" id="leadership-checks"></div>
+          </div>
+        </div>
+
+        <!-- TAB: Obiettivi -->
+        <div id="lead-obiettivi" class="lead-tab-content" style="display:none">
+          <div class="card mb-6">
+            <div class="card-header">
+              <div class="card-title">2. Obiettivi & KPI — Misurabili e verificabili</div>
+            </div>
+            <div class="card-body" id="obiettivi-checks"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">KPI Personalizzati dello Studio</div><button class="btn btn-primary btn-sm" onclick="openKpiModal()">+ Aggiungi KPI</button></div>
+            <div class="card-body">
+              <table>
+                <thead><tr><th>KPI</th><th>Target</th><th>Stato</th><th>Azioni</th></tr></thead>
+                <tbody id="kpi-table-body">
+                  <tr><td>Risposta DSAR</td><td>&lt; 15 gg lavorativi</td><td><span class="badge badge-gray">Da misurare</span></td><td>—</td></tr>
+                  <tr><td>Formazione collaboratori</td><td>100% entro 1° semestre</td><td><span class="badge badge-gray">Da misurare</span></td><td>—</td></tr>
+                  <tr><td>MFA accessi remoti</td><td>100%</td><td><span class="badge badge-gray">Da misurare</span></td><td>—</td></tr>
+                  <tr><td>Data breach da errore umano</td><td>0 episodi</td><td><span class="badge badge-gray">Da misurare</span></td><td>—</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: Rischio -->
+        <div id="lead-rischio" class="lead-tab-content" style="display:none">
+          <div class="card mb-6">
+            <div class="card-header"><div class="card-title">3. Rischio — Clausola 6 ISO 27701:2025</div></div>
+            <div class="card-body" id="rischio-checks"></div>
+          </div>
+        </div>
+
+        <!-- TAB: Operatività -->
+        <div id="lead-operativa" class="lead-tab-content" style="display:none">
+          <div class="card mb-6">
+            <div class="card-header"><div class="card-title">4. Operatività — Procedure e Controlli</div></div>
+            <div class="card-body" id="operativa-checks"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== CHECKLIST ===================== -->
+      <section id="section-checklist" class="section">
+        <div class="grid-2 mb-6" style="gap:16px">
+          <div class="card">
+            <div class="card-body" style="display:flex;align-items:center;gap:20px">
+              <svg width="80" height="80" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="34" fill="none" stroke="var(--border)" stroke-width="6"/>
+                <circle cx="40" cy="40" r="34" fill="none" stroke="var(--green)" stroke-width="6"
+                  stroke-dasharray="213.6" id="checklist-ring" stroke-dashoffset="213.6"
+                  stroke-linecap="round" transform="rotate(-90 40 40)"/>
+              </svg>
+              <div>
+                <div class="stat-label">Score Compliance GDPR</div>
+                <div class="stat-value" id="cl-score">—</div>
+                <div class="stat-sub" id="cl-score-sub">Completa gli item per calcolare</div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+                <div class="stat-label">Filtro sezione</div>
+              </div>
+              <div class="tabs" style="margin-bottom:8px;border-bottom:none">
+                <div class="tab active" style="padding:6px 12px;font-size:12px" onclick="filterChecklist('all',this)">Tutti</div>
+                <div class="tab" style="padding:6px 12px;font-size:12px" onclick="filterChecklist('A',this)">Titolare</div>
+                <div class="tab" style="padding:6px 12px;font-size:12px" onclick="filterChecklist('B',this)">Responsabile</div>
+                <div class="tab" style="padding:6px 12px;font-size:12px" onclick="filterChecklist('C',this)">Cybersecurity</div>
+              </div>
+              <div class="kpi-row" id="checklist-legend">
+                <span class="kpi-pill"><span class="kpi-dot green"></span> Sì (<span id="cnt-si">0</span>)</span>
+                <span class="kpi-pill"><span class="kpi-dot yellow"></span> Parziale (<span id="cnt-p">0</span>)</span>
+                <span class="kpi-pill"><span class="kpi-dot red"></span> No (<span id="cnt-no">0</span>)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="checklist-container"></div>
+      </section>
+
+      <!-- ===================== ANALISI RISCHI ===================== -->
+      <section id="section-rischi" class="section">
+        <div class="alert alert-info mb-4">
+          <span>ℹ</span>
+          <div>Metodologia di valutazione rischi basata su <strong>ENISA / ISO/IEC 27701:2025</strong> e Guida CNDCEC. Il rischio è valutato in funzione dei <strong>diritti e delle libertà degli interessati</strong>, non solo dell'organizzazione.</div>
+        </div>
+
+        <div class="grid-2 mb-6">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Matrice del Rischio</div>
+            </div>
+            <div class="card-body">
+              <div style="font-size:11px;color:var(--text3);margin-bottom:12px">Incrocio Impatto × Probabilità delle minacce</div>
+              <div class="risk-matrix">
+                <div class="rm-label" style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px">Probabilità</div>
+                <div class="rm-label">Basso</div>
+                <div class="rm-label">Medio</div>
+                <div class="rm-label">Alto</div>
+                <div class="rm-label">Alta</div>
+                <div class="rm-cell rm-medium">Medio</div>
+                <div class="rm-cell rm-high">Alto</div>
+                <div class="rm-cell rm-critical">Critico</div>
+                <div class="rm-label">Media</div>
+                <div class="rm-cell rm-low">Basso</div>
+                <div class="rm-cell rm-medium">Medio</div>
+                <div class="rm-cell rm-high">Alto</div>
+                <div class="rm-label">Bassa</div>
+                <div class="rm-cell rm-low">Basso</div>
+                <div class="rm-cell rm-low">Basso</div>
+                <div class="rm-cell rm-medium">Medio</div>
+                <div class="rm-label" style="grid-column:2/5;text-align:center;justify-content:center;font-size:10px;padding-top:4px">← Impatto sull'Interessato →</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Trattamenti Analizzati</div>
+              <button class="btn btn-primary btn-sm" onclick="openRiskModal()">+ Nuovo Trattamento</button>
+            </div>
+            <div class="card-body" style="max-height:260px;overflow-y:auto" id="risk-list">
+              <div class="text-muted text-sm" style="text-align:center;padding:32px 0">
+                Nessun trattamento analizzato.<br>Clicca "+ Nuovo Trattamento" per iniziare.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Riepilogo Valutazioni Rischio</div></div>
+          <div class="card-body">
+            <table>
+              <thead>
+                <tr><th>Trattamento</th><th>Dati</th><th>Impatto R/I/D</th><th>Prob.</th><th>Rischio Complessivo</th><th>DPIA</th></tr>
+              </thead>
+              <tbody id="risk-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== REGISTRO ===================== -->
+      <section id="section-registro" class="section">
+        <div class="flex justify-between items-center mb-6">
+          <div>
+            <div class="font-serif" style="font-size:15px">Registro dei Trattamenti</div>
+            <div class="text-sm text-muted">Art. 30 GDPR — Obbligatorio per studi professionali che trattano dati particolari</div>
+          </div>
+          <button class="btn btn-primary" onclick="openTrattModal()">+ Nuovo Trattamento</button>
+        </div>
+
+        <div class="grid-2 mb-6">
+          <div class="card">
+            <div class="card-body">
+              <div class="stat-label">Studio come Titolare (PIMS Controller)</div>
+              <div class="stat-value" id="tratt-titolare-count">0</div>
+              <div class="stat-sub">trattamenti in cui lo studio determina finalità e mezzi</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <div class="stat-label">Studio come Responsabile (PIMS Processor)</div>
+              <div class="stat-value" id="tratt-resp-count">0</div>
+              <div class="stat-sub">trattamenti svolti per conto di clienti</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="registro-list">
+          <div class="card">
+            <div class="card-body text-muted text-sm" style="text-align:center;padding:48px 0">
+              Il Registro dei Trattamenti è vuoto.<br>Aggiungi il primo trattamento per iniziare.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== DATA BREACH ===================== -->
+      <section id="section-databreach" class="section">
+        <div class="alert alert-warning mb-6">
+          <span>⚠</span>
+          <div><strong>Obbligo notifica:</strong> In caso di data breach, il Titolare deve notificare al Garante entro <strong>72 ore</strong> dalla scoperta (art. 33 GDPR), salvo rischio improbabile per diritti e libertà degli interessati.</div>
+        </div>
+
+        <div class="grid-2 mb-6">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Procedura di Gestione Incidente</div></div>
+            <div class="card-body">
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;align-items:flex-start;gap:12px">
+                  <div style="width:28px;height:28px;min-width:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">1</div>
+                  <div><strong style="font-size:13px">Segnalazione e Identificazione</strong><div class="text-sm text-muted">Riconoscere l'incidente, raccogliere informazioni, bloccare eventuale fuga dati</div></div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:12px">
+                  <div style="width:28px;height:28px;min-width:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">2</div>
+                  <div><strong style="font-size:13px">Valutazione del Rischio</strong><div class="text-sm text-muted">Valutare impatto (Basso/Medio/Alto/Molto alto) su diritti e libertà degli interessati</div></div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:12px">
+                  <div style="width:28px;height:28px;min-width:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">3</div>
+                  <div><strong style="font-size:13px">Notifica al Garante (entro 72 ore)</strong><div class="text-sm text-muted">Se rischio medio/alto: notifica obbligatoria su portale gpdp.it</div></div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:12px">
+                  <div style="width:28px;height:28px;min-width:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">4</div>
+                  <div><strong style="font-size:13px">Comunicazione agli Interessati</strong><div class="text-sm text-muted">Se rischio alto/molto alto: comunicazione senza ingiustificato ritardo (art. 34 GDPR)</div></div>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:12px">
+                  <div style="width:28px;height:28px;min-width:28px;border-radius:50%;background:var(--text3);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">5</div>
+                  <div><strong style="font-size:13px">Registrazione e Piano di Rimedio</strong><div class="text-sm text-muted">Annotare nel Registro Violazioni, analizzare cause, adottare azioni correttive</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Valutazione Rapida Rischio Breach</div>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label">Tipologia dati coinvolti</label>
+                <select class="form-control" id="breach-dati" onchange="calcBreachRisk()">
+                  <option value="">— Seleziona —</option>
+                  <option value="1">Dati anagrafici / contatto</option>
+                  <option value="2">Dati fiscali / reddituali</option>
+                  <option value="3">Dati giudiziari</option>
+                  <option value="4">Dati sanitari / particolari art. 9</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Tipo di violazione</label>
+                <select class="form-control" id="breach-tipo" onchange="calcBreachRisk()">
+                  <option value="">— Seleziona —</option>
+                  <option value="1">Smarrimento supporto (violazione accidentale)</option>
+                  <option value="2">Accesso non autorizzato interno</option>
+                  <option value="3">Attacco esterno / ransomware</option>
+                  <option value="4">Divulgazione non autorizzata</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">N° interessati coinvolti (stima)</label>
+                <select class="form-control" id="breach-num" onchange="calcBreachRisk()">
+                  <option value="">— Seleziona —</option>
+                  <option value="1">1-5 persone</option>
+                  <option value="2">6-50 persone</option>
+                  <option value="3">51-500 persone</option>
+                  <option value="4">Oltre 500 persone</option>
+                </select>
+              </div>
+              <div id="breach-result" style="display:none;margin-top:16px;padding:16px;border-radius:var(--radius);text-align:center">
+                <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:4px">Livello di Rischio Stimato</div>
+                <div id="breach-level" style="font-family:'DM Serif Display',serif;font-size:28px;margin-bottom:8px"></div>
+                <div id="breach-action" style="font-size:13px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Registro Violazioni</div>
+            <button class="btn btn-primary btn-sm" onclick="openBreachModal()">+ Registra Violazione</button>
+          </div>
+          <div class="card-body">
+            <table>
+              <thead><tr><th>Data</th><th>Tipo Violazione</th><th>Dati Coinvolti</th><th>Rischio</th><th>Garante Notificato</th><th>Stato</th></tr></thead>
+              <tbody id="breach-log"><tr><td colspan="6" class="text-muted text-sm" style="text-align:center;padding:24px">Nessuna violazione registrata</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /content -->
+  </main>
+</div><!-- /app -->
+
+<!-- MODAL: Aggiungi Trattamento Registro -->
+<div class="modal-overlay" id="modal-tratt">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nuovo Trattamento — Registro Art. 30 GDPR</div>
+      <button class="modal-close" onclick="closeModal('modal-tratt')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Nome del Trattamento *</label>
+        <input class="form-control" id="t-nome" placeholder="es. Gestione dati dipendenti">
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Ruolo dello Studio *</label>
+          <select class="form-control" id="t-ruolo">
+            <option value="titolare">Titolare (PIMS Controller)</option>
+            <option value="responsabile">Responsabile (PIMS Processor)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Base Giuridica</label>
+          <select class="form-control" id="t-base">
+            <option>Contratto (art. 6.1.b)</option>
+            <option>Obbligo legale (art. 6.1.c)</option>
+            <option>Legittimo interesse (art. 6.1.f)</option>
+            <option>Consenso (art. 6.1.a)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Finalità del Trattamento *</label>
+        <input class="form-control" id="t-finalita" placeholder="es. Gestione rapporto di lavoro, adempimenti contributivi">
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Categorie di Dati</label>
+          <select class="form-control" id="t-dati">
+            <option>Dati anagrafici / contatto</option>
+            <option>Dati fiscali / reddituali</option>
+            <option>Dati sanitari (art. 9)</option>
+            <option>Dati giudiziari (art. 10)</option>
+            <option>Dati biometrici</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Conservazione (anni)</label>
+          <input class="form-control" id="t-conserv" placeholder="es. 10 anni (art. 2220 c.c.)">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Categorie di Interessati</label>
+        <input class="form-control" id="t-interessati" placeholder="es. Dipendenti, clienti, collaboratori">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Misure di Sicurezza</label>
+        <input class="form-control" id="t-misure" placeholder="es. Cifratura, MFA, backup giornaliero, policy accessi">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-tratt')">Annulla</button>
+      <button class="btn btn-primary" onclick="saveTrattamento()">Salva Trattamento</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Analisi Rischio -->
+<div class="modal-overlay" id="modal-risk">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Analisi Rischio — Metodologia ENISA/ISO 27701</div>
+      <button class="modal-close" onclick="closeModal('modal-risk')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Trattamento *</label>
+        <input class="form-control" id="r-nome" placeholder="es. Elaborazione cedolini paga">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Categorie dati trattati</label>
+        <input class="form-control" id="r-dati" placeholder="es. Dati reddituali, fiscali, sanitari">
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:12px;font-weight:600;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px">Impatto sull'Interessato (R/I/D)</div>
+      <div class="risk-input">
+        <div>
+          <label class="form-label">Riservatezza</label>
+          <div class="risk-scale" id="rs-riservatezza">
+            <div class="risk-scale-btn" onclick="setRisk('rs-riservatezza',1,this)">Basso</div>
+            <div class="risk-scale-btn" onclick="setRisk('rs-riservatezza',2,this)">Medio</div>
+            <div class="risk-scale-btn" onclick="setRisk('rs-riservatezza',3,this)">M-Alto</div>
+            <div class="risk-scale-btn" onclick="setRisk('rs-riservatezza',4,this)">Alto</div>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">Integrità</label>
+          <div class="risk-scale" id="rs-integrita">
+            <div class="risk-scale-btn" onclick="setRisk('rs-integrita',1,this)">Basso</div>
+            <div class="risk-scale-btn" onclick="setRisk('rs-integrita',2,this)">Medio</div>
+            <div class="risk-scale-btn" onclick="setRisk('rs-integrita',3,this)">M-Alto</div>
+            <div class="risk-scale-btn" onclick="setRisk('rs-integrita',4,this)">Alto</div>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">Disponibilità</label>
+          <div class="risk-scale" id="rs-disponibilita">
+            <div class="risk-scale-btn" onclick="setRisk('rs-disponibilita',1,this)">Basso</div>
+            <div class="risk-scale-btn" onclick="setRisk('rs-disponibilita',2,this)">Medio</div>
+            <div class="risk-scale-btn" onclick="setRisk('rs-disponibilita',3,this)">M-Alto</div>
+            <div class="risk-scale-btn" onclick="setRisk('rs-disponibilita',4,this)">Alto</div>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">Probabilità Minacce</label>
+          <div class="risk-scale" id="rs-probabilita">
+            <div class="risk-scale-btn" onclick="setRisk('rs-probabilita',1,this)">Bassa</div>
+            <div class="risk-scale-btn" onclick="setRisk('rs-probabilita',2,this)">Media</div>
+            <div class="risk-scale-btn" onclick="setRisk('rs-probabilita',3,this)">Alta</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group mt-4">
+        <label class="form-label">DPIA necessaria?</label>
+        <select class="form-control" id="r-dpia">
+          <option value="no">No (rischio non elevato)</option>
+          <option value="valutare">Da valutare</option>
+          <option value="si">Sì (obbligatoria)</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-risk')">Annulla</button>
+      <button class="btn btn-primary" onclick="saveRisk()">Salva Analisi</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Data Breach -->
+<div class="modal-overlay" id="modal-breach">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Registra Violazione — Art. 33-34 GDPR</div>
+      <button class="modal-close" onclick="closeModal('modal-breach')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Data Scoperta *</label>
+          <input class="form-control" type="date" id="b-data">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tipo Violazione</label>
+          <select class="form-control" id="b-tipo">
+            <option>Violazione riservatezza</option>
+            <option>Violazione disponibilità</option>
+            <option>Violazione integrità</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Dati Coinvolti</label>
+        <input class="form-control" id="b-dati" placeholder="es. Dati fiscali clienti, n. 25 interessati">
+      </div>
+      <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">Livello Rischio</label>
+          <select class="form-control" id="b-rischio">
+            <option>Basso (no notifica)</option>
+            <option>Medio (notifica Garante)</option>
+            <option>Alto (notifica + comunicazione)</option>
+            <option>Molto Alto (comunicazione urgente)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Garante Notificato?</label>
+          <select class="form-control" id="b-garante">
+            <option value="no">No</option>
+            <option value="si">Sì (entro 72h)</option>
+            <option value="tardivo">Sì (tardivo + motivazione)</option>
+            <option value="na">Non necessario</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Misure Adottate</label>
+        <input class="form-control" id="b-misure" placeholder="es. Blocco accessi, reset credenziali, notifica responsabili">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-breach')">Annulla</button>
+      <button class="btn btn-primary" onclick="saveBreach()">Registra Violazione</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+const state = {
+  checks: {},
+  leadershipChecks: {},
+  trattamenti: [],
+  risks: [],
+  breaches: [],
+  riskValues: { 'rs-riservatezza': 0, 'rs-integrita': 0, 'rs-disponibilita': 0, 'rs-probabilita': 0 }
+};
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+const sections = {
+  dashboard: { title: 'Dashboard', meta: 'Panoramica stato compliance privacy dello studio', badge: 'ISO 27701:2025' },
+  leadership: { title: 'Modulo Leadership', meta: 'Clausola 5 ISO 27701:2025 — Governance e responsabilità', badge: 'PIMS §5' },
+  checklist: { title: 'Check-list GDPR', meta: 'Sezioni A (Titolare), B (Responsabile), C (Cybersecurity) — Allegato CNDCEC', badge: 'Check-list' },
+  rischi: { title: 'Analisi dei Rischi', meta: 'Metodologia ENISA — Impatto × Probabilità su diritti degli interessati', badge: 'Risk-Based' },
+  registro: { title: 'Registro Trattamenti', meta: 'Art. 30 GDPR — Aggiornare almeno una volta all\'anno', badge: 'Art. 30 GDPR' },
+  databreach: { title: 'Data Breach', meta: 'Artt. 33-34 GDPR — Notifica entro 72 ore', badge: '72h Garante' }
+};
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('section-' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + id + "'")) n.classList.add('active');
+  });
+  const s = sections[id];
+  document.getElementById('topbar-title').textContent = s.title;
+  document.getElementById('topbar-meta').textContent = s.meta;
+  document.getElementById('topbar-badge').textContent = s.badge;
+}
+
+function showTab(group, tabId) {
+  document.querySelectorAll('.'+group+'-tab-content').forEach(t => t.style.display = 'none');
+  document.getElementById(tabId).style.display = 'block';
+  document.querySelectorAll('#lead-tabs .tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// ============================================================
+// LEADERSHIP CHECKS DATA
+// ============================================================
+const leadershipData = {
+  leadership: {
+    title: 'Leadership — Clausola 5 ISO 27701',
+    items: [
+      { id: 'l1', text: 'Politica Privacy approvata formalmente dal Titolare/Soci', note: 'Documento programmatico distinto dall\'informativa clienti' },
+      { id: 'l2', text: 'Coerenza della politica privacy con la cultura dello studio', note: 'Rispetto GDPR e leggi applicabili come priorità strategica' },
+      { id: 'l3', text: 'Partecipazione attiva del vertice alle decisioni privacy', note: 'Non delegabile a collaboratori o consulenti esterni' },
+      { id: 'l4', text: 'Responsabilità assegnate chiaramente (non delegate)', note: 'Clausola 5 ISO 27701: gestione non-conformità richiede impegno diretto' },
+      { id: 'l5', text: 'Allocazione risorse (economiche, umane, tecnologiche)', note: 'Onere del vertice dimostrare impegno attraverso risorse adeguate' },
+      { id: 'l6', text: 'Documento di ambito PIMS redatto e aggiornato', note: 'Definisce il perimetro del sistema di gestione privacy' },
+      { id: 'l7', text: 'Registro Trattamenti (art. 30 GDPR) conforme', note: 'Aggiornato almeno annualmente, base dell\'accountability' },
+      { id: 'l8', text: 'Politica Privacy comunicata a tutto il personale', note: 'Trasparenza interna: ogni livello dello studio deve conoscerla' }
+    ]
+  },
+  rischio: {
+    title: 'Rischio — Clausola 6 ISO 27701',
+    items: [
+      { id: 'r1', text: 'Analisi dei rischi aggiornata (minacce attuali)', note: 'Valutazione periodica incluse minacce AI e cyber' },
+      { id: 'r2', text: 'Piano di trattamento dei rischi documentato', note: 'Misure tecniche e organizzative proporzionate' },
+      { id: 'r3', text: 'DPIA eseguite per dati sensibili o nuove tecnologie', note: 'Obbligatoria per trattamenti ad alto rischio (art. 35 GDPR)' },
+      { id: 'r4', text: 'Registro delle DPIA centralizzato e aggiornato', note: 'Con data, oggetto, esito e misure adottate' }
+    ]
+  },
+  operativa: {
+    title: 'Operatività — Procedure e Controlli',
+    items: [
+      { id: 'o1', text: 'Procedura DSAR documentata e testata', note: 'Risposta richieste interessati: target < 15 gg lavorativi (KPI)' },
+      { id: 'o2', text: 'Procedura gestione incidenti e Data Breach', note: 'Ruoli, responsabilità e tempistiche (72h Garante)' },
+      { id: 'o3', text: 'Registro incidenti (inclusi "Near Miss") compilato', note: 'Anche incidenti minori per miglioramento continuo' },
+      { id: 'o4', text: 'Contratti e nomine Responsabili Esterni (Fornitori)', note: 'Art. 28 GDPR: nomina scritta con istruzioni operative' },
+      { id: 'o5', text: 'Piano formativo annuale definito e tracciato', note: 'Art. 29 GDPR: obbligo formazione personale autorizzato' },
+      { id: 'o6', text: 'Test di phishing o simulazioni periodiche effettuate', note: 'Contro il social engineering e l\'errore umano' }
+    ]
+  }
+};
+
+function renderLeadershipChecks() {
+  const container = document.getElementById('leadership-checks');
+  container.innerHTML = '';
+  const section = leadershipData.leadership;
+  const group = document.createElement('div');
+  group.className = 'check-group';
+  group.innerHTML = '<div class="check-group-title">' + section.title + '</div>';
+  section.items.forEach(item => {
+    group.innerHTML += renderCheckItem(item, 'lead');
+  });
+  container.appendChild(group);
+
+  const riscContainer = document.getElementById('rischio-checks');
+  riscContainer.innerHTML = '';
+  const rGroup = document.createElement('div');
+  rGroup.className = 'check-group';
+  rGroup.innerHTML = '<div class="check-group-title">' + leadershipData.rischio.title + '</div>';
+  leadershipData.rischio.items.forEach(item => {
+    rGroup.innerHTML += renderCheckItem(item, 'lead');
+  });
+  riscContainer.appendChild(rGroup);
+
+  const opContainer = document.getElementById('operativa-checks');
+  opContainer.innerHTML = '';
+  const oGroup = document.createElement('div');
+  oGroup.className = 'check-group';
+  oGroup.innerHTML = '<div class="check-group-title">' + leadershipData.operativa.title + '</div>';
+  leadershipData.operativa.items.forEach(item => {
+    oGroup.innerHTML += renderCheckItem(item, 'lead');
+  });
+  opContainer.appendChild(oGroup);
+}
+
+// ============================================================
+// CHECKLIST DATA — Sezioni A, B, C (da documenti CNDCEC)
+// ============================================================
+const checklistData = [
+  {
+    section: 'A', title: 'SEZIONE A — Studio come TITOLARE (PIMS Controller)',
+    groups: [
+      {
+        title: '1. Pianificazione e Basi Giuridiche',
+        items: [
+          { id: 'A1', ref: 'A.1.2.2', text: 'Censimento/mappatura di tutti i dati (clienti, terzi, dipendenti)', note: 'Base del Registro Trattamenti' },
+          { id: 'A2', ref: 'A.1.2.3', text: 'Base giuridica definita per ogni finalità di trattamento', note: 'Contratto, legge, consenso, interesse legittimo' },
+          { id: 'A3', ref: 'A.1.2.4', text: 'Registro/log del consenso (come e quando prestato)', note: 'Art. 7 GDPR: onere della prova sul Titolare' },
+          { id: 'A4', ref: 'A.1.2.6', text: 'DPIA eseguita per nuovi software cloud o trattamenti ad alto rischio', note: 'Obbligatoria prima dell\'avvio del trattamento' },
+          { id: 'A5', ref: 'A.1.2.7', text: 'Atti di nomina formalizzati per tutti i Responsabili Esterni', note: 'Art. 28 GDPR: contratto con istruzioni operative' },
+          { id: 'A6', ref: 'A.1.2.8', text: 'Accordo di contitolarità (se database condivisi con colleghi)', note: 'Art. 26 GDPR: accordo interno sui ruoli' }
+        ]
+      },
+      {
+        title: '2. Trasparenza e Diritti degli Interessati',
+        items: [
+          { id: 'A7', ref: 'A.1.3.3', text: 'Informative redatte in linguaggio chiaro e facilmente accessibili', note: 'Artt. 13-14 GDPR: chiare, complete, accessibili' },
+          { id: 'A8', ref: 'A.1.3.5', text: 'Procedura per bloccare i dati in caso di revoca del consenso', note: 'Esercizio diritto di opposizione' },
+          { id: 'A9', ref: 'A.1.3.7', text: 'Studio risponde alle richieste di accesso/rettifica/cancellazione entro 30 gg', note: 'Target KPI: < 15 gg lavorativi' },
+          { id: 'A10', ref: 'A.1.3.8', text: 'Notifica ai fornitori esterni in caso di rettifica/aggiornamento dati', note: 'Coordinamento con responsabili esterni' },
+          { id: 'A11', ref: 'A.1.3.9', text: 'Possibilità di esportare dati in formato leggibile (XML/CSV) per portabilità', note: 'Art. 20 GDPR: diritto alla portabilità' }
+        ]
+      },
+      {
+        title: '3. Privacy by Design & Conservazione',
+        items: [
+          { id: 'A12', ref: 'A.1.4.2', text: 'Minimizzazione applicata (raccolta solo dati necessari alla pratica)', note: 'Privacy by Default — art. 25 GDPR' },
+          { id: 'A13', ref: 'A.1.4.7', text: 'File temporanei (Excel/PDF) eliminati dopo invio telematico', note: 'Riduzione superficie di rischio' },
+          { id: 'A14', ref: 'A.1.4.8', text: 'Policy con tempi certi di conservazione e distruzione dei dati', note: 'Es. 10 anni per documenti contabili (art. 2220 c.c.)' },
+          { id: 'A15', ref: 'A.1.4.9', text: 'Smaltimento supporti (carta/hard disk) con modalità sicure', note: 'Distruzione certificata dei supporti' },
+          { id: 'A16', ref: 'A.1.4.10', text: 'Invio dati sensibili esclusivamente via canali cifrati (PEC/Portal)', note: 'Sicurezza nelle trasmissioni' }
+        ]
+      },
+      {
+        title: '4. Trasferimenti Internazionali',
+        items: [
+          { id: 'A17', ref: 'A.1.5.2', text: 'Mappatura servizi Cloud residenti fuori UE (es. USA) e basi giuridiche', note: 'Standard Contractual Clauses o adequacy decision' },
+          { id: 'A18', ref: 'A.1.5.5', text: 'Registro delle divulgazioni effettuate ad Autorità (GDF, Giustizia)', note: 'Tracciabilità delle comunicazioni istituzionali' }
+        ]
+      }
+    ]
+  },
+  {
+    section: 'B', title: 'SEZIONE B — Studio come RESPONSABILE (PIMS Processor)',
+    groups: [
+      {
+        title: '1. Istruzioni e Finalità',
+        items: [
+          { id: 'B1', ref: 'A.2.2.2', text: 'Atto di nomina (art. 28 GDPR) firmato dal Cliente-Titolare', note: 'Es. per elaborazione paghe, contabilità terzi' },
+          { id: 'B2', ref: 'A.2.2.4', text: 'Divieto utilizzo dati dei clienti per marketing dello studio', note: 'Rispetto delle finalità contrattuali' },
+          { id: 'B3', ref: 'A.2.2.5', text: 'Studio segnala al cliente se le istruzioni violano il GDPR', note: 'Ruolo "sentinella normativa"' }
+        ]
+      },
+      {
+        title: '2. Supporto al Cliente',
+        items: [
+          { id: 'B4', ref: 'A.2.2.6', text: 'Studio fornisce al cliente log e report per la sua Accountability', note: 'Cooperazione tecnica per trasparenza' },
+          { id: 'B5', ref: 'A.2.3.2', text: 'Studio in grado di estrarre dati se interessato del cliente esercita un diritto', note: 'Supporto al Titolare nell\'esercizio dei diritti' }
+        ]
+      },
+      {
+        title: '3. Fine Rapporto e Catena di Fornitura',
+        items: [
+          { id: 'B6', ref: 'A.2.4.3', text: 'Procedura per restituire o distruggere i dati al termine del mandato', note: 'Privacy by Design — fine ciclo vita dati' },
+          { id: 'B7', ref: 'A.2.5.7', text: 'Elenco sub-responsabili (software house) comunicato al cliente', note: 'Autorizzazione preventiva del Titolare' },
+          { id: 'B8', ref: 'A.2.5.5', text: 'Procedura per avvisare il cliente in caso di richieste dati dalle Autorità', note: 'Filtro critico per protezione dati da accessi non vincolanti' }
+        ]
+      }
+    ]
+  },
+  {
+    section: 'C', title: 'SEZIONE C — Cybersecurity & Asset Protection',
+    groups: [
+      {
+        title: 'Governance e Controlli Tecnici',
+        items: [
+          { id: 'C1', ref: 'Gov.', text: 'Politica di sicurezza scritta e approvata dal Titolare', note: 'Annex A3 ISO 27701: governance cybersecurity come processo continuo' },
+          { id: 'C2', ref: 'Audit', text: 'Revisione indipendente della sicurezza effettuata (annuale)', note: 'Audit interno o esterno con report comunicato ai responsabili' },
+          { id: 'C3', ref: 'Staff', text: 'Ogni collaboratore ha firmato impegno di riservatezza (NDA)', note: 'Vincolo riservatezza per tutti gli autorizzati al trattamento' },
+          { id: 'C4', ref: 'Staff', text: 'Formazione specifica anti-phishing effettuata nell\'ultimo anno', note: 'Maggior parte violazioni causata da errori umani' },
+          { id: 'C5', ref: 'Fisica', text: 'Chiavette USB e laptop protetti da cifratura (es. BitLocker)', note: 'Protezione dispositivi mobili contenenti dati sensibili' },
+          { id: 'C6', ref: 'Accessi', text: 'Ogni utente ha credenziali uniche (divieto password condivise)', note: 'Gestione identità e accessi' },
+          { id: 'C7', ref: 'Accessi', text: 'Autenticazione a due fattori (MFA) attiva su mail e cloud', note: 'KPI: MFA attivo su tutti i login remoti' },
+          { id: 'C8', ref: 'Dati', text: 'Backup quotidiani con test di ripristino periodico', note: 'Resilienza e disponibilità dei dati' },
+          { id: 'C9', ref: 'Log', text: 'Sistema registra accessi ai dati sensibili in modo inalterabile', note: 'Tracciabilità per accountability e audit' },
+          { id: 'C10', ref: 'Incident', text: 'Piano d\'azione in caso di Ransomware (isolamento rete/contatti)', note: 'Business Continuity e gestione incidenti' }
+        ]
+      }
+    ]
+  }
+];
+
+function renderCheckItem(item, prefix) {
+  const status = state.checks[prefix+'_'+item.id] || '';
+  const siClass = status === 'si' ? 'active-si' : '';
+  const pClass = status === 'parziale' ? 'active-parziale' : '';
+  const noClass = status === 'no' ? 'active-no' : '';
+  return `
+    <div class="check-item" data-id="${prefix}_${item.id}" data-section="${item.section || ''}">
+      <div class="check-text">
+        ${item.ref ? '<small style="font-size:10px;color:var(--text3);font-weight:600;letter-spacing:0.05em">'+item.ref+'</small><br>' : ''}
+        <strong>${item.text}</strong>
+        <small>${item.note || ''}</small>
+      </div>
+      <div class="check-status">
+        <button class="status-btn ${siClass}" onclick="setCheckStatus('${prefix}','${item.id}','si',this)">Sì</button>
+        <button class="status-btn ${pClass}" onclick="setCheckStatus('${prefix}','${item.id}','parziale',this)">Parz.</button>
+        <button class="status-btn ${noClass}" onclick="setCheckStatus('${prefix}','${item.id}','no',this)">No</button>
+      </div>
+    </div>`;
+}
+
+function renderChecklist() {
+  const container = document.getElementById('checklist-container');
+  container.innerHTML = '';
+  checklistData.forEach(section => {
+    const sectionDiv = document.createElement('div');
+    sectionDiv.className = 'card mb-6';
+    sectionDiv.setAttribute('data-section-id', section.section);
+    sectionDiv.innerHTML = `<div class="card-header"><div class="card-title">${section.title}</div><span class="badge badge-gray section-score" id="score-sec-${section.section}">—</span></div>`;
+    const body = document.createElement('div');
+    body.className = 'card-body';
+    section.groups.forEach(group => {
+      let html = `<div class="check-group"><div class="check-group-title">${group.title}</div>`;
+      group.items.forEach(item => {
+        item.section = section.section;
+        html += renderCheckItem(item, 'cl');
+      });
+      html += '</div>';
+      body.innerHTML += html;
+    });
+    sectionDiv.appendChild(body);
+    container.appendChild(sectionDiv);
+  });
+  updateChecklistScore();
+}
+
+function setCheckStatus(prefix, id, status, btn) {
+  const key = prefix + '_' + id;
+  state.checks[key] = status;
+  // Reset siblings
+  const siblings = btn.parentElement.querySelectorAll('.status-btn');
+  siblings.forEach(s => { s.className = 'status-btn'; });
+  btn.classList.add('active-' + status);
+  if (prefix === 'cl') updateChecklistScore();
+  if (prefix === 'lead') updateLeadershipScore();
+}
+
+function updateChecklistScore() {
+  let si = 0, parziale = 0, no = 0, total = 0;
+  const sectionCounts = { A: {si:0,p:0,no:0,t:0}, B: {si:0,p:0,no:0,t:0}, C: {si:0,p:0,no:0,t:0} };
+  checklistData.forEach(section => {
+    section.groups.forEach(group => {
+      group.items.forEach(item => {
+        total++;
+        const s = sectionCounts[section.section];
+        s.t++;
+        const status = state.checks['cl_' + item.id];
+        if (status === 'si') { si++; s.si++; }
+        else if (status === 'parziale') { parziale++; s.p++; }
+        else if (status === 'no') { no++; s.no++; }
+      });
+    });
+  });
+  const answered = si + parziale + no;
+  const score = answered > 0 ? Math.round((si + parziale * 0.5) / total * 100) : null;
+  document.getElementById('cl-score').textContent = score !== null ? score + '%' : '—';
+  document.getElementById('cl-score-sub').textContent = score !== null ? `${answered} di ${total} item completati` : 'Completa gli item per calcolare';
+  document.getElementById('cnt-si').textContent = si;
+  document.getElementById('cnt-p').textContent = parziale;
+  document.getElementById('cnt-no').textContent = no;
+  // Ring
+  const circ = 213.6;
+  const offset = score !== null ? circ * (1 - score/100) : circ;
+  document.getElementById('checklist-ring').setAttribute('stroke-dashoffset', offset);
+  // Section scores
+  ['A','B','C'].forEach(s => {
+    const sc = sectionCounts[s];
+    const badge = document.getElementById('score-sec-' + s);
+    if (badge) {
+      if (sc.si + sc.p + sc.no > 0) {
+        const pct = Math.round((sc.si + sc.p*0.5)/sc.t*100);
+        badge.textContent = pct + '%';
+        badge.className = 'badge ' + (pct >= 70 ? 'badge-green' : pct >= 40 ? 'badge-yellow' : 'badge-red');
+      }
+    }
+  });
+  // Dashboard
+  document.getElementById('score-val').textContent = score !== null ? score + '%' : '—';
+  document.getElementById('score-bar').style.width = (score || 0) + '%';
+  document.getElementById('score-bar').className = 'stat-bar-fill ' + (score >= 70 ? 'green' : score >= 40 ? 'yellow' : 'red');
+}
+
+function filterChecklist(sectionId, tabEl) {
+  document.querySelectorAll('#checklist-container > .card').forEach(card => {
+    card.style.display = (sectionId === 'all' || card.getAttribute('data-section-id') === sectionId) ? 'block' : 'none';
+  });
+  tabEl.parentElement.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  tabEl.classList.add('active');
+}
+
+function updateLeadershipScore() {
+  let completed = 0, total = 0;
+  ['leadership','rischio','operativa'].forEach(key => {
+    leadershipData[key].items.forEach(item => {
+      total++;
+      if (state.checks['lead_' + item.id] === 'si') completed++;
+    });
+  });
+  document.getElementById('lead-score-badge').textContent = completed + ' / ' + total + ' completati';
+  document.getElementById('lead-score-badge').className = 'badge ' + (completed >= total*0.7 ? 'badge-green' : completed >= total*0.4 ? 'badge-yellow' : 'badge-gray');
+}
+
+// ============================================================
+// RISK ANALYSIS
+// ============================================================
+function setRisk(groupId, val, btn) {
+  state.riskValues[groupId] = val;
+  const btns = document.getElementById(groupId).querySelectorAll('.risk-scale-btn');
+  btns.forEach((b, i) => { b.className = 'risk-scale-btn' + (i < val ? ' selected-' + (i+1) : ''); });
+  btn.className = 'risk-scale-btn selected-' + val;
+  // Color only selected
+  btns.forEach((b, i) => { b.className = 'risk-scale-btn' + ((i+1) === val ? ' selected-' + val : ''); });
+}
+
+function openRiskModal() { document.getElementById('modal-risk').classList.add('open'); }
+
+function saveRisk() {
+  const nome = document.getElementById('r-nome').value.trim();
+  const dati = document.getElementById('r-dati').value.trim();
+  const dpia = document.getElementById('r-dpia').value;
+  if (!nome) { alert('Inserisci il nome del trattamento.'); return; }
+  const r = state.riskValues['rs-riservatezza'] || 1;
+  const i = state.riskValues['rs-integrita'] || 1;
+  const d = state.riskValues['rs-disponibilita'] || 1;
+  const p = state.riskValues['rs-probabilita'] || 1;
+  const impact = Math.max(r, i, d);
+  const labelI = ['','Basso','Medio','M-Alto','Alto'][impact];
+  const labelP = ['','Bassa','Media','Alta'][p];
+  const riskLevel = getRiskLevel(impact, p);
+  state.risks.push({ nome, dati, r, i, d, p, impact, labelI, labelP, riskLevel, dpia });
+  closeModal('modal-risk');
+  renderRiskList();
+  updateDashboard();
+  // reset
+  state.riskValues = { 'rs-riservatezza': 0, 'rs-integrita': 0, 'rs-disponibilita': 0, 'rs-probabilita': 0 };
+  ['rs-riservatezza','rs-integrita','rs-disponibilita','rs-probabilita'].forEach(id => {
+    document.getElementById(id).querySelectorAll('.risk-scale-btn').forEach(b => b.className = 'risk-scale-btn');
+  });
+  document.getElementById('r-nome').value = '';
+  document.getElementById('r-dati').value = '';
+}
+
+function getRiskLevel(impact, prob) {
+  if (prob === 3 && impact >= 3) return 'Critico';
+  if (prob === 3 && impact === 2) return 'Alto';
+  if (prob === 2 && impact >= 3) return 'Alto';
+  if (prob === 2 && impact === 2) return 'Medio';
+  if (prob === 1 && impact >= 3) return 'Medio';
+  return 'Basso';
+}
+
+function renderRiskList() {
+  const list = document.getElementById('risk-list');
+  const table = document.getElementById('risk-table');
+  if (state.risks.length === 0) {
+    list.innerHTML = '<div class="text-muted text-sm" style="text-align:center;padding:32px 0">Nessun trattamento analizzato.</div>';
+    table.innerHTML = '<tr><td colspan="6" class="text-muted text-sm" style="text-align:center;padding:24px">Nessuna analisi disponibile</td></tr>';
+    return;
+  }
+  list.innerHTML = '';
+  table.innerHTML = '';
+  state.risks.forEach(r => {
+    const colors = { Basso: 'green', Medio: 'yellow', Alto: 'red', Critico: 'red' };
+    const badgeClass = 'badge-' + (colors[r.riskLevel] || 'gray');
+    list.innerHTML += `
+      <div style="padding:10px 0;border-bottom:1px solid var(--surface2)">
+        <div class="flex justify-between items-center">
+          <strong style="font-size:13px">${r.nome}</strong>
+          <span class="badge ${badgeClass}">${r.riskLevel}</span>
+        </div>
+        <div class="text-sm text-muted">${r.dati || 'Dati non specificati'}</div>
+      </div>`;
+    table.innerHTML += `
+      <tr>
+        <td><strong>${r.nome}</strong></td>
+        <td class="text-sm text-muted">${r.dati || '—'}</td>
+        <td><span class="badge badge-gray">${r.labelI}</span></td>
+        <td><span class="badge badge-gray">${r.labelP}</span></td>
+        <td><span class="badge ${badgeClass}">${r.riskLevel}</span></td>
+        <td><span class="badge ${r.dpia === 'si' ? 'badge-red' : r.dpia === 'valutare' ? 'badge-yellow' : 'badge-green'}">${r.dpia === 'si' ? 'Sì' : r.dpia === 'valutare' ? 'Valutare' : 'No'}</span></td>
+      </tr>`;
+  });
+}
+
+// ============================================================
+// REGISTRO TRATTAMENTI
+// ============================================================
+function openTrattModal() { document.getElementById('modal-tratt').classList.add('open'); }
+
+function saveTrattamento() {
+  const nome = document.getElementById('t-nome').value.trim();
+  if (!nome) { alert('Inserisci il nome del trattamento.'); return; }
+  state.trattamenti.push({
+    nome,
+    ruolo: document.getElementById('t-ruolo').value,
+    base: document.getElementById('t-base').value,
+    finalita: document.getElementById('t-finalita').value,
+    dati: document.getElementById('t-dati').value,
+    conserv: document.getElementById('t-conserv').value,
+    interessati: document.getElementById('t-interessati').value,
+    misure: document.getElementById('t-misure').value
+  });
+  closeModal('modal-tratt');
+  renderRegistro();
+  updateDashboard();
+  ['t-nome','t-finalita','t-conserv','t-interessati','t-misure'].forEach(id => document.getElementById(id).value = '');
+}
+
+function renderRegistro() {
+  const list = document.getElementById('registro-list');
+  const titolare = state.trattamenti.filter(t => t.ruolo === 'titolare');
+  const responsabile = state.trattamenti.filter(t => t.ruolo === 'responsabile');
+  document.getElementById('tratt-titolare-count').textContent = titolare.length;
+  document.getElementById('tratt-resp-count').textContent = responsabile.length;
+  document.getElementById('tratt-count').textContent = state.trattamenti.length;
+  if (state.trattamenti.length === 0) {
+    list.innerHTML = '<div class="card"><div class="card-body text-muted text-sm" style="text-align:center;padding:48px 0">Il Registro dei Trattamenti è vuoto. Aggiungi il primo trattamento per iniziare.</div></div>';
+    return;
+  }
+  list.innerHTML = '';
+  state.trattamenti.forEach((t, idx) => {
+    const ruoloBadge = t.ruolo === 'titolare' ? '<span class="badge badge-green">Titolare</span>' : '<span class="badge badge-yellow">Responsabile</span>';
+    list.innerHTML += `
+      <div class="tratamento-card">
+        <div class="tratt-header">
+          <div class="tratt-name">${t.nome}</div>
+          <div class="flex gap-2 items-center">${ruoloBadge}<span class="badge badge-gray" style="font-size:10px">${t.base}</span></div>
+        </div>
+        <div class="tratt-meta">
+          <div class="tratt-meta-item">📋 ${t.finalita || 'Finalità non specificata'}</div>
+          <div class="tratt-meta-item">🗂 ${t.dati}</div>
+          <div class="tratt-meta-item">👥 ${t.interessati || 'Da specificare'}</div>
+          <div class="tratt-meta-item">⏱ Conservazione: ${t.conserv || 'Da definire'}</div>
+        </div>
+        ${t.misure ? '<div class="text-sm text-muted" style="margin-top:8px">🔒 ' + t.misure + '</div>' : ''}
+      </div>`;
+  });
+}
+
+// ============================================================
+// DATA BREACH
+// ============================================================
+function calcBreachRisk() {
+  const dati = parseInt(document.getElementById('breach-dati').value) || 0;
+  const tipo = parseInt(document.getElementById('breach-tipo').value) || 0;
+  const num = parseInt(document.getElementById('breach-num').value) || 0;
+  if (!dati || !tipo || !num) return;
+  const score = dati + tipo + num;
+  let level, color, action;
+  if (score <= 5) { level = 'Basso'; color = 'var(--green-bg)'; action = 'Notifica al Garante non necessaria. Registrare internamente.'; }
+  else if (score <= 8) { level = 'Medio'; color = 'var(--yellow-bg)'; action = 'Notifica al Garante entro 72 ore. Valutare comunicazione interessati.'; }
+  else if (score <= 10) { level = 'Alto'; color = '#FDECEA'; action = 'Notifica Garante + Comunicazione obbligatoria agli interessati (art. 34).'; }
+  else { level = 'Molto Alto'; color = '#8B1F1F'; action = 'Azione urgente. Notifica Garante + Comunicazione immediata. Coinvolgere vertice studio.'; }
+  const res = document.getElementById('breach-result');
+  res.style.display = 'block';
+  res.style.background = color;
+  document.getElementById('breach-level').textContent = level;
+  document.getElementById('breach-level').style.color = score > 10 ? '#fff' : 'var(--text)';
+  document.getElementById('breach-action').textContent = action;
+  document.getElementById('breach-action').style.color = score > 10 ? 'rgba(255,255,255,0.85)' : 'var(--text2)';
+}
+
+function openBreachModal() {
+  document.getElementById('b-data').value = new Date().toISOString().split('T')[0];
+  document.getElementById('modal-breach').classList.add('open');
+}
+
+function saveBreach() {
+  const data = document.getElementById('b-data').value;
+  if (!data) { alert('Inserisci la data della scoperta.'); return; }
+  const b = {
+    data, tipo: document.getElementById('b-tipo').value,
+    dati: document.getElementById('b-dati').value,
+    rischio: document.getElementById('b-rischio').value,
+    garante: document.getElementById('b-garante').value,
+    misure: document.getElementById('b-misure').value
+  };
+  state.breaches.push(b);
+  closeModal('modal-breach');
+  renderBreachLog();
+}
+
+function renderBreachLog() {
+  const tbody = document.getElementById('breach-log');
+  if (state.breaches.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="text-muted text-sm" style="text-align:center;padding:24px">Nessuna violazione registrata</td></tr>';
+    return;
+  }
+  tbody.innerHTML = '';
+  state.breaches.forEach(b => {
+    const riscMap = { 'Basso': 'badge-green', 'Medio': 'badge-yellow', 'Alto': 'badge-red', 'Molto Alto': 'badge-red' };
+    const rKey = Object.keys(riscMap).find(k => b.rischio.includes(k)) || '';
+    tbody.innerHTML += `
+      <tr>
+        <td>${b.data}</td>
+        <td>${b.tipo}</td>
+        <td class="text-sm">${b.dati || '—'}</td>
+        <td><span class="badge ${riscMap[rKey] || 'badge-gray'}">${rKey || b.rischio}</span></td>
+        <td><span class="badge ${b.garante==='si'?'badge-green':b.garante==='na'?'badge-gray':'badge-red'}">${b.garante==='si'?'Sì ✓':b.garante==='na'?'N/A':'No'}</span></td>
+        <td><span class="badge badge-green">Registrato</span></td>
+      </tr>`;
+  });
+}
+
+// ============================================================
+// MODAL UTILS
+// ============================================================
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function openKpiModal() { alert('Funzionalità: aggiungi qui i KPI personalizzati del tuo studio.'); }
+
+// ============================================================
+// DASHBOARD UPDATE
+// ============================================================
+function updateDashboard() {
+  document.getElementById('tratt-count').textContent = state.trattamenti.length;
+  document.getElementById('risk-count').textContent = state.risks.length;
+  const highRisks = state.risks.filter(r => r.riskLevel === 'Alto' || r.riskLevel === 'Critico').length;
+  document.getElementById('risk-bar').style.width = state.risks.length > 0 ? Math.round(highRisks/state.risks.length*100)+'%' : '0%';
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('current-date').textContent = new Date().toLocaleDateString('it-IT', { day:'2-digit', month:'long', year:'numeric' });
+renderLeadershipChecks();
+renderChecklist();
+renderRiskList();
+renderRegistro();
+renderBreachLog();
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>

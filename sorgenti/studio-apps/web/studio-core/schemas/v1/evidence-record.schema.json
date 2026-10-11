@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:studio-example:studio-core:schema:v1:evidence-record",
+  "title": "EvidenceRecord v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "evidenceId", "dossierId", "kind", "statement", "sources", "status", "createdAt"],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "evidenceId": {"type": "string", "format": "uuid"},
+    "jobId": {"type": ["string", "null"], "format": "uuid"},
+    "dossierId": {"type": "string", "format": "uuid"},
+    "kind": {"type": "string", "minLength": 1},
+    "statement": {"type": "string", "minLength": 1},
+    "sources": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+    "status": {"enum": ["extracted", "verified", "rejected"]},
+    "createdAt": {"type": "string", "format": "date-time"}
+  }
+}

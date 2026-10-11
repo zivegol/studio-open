@@ -1,0 +1,8 @@
+{
+  "name": "cassetto-fiscale-servizio",
+  "version": "0.1.0",
+  "private": true,
+  "engines": { "node": ">=20" },
+  "scripts": { "api": "ROLE=api node src/index.js", "worker": "ROLE=worker node src/index.js" },
+  "dependencies": { "pg": "8.12.0" }
+}

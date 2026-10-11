@@ -1,0 +1,1 @@
+ALTER TABLE `documenti` MODIFY COLUMN `tipoDocumento` enum('bilancio_revisione','bilancio_storico','bilancio_analitico','bilancio','nota_integrativa','verbale_assemblea','contratto','estratto_conto','libro_mastro','partitario','altro') DEFAULT 'altro';

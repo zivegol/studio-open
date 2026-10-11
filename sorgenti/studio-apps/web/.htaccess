@@ -1,0 +1,17 @@
+<IfModule mod_headers.c>
+    <FilesMatch "\.(html|htm|js|mjs|css|json)$">
+        <If "true">
+            Header onsuccess unset Cache-Control
+            Header always unset Cache-Control
+            Header onsuccess set Cache-Control "no-store, no-cache, max-age=0, must-revalidate"
+            Header always set Cache-Control "no-store, no-cache, max-age=0, must-revalidate"
+            Header onsuccess set Pragma "no-cache"
+            Header always set Pragma "no-cache"
+            Header onsuccess set Expires "0"
+            Header always set Expires "0"
+        </If>
+    </FilesMatch>
+</IfModule>
+<IfModule mod_expires.c>
+    ExpiresActive Off
+</IfModule>

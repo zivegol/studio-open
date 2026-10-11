@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio Digitale - Workspace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --nc-blue: #00457c;
+            --nc-sky: #0082c9;
+            --nc-sky-l: #e8f4fb;
+            --nc-white: #ffffff;
+            --nc-bg: #f2f6f9;
+            --nc-border: #dce6ed;
+            --nc-text: #1a2b3c;
+            --nc-muted: #5a7a96;
+            --nc-green: #2d7d46;
+            --nc-green-bg: #e6f4eb;
+            --nc-amber: #7a4f00;
+            --nc-amber-bg: #fdf3e3;
+            --font: 'Source Sans 3', sans-serif;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--nc-bg);
+            color: var(--nc-text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .topbar {
+            background: var(--nc-blue);
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            flex-shrink: 0;
+            z-index: 100;
+            color: white;
+        }
+
+        .topbar-brand {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .main-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 320px;
+            border-right: 1px solid var(--nc-border);
+            overflow-y: auto;
+            padding: 1.2rem;
+            background: #f8fafc;
+            flex-shrink: 0;
+        }
+
+        .sec-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--nc-muted);
+            margin-bottom: 1rem;
+            display: block;
+            letter-spacing: 0.05em;
+        }
+
+        .app-link {
+            background: white;
+            border: 1px solid var(--nc-border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .app-link:hover {
+            border-color: var(--nc-sky);
+            background: var(--nc-sky-l);
+            transform: translateX(4px);
+        }
+
+        .app-link.active {
+            border-color: var(--nc-sky);
+            background: var(--nc-sky-l);
+            box-shadow: inset 4px 0 0 var(--nc-sky);
+        }
+
+        .app-icon {
+            font-size: 20px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f2f6f9;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+
+        .app-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .app-title {
+            font-size: 13.5px;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .app-category {
+            font-size: 10px;
+            color: var(--nc-muted);
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .workspace {
+            flex: 1;
+            background: white;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: none;
+        }
+
+        iframe.active {
+            display: block;
+        }
+
+        .welcome-screen {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--nc-muted);
+            padding: 2rem;
+        }
+
+        .welcome-screen h2 {
+            margin-bottom: 10px;
+        }
+
+        .error-box {
+            padding: 12px;
+            background: #fff3f3;
+            border: 1px solid #f3c2c2;
+            border-radius: 8px;
+            color: #9b1c1c;
+            font-size: 13px;
+        }
+    .app-group {margin:0 0 12px;} .app-group summary {cursor:pointer;padding:12px 8px;font-size:13px;font-weight:700;color:#00457c;border-bottom:1px solid #dce6ed;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div class="topbar-brand">🏢 studio-example Workspace</div>
+    <div style="font-size: 12px; opacity: 0.8;">Pannello Strumenti</div>
+</div>
+
+<div class="main-layout">
+    <div class="sidebar">
+        <span class="sec-label">Applicazioni Disponibili</span>
+        <div id="apps-list"></div>
+    </div>
+
+    <div class="workspace">
+        <div id="welcome" class="welcome-screen">
+            <div style="font-size: 50px; margin-bottom: 20px;">💼</div>
+            <h2>Benvenuto nel tuo Studio Digitale</h2>
+            <p>Seleziona un'applicazione dalla barra laterale per iniziare.</p>
+        </div>
+        <iframe id="mainFrame" src=""></iframe>
+    </div>
+</div>
+
+<script src="apps.js?v=20261003-email4"></script>
+<script src="portal-layout.js?v=20261003-drag2"></script>
+<script>
+    const M7M_APP = {
+        title: "Separa M7M",
+        category: "Firma digitale",
+        icon: "📄",
+        url: "firma%20digitale/separa_m7m.html"
+    };
+
+    function ensureM7mApp() {
+        if (!Array.isArray(window.APPS)) {
+            window.APPS = [];
+        }
+
+        const alreadyExists = window.APPS.some(app => app && app.title === M7M_APP.title);
+        if (!alreadyExists) {
+            window.APPS.splice(9, 0, M7M_APP);
+        }
+    }
+
+    function loadApp(url, element) {
+        document.getElementById('welcome').style.display = 'none';
+
+        const links = document.querySelectorAll('.app-link');
+        links.forEach(l => l.classList.remove('active'));
+
+        if (element) {
+            element.classList.add('active');
+        }
+
+        const frame = document.getElementById('mainFrame');
+        frame.src = url;
+        frame.classList.add('active');
+    }
+
+    function createAppCard(app) {
+        const card = document.createElement('div');
+        card.className = 'app-link';
+
+        card.innerHTML = `
+            <div class="app-icon">${app.icon || '📁'}</div>
+            <div class="app-info">
+                <span class="app-title">${app.title || 'Senza nome'}</span>
+                <span class="app-category">${app.category || ''}</span>
+            </div>
+        `;
+
+        card.addEventListener('click', () => {
+            loadApp(app.url, card);
+        });
+
+        return card;
+    }
+
+    function renderApps(apps) {
+        const container = document.getElementById('apps-list');
+        container.innerHTML = '';
+
+        if (!Array.isArray(apps) || apps.length === 0) {
+            container.innerHTML = '<div class="error-box">Nessuna applicazione trovata.</div>';
+            return;
+        }
+
+        (window.APP_GROUPS || []).forEach(group => {
+            const items = apps.filter(app => app && app.url && app.group === group);
+            if (!items.length) return;
+            const section = document.createElement('details');
+            section.className = 'app-group';
+            section.open = true;
+            const heading = document.createElement('summary');
+            heading.textContent = group + ' (' + items.length + ')';
+            section.appendChild(heading);
+            items.forEach(app => section.appendChild(createAppCard(app)));
+            container.appendChild(section);
+        });
+    }
+
+    function initApps() {
+        const container = document.getElementById('apps-list');
+
+        try {
+            ensureM7mApp();
+
+            if (!window.APPS || !Array.isArray(window.APPS)) {
+                throw new Error('APPS non disponibile');
+            }
+
+            renderApps(window.APPS);
+        } catch (error) {
+            console.error('Errore caricamento apps:', error);
+            container.innerHTML = `
+                <div class="error-box">
+                    Errore nel caricamento delle applicazioni.<br>
+                    Controlla che <strong>apps.js</strong> esista in <strong>/studio-apps/</strong>.
+                </div>
+            `;
+        }
+    }
+
+    PortalLayout.init(initApps);
+</script>
+
+</body>
+</html>

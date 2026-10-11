@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centrale Rischi Storica</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :root {
+      --blue: #00457c;
+      --sky: #0076b6;
+      --bg: #f3f7fa;
+      --panel: #ffffff;
+      --line: #d9e5ed;
+      --text: #1d2d3b;
+      --muted: #61798c;
+      --green: #227447;
+      --amber: #9a6200;
+      --red: #b73535;
+      --ink: #102436;
+      --soft: #eef5f9;
+      --shadow: 0 12px 32px rgba(21, 55, 78, .09);
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background: var(--bg);
+    }
+    button, input, select, textarea { font: inherit; }
+    button {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 6px;
+      padding: 9px 12px;
+      cursor: pointer;
+      font-weight: 650;
+    }
+    button.primary {
+      color: #fff;
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+    button.ghost { background: transparent; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    .topbar {
+      height: 54px;
+      background: var(--blue);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+    }
+    .brand { font-weight: 750; letter-spacing: .1px; }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .top-actions button { color: #fff; border-color: rgba(255,255,255,.35); background: rgba(255,255,255,.08); }
+    .layout {
+      display: grid;
+      grid-template-columns: 340px minmax(0, 1fr);
+      min-height: calc(100vh - 54px);
+    }
+    aside {
+      background: #f8fbfd;
+      border-right: 1px solid var(--line);
+      padding: 18px;
+      overflow: auto;
+    }
+    main {
+      padding: 20px;
+      overflow: auto;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+    .section {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .section:last-child { border-bottom: 0; }
+    .label {
+      display: block;
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .field-label {
+      display: block;
+      margin: 4px 0 -4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .drop {
+      min-height: 126px;
+      border: 1px dashed #9ab3c6;
+      background: #fff;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 18px;
+      color: var(--muted);
+    }
+    .drop strong { display: block; color: var(--ink); margin-bottom: 5px; }
+    input[type="file"] { width: 100%; }
+    textarea {
+      width: 100%;
+      min-height: 138px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px;
+      background: #fff;
+      color: var(--text);
+    }
+    .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .stack { display: grid; gap: 10px; }
+    .control {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--text);
+      padding: 9px 10px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(150px, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .metric {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .metric span { color: var(--muted); font-size: 12px; font-weight: 800; text-transform: uppercase; }
+    .metric strong { display: block; margin-top: 8px; font-size: 23px; color: var(--ink); }
+    .metric small { color: var(--muted); }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(330px, .75fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    h1, h2, h3 { margin: 0; }
+    h1 { font-size: 22px; }
+    h2 { font-size: 16px; }
+    h3 { font-size: 14px; }
+    .muted { color: var(--muted); }
+    .chart-wrap {
+      height: 315px;
+      padding: 12px 14px 18px;
+    }
+    canvas { width: 100%; height: 100%; display: block; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 10px 9px;
+      border-bottom: 1px solid var(--line);
+      text-align: right;
+      vertical-align: top;
+    }
+    th:first-child, td:first-child,
+    th:nth-child(2), td:nth-child(2) { text-align: left; }
+    th {
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      background: #f8fbfd;
+    }
+    .table-wrap { max-height: 470px; overflow: auto; }
+    .bank-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+      gap: 16px;
+      align-items: stretch;
+    }
+    .bank-summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 16px;
+    }
+    .mini-metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+    }
+    .mini-metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .mini-metric strong {
+      color: var(--ink);
+      font-size: 17px;
+    }
+    .link-btn {
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-weight: 750;
+      text-align: left;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 750;
+      background: var(--soft);
+      color: var(--blue);
+    }
+    .pill.red { background: #fdecec; color: var(--red); }
+    .pill.green { background: #e8f5ee; color: var(--green); }
+    .pill.amber { background: #fff4df; color: var(--amber); }
+    .notice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 13px 14px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .notice.compact {
+      padding: 10px 12px;
+      margin-top: -6px;
+      font-size: 13px;
+      background: #f8fbfd;
+    }
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tab.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .hidden { display: none !important; }
+    .log {
+      max-height: 170px;
+      overflow: auto;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 9px;
+    }
+    .print-report { display: none; }
+    .print-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 14px 0 18px;
+    }
+    .print-kpi {
+      border: 1px solid #d9e5ed;
+      border-radius: 6px;
+      padding: 10px;
+    }
+    .print-kpi span {
+      display: block;
+      color: #526577;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .print-section-title {
+      margin-top: 18px;
+      font-size: 15px;
+      color: #102436;
+    }
+    @media print {
+      body { background: #fff; height: auto; overflow: visible; }
+      .topbar, .layout { display: none !important; }
+      .print-report {
+        display: block !important;
+        color: #111;
+        background: #fff;
+        padding: 0;
+      }
+      .print-report h1 { font-size: 22px; margin: 0 0 6px; }
+      .print-report table { font-size: 10px; }
+      .print-report th, .print-report td { padding: 5px; }
+      @page { size: A4 landscape; margin: 10mm; }
+    }
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { border-right: 0; border-bottom: 1px solid var(--line); }
+      .grid, .cards, .bank-grid, .bank-summary { grid-template-columns: 1fr; }
+      .topbar { height: auto; min-height: 54px; flex-wrap: wrap; padding: 12px 16px; gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Centrale Rischi Storica</div>
+    <div class="top-actions">
+      <button id="sampleBtn" type="button">Dati demo</button>
+      <button id="printReportBtn" type="button">Stampa report</button>
+      <button id="exportBtn" type="button">Esporta CSV</button>
+      <button id="clearBtn" type="button">Pulisci</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <div class="panel">
+        <div class="section">
+          <span class="label">Importazione</span>
+          <div id="dropZone" class="drop">
+            <div>
+              <strong>Trascina qui PDF, TXT o CSV</strong>
+              <span>Puoi caricare piu mesi insieme.</span>
+            </div>
+          </div>
+          <div style="height:10px"></div>
+          <input id="fileInput" type="file" multiple accept=".pdf,.txt,.csv,text/plain,application/pdf">
+        </div>
+        <div class="section stack">
+          <span class="label">Testo estratto o CSV</span>
+          <textarea id="pasteBox" placeholder="Incolla qui il testo estratto dalla Centrale Rischi o un CSV con colonne: mese, intermediario, categoria, accordato, utilizzato, saldoMedio, sconfinamento"></textarea>
+          <button id="parseTextBtn" class="primary" type="button">Analizza testo</button>
+        </div>
+        <div class="section stack">
+          <span class="label">Periodo e banca</span>
+          <small class="muted">I mesi disponibili dipendono dal report importato.</small>
+          <label class="field-label" for="fromMonth">Da mese</label>
+          <select id="fromMonth" class="control"></select>
+          <label class="field-label" for="toMonth">A mese</label>
+          <select id="toMonth" class="control"></select>
+          <label class="field-label" for="bankFilter">Banca / intermediario</label>
+          <select id="bankFilter" class="control"></select>
+        </div>
+        <div class="section stack">
+          <span class="label">Stato import</span>
+          <div id="log" class="log">Nessun dato caricato.</div>
+        </div>
+      </div>
+    </aside>
+
+    <main>
+      <div class="notice" id="intro">
+        Carica uno o piu prospetti della Centrale Rischi. Il tool ricostruisce i mesi disponibili, somma accordati e utilizzi, evidenzia sconfinamenti e consente di filtrare il periodo complessivo del report.
+      </div>
+      <div class="notice compact">
+        I blocchi principali mostrano valori medi mensili: per ogni mese viene sommata l'esposizione filtrata e poi viene calcolata la media sui mesi selezionati.
+      </div>
+
+      <div class="cards">
+        <div class="metric"><span>Accordato operativo medio</span><strong id="mGranted">€ 0</strong><small id="mGrantedSub">media mensile</small></div>
+        <div class="metric"><span>Utilizzato medio</span><strong id="mUsed">€ 0</strong><small id="mUsedSub">0 forme tecniche</small></div>
+        <div class="metric"><span>Sconfinamento medio</span><strong id="mOver">€ 0</strong><small id="mOverSub">media mensile</small></div>
+        <div class="metric"><span>Utilizzo medio</span><strong id="mRatio">0%</strong><small>utilizzato / accordato</small></div>
+      </div>
+
+      <div class="grid">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h1>Andamento mensile</h1>
+              <div class="muted" id="rangeLabel">Nessun periodo selezionato</div>
+            </div>
+            <div class="tabs">
+              <button class="tab active" data-chart="lines" type="button">Linee</button>
+              <button class="tab" data-chart="bars" type="button">Barre</button>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Composizione</h2>
+              <div class="muted">per intermediario e categoria</div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="mixChart"></canvas></div>
+        </section>
+      </div>
+
+      <div style="height:16px"></div>
+
+      <section class="panel hidden" id="bankTechPanel">
+        <div class="panel-head">
+          <div>
+            <h2>Forme tecniche della banca selezionata</h2>
+            <div class="muted" id="bankTechLabel">Seleziona una banca per vedere le forme tecniche</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Forma tecnica</th>
+                <th>Mesi</th>
+                <th>Accordato</th>
+                <th>Utilizzato</th>
+                <th>Sconfinamento</th>
+              </tr>
+            </thead>
+            <tbody id="techRowsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div style="height:16px"></div>
+
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Dettaglio segnalazioni</h2>
+            <div class="muted" id="rowsLabel">0 righe</div>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Mese</th>
+                <th>Forma tecnica</th>
+                <th>Categoria</th>
+                <th>Accordato</th>
+                <th>Utilizzato</th>
+                <th>Saldo medio</th>
+                <th>Sconfinamento</th>
+                <th>Stato</th>
+              </tr>
+            </thead>
+            <tbody id="rowsBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <section id="printReport" class="print-report"></section>
+
+  <script>
+    const state = {
+      rows: [],
+      chartType: "lines",
+      messages: []
+    };
+
+    const monthNames = {
+      gennaio: 1, febbraio: 2, marzo: 3, aprile: 4, maggio: 5, giugno: 6,
+      luglio: 7, agosto: 8, settembre: 9, ottobre: 10, novembre: 11, dicembre: 12,
+      gen: 1, feb: 2, mar: 3, apr: 4, mag: 5, giu: 6, lug: 7, ago: 8, set: 9, ott: 10, nov: 11, dic: 12
+    };
+    const demoRows = [
+      { month: "2026-02", bank: "BANCA DEL FUCINO S.P.A.", category: "Rischi a scadenza", granted: 0, used: 1495939, average: 0, guaranteed: 0, status: "Crediti scaduti o sconfinanti da piu di 180 gg" },
+      { month: "2026-02", bank: "BANCA DEL FUCINO S.P.A.", category: "Rischi a revoca", granted: 0, used: 162, average: 0, guaranteed: 0, status: "Crediti scaduti o sconfinanti da piu di 180 gg" },
+      { month: "2026-02", bank: "BANCA POPOLARE ETICA SOCIETA' COOPERATIVA PER AZIONI", category: "Rischi a scadenza", granted: 1000000, used: 1012011, average: 0, guaranteed: 0, status: "Crediti diversi da scaduti e sconfinanti" },
+      { month: "2026-02", bank: "BANCA POPOLARE ETICA SOCIETA' COOPERATIVA PER AZIONI", category: "Rischi a revoca", granted: 50000, used: 48888, average: 0, guaranteed: 0, status: "Crediti diversi da scaduti e sconfinanti" },
+      { month: "2026-02", bank: "BANCO BPM SOCIETA' PER AZIONI", category: "Rischi a scadenza", granted: 282983, used: 351146, average: 351146, guaranteed: 351146, status: "Crediti scaduti o sconfinanti da piu di 90 gg e non oltre 180" },
+      { month: "2026-02", bank: "BANCO BPM SOCIETA' PER AZIONI", category: "Rischi a scadenza", granted: 655686, used: 686922, average: 0, guaranteed: 0, status: "Crediti scaduti o sconfinanti da piu di 90 gg e non oltre 180" },
+      { month: "2026-02", bank: "BANCO BPM SOCIETA' PER AZIONI", category: "Rischi a scadenza", granted: 88889, used: 113617, average: 113617, guaranteed: 113617, status: "Crediti diversi da ristrutturati, scaduti e sconfinanti" },
+      { month: "2026-02", bank: "VALPOLICELLA BENACO B.CA CREDITO COOPERATIVO (VERONA) S.C.", category: "Rischi a scadenza", granted: 801515, used: 903548, average: 903548, guaranteed: 903548, status: "Crediti scaduti o sconfinanti da piu di 180 gg" },
+      { month: "2026-02", bank: "VALPOLICELLA BENACO B.CA CREDITO COOPERATIVO (VERONA) S.C.", category: "Rischi a scadenza", granted: 1441, used: 7257, average: 0, guaranteed: 0, status: "Crediti scaduti o sconfinanti da piu di 180 gg" },
+      { month: "2026-02", bank: "VALPOLICELLA BENACO B.CA CREDITO COOPERATIVO (VERONA) S.C.", category: "Rischi a revoca", granted: 0, used: 169, average: 0, guaranteed: 0, status: "Crediti scaduti o sconfinanti da piu di 180 gg" }
+    ].map(enrichRow);
+
+    const els = {
+      fileInput: document.getElementById("fileInput"),
+      dropZone: document.getElementById("dropZone"),
+      pasteBox: document.getElementById("pasteBox"),
+      parseTextBtn: document.getElementById("parseTextBtn"),
+      sampleBtn: document.getElementById("sampleBtn"),
+      printReportBtn: document.getElementById("printReportBtn"),
+      exportBtn: document.getElementById("exportBtn"),
+      clearBtn: document.getElementById("clearBtn"),
+      fromMonth: document.getElementById("fromMonth"),
+      toMonth: document.getElementById("toMonth"),
+      bankFilter: document.getElementById("bankFilter"),
+      log: document.getElementById("log"),
+      rowsBody: document.getElementById("rowsBody"),
+      rowsLabel: document.getElementById("rowsLabel"),
+      bankTechPanel: document.getElementById("bankTechPanel"),
+      bankTechLabel: document.getElementById("bankTechLabel"),
+      techRowsBody: document.getElementById("techRowsBody"),
+      rangeLabel: document.getElementById("rangeLabel"),
+      mainChart: document.getElementById("mainChart"),
+      mixChart: document.getElementById("mixChart"),
+      mGranted: document.getElementById("mGranted"),
+      mUsed: document.getElementById("mUsed"),
+      mOver: document.getElementById("mOver"),
+      mRatio: document.getElementById("mRatio"),
+      mGrantedSub: document.getElementById("mGrantedSub"),
+      mUsedSub: document.getElementById("mUsedSub"),
+      mOverSub: document.getElementById("mOverSub"),
+      printReport: document.getElementById("printReport")
+    };
+
+    function fmt(n) {
+      return new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(n || 0);
+    }
+    function pct(n) {
+      return new Intl.NumberFormat("it-IT", { maximumFractionDigits: 1 }).format(n || 0) + "%";
+    }
+    function parseMoney(value) {
+      if (typeof value === "number") return value;
+      const cleaned = String(value || "").replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", ".");
+      const n = Number(cleaned);
+      return Number.isFinite(n) ? n : 0;
+    }
+    function monthLabel(key) {
+      if (!key) return "";
+      const [y, m] = key.split("-").map(Number);
+      const d = new Date(y, m - 1, 1);
+      return d.toLocaleDateString("it-IT", { month: "short", year: "numeric" });
+    }
+    function monthKey(raw) {
+      if (!raw) return "";
+      const clean = raw.toLowerCase().trim().replace(/\s+/g, " ");
+      const iso = clean.match(/(20\d{2})[-/](0?[1-9]|1[0-2])/);
+      if (iso) return `${iso[1]}-${String(Number(iso[2])).padStart(2, "0")}`;
+      const m1 = clean.match(/([a-zà]+)[-\s]+(\d{2,4})/i);
+      if (!m1) return "";
+      const m = monthNames[m1[1].slice(0, 3)] || monthNames[m1[1]];
+      let y = Number(m1[2]);
+      if (y < 100) y += 2000;
+      return m ? `${y}-${String(m).padStart(2, "0")}` : "";
+    }
+    function cleanText(t) {
+      return String(t || "")
+        .replace(/[’]/g, "'")
+        .replace(/\r/g, "\n")
+        .replace(/SCONFANTI/g, "SCONFINANTI")
+        .replace(/[ \t]+/g, " ")
+        .replace(/\n{3,}/g, "\n\n");
+    }
+    function normalizeCategory(text) {
+      const compact = text.toUpperCase().replace(/\s+/g, " ");
+      if (compact.includes("RISCHI AUTOLIQUIDANTI")) return "Rischi autoliquidanti";
+      if (compact.includes("RISCHI A REVOCA")) return "Rischi a revoca";
+      if (compact.includes("RISCHI A SCADENZA")) return "Rischi a scadenza";
+      if (compact.includes("SOFFERENZE")) return "Sofferenze";
+      if (compact.includes("GARANZIE")) return "Garanzie";
+      return "Altro";
+    }
+    function bankFilterName(bank) {
+      const b = String(bank || "").toUpperCase();
+      if (b.includes("BANCA DEL FUCINO") || b.includes("FUCINO SME")) return "BANCA DEL FUCINO S.P.A. / FUCINO SME 2.0 S.R.L";
+      return bank;
+    }
+    function technicalFormFromBlock(block, category) {
+      const compact = block.toUpperCase().replace(/\s+/g, " ");
+      let form = category || "Rapporto";
+      if (compact.includes("APERTURE DI CREDITO IN C/C")) form = "Apertura di credito in c/c";
+      else if (compact.includes("RISCHI A SCAD. DIVERSI")) form = "Finanziamento a scadenza";
+      else if (compact.includes("RISCHI A REVOCA")) form = "Rischio a revoca";
+      else if (compact.includes("RISCHI AUTOLIQUIDANTI")) form = "Rischio autoliquidante";
+      if (compact.includes("IPOTECA INTERNA")) form += " - ipoteca interna";
+      else if (compact.includes("IPOTECA ESTERNA")) form += " - ipoteca esterna";
+      else if (compact.includes("ASSENZA DI GARANZIE")) form += " - senza garanzie reali";
+      return form;
+    }
+    function statusFromBlock(block) {
+      const compact = block.toUpperCase().replace(/\s+/g, " ");
+      const m = compact.match(/RAPPORTI NON CONTESTATI\s*-\s*([^]+?)(?:ASSENZA|IPOTECA|GARANZIE REALI|$)/);
+      if (m) return titleCase(m[1].replace(/\bGG\b/g, "gg").trim());
+      if (compact.includes("SOFFERENZE")) return "Sofferenze";
+      return "";
+    }
+    function titleCase(s) {
+      return s.toLowerCase().replace(/\b[a-zàèéìòù]/g, c => c.toUpperCase());
+    }
+    function enrichRow(row) {
+      const granted = Number(row.granted || 0);
+      const used = Number(row.used || 0);
+      const status = row.status || "";
+      const textualDefault = !/DIVERSI DA/i.test(status) && /SCADUTI|SCONFINANTI|SOFFERENZE/i.test(status);
+      row.granted = granted;
+      row.used = used;
+      row.average = Number(row.average || 0);
+      row.guaranteed = Number(row.guaranteed || 0);
+      row.tech = row.tech || row.category || "Rapporto";
+      row.bankGroup = row.bankGroup || bankFilterName(row.bank);
+      row.over = Math.max(0, used - granted);
+      row.critical = row.over > 0 || textualDefault;
+      return row;
+    }
+    function parseCsv(text) {
+      const lines = text.trim().split(/\r?\n/).filter(Boolean);
+      if (lines.length < 2 || !/mese|month/i.test(lines[0])) return [];
+      const sep = lines[0].includes(";") ? ";" : ",";
+      const headers = lines[0].split(sep).map(h => h.trim().toLowerCase());
+      return lines.slice(1).map(line => {
+        const cells = line.split(sep).map(c => c.trim());
+        const get = (...names) => {
+          const i = headers.findIndex(h => names.includes(h));
+          return i >= 0 ? cells[i] : "";
+        };
+        const used = parseMoney(get("utilizzato", "used"));
+        const granted = parseMoney(get("accordato operativo", "accordato", "granted"));
+        const over = parseMoney(get("sconfinamento", "over"));
+        return enrichRow({
+          month: monthKey(get("mese", "month")) || get("mese", "month"),
+          bank: get("intermediario", "banca", "bank") || "Intermediario",
+          category: get("categoria", "category") || "Altro",
+          granted,
+          used,
+          average: parseMoney(get("saldo medio", "saldomedio", "average")),
+          guaranteed: parseMoney(get("garantito", "guaranteed")),
+          status: get("stato", "status"),
+          over: over || Math.max(0, used - granted)
+        });
+      }).filter(r => r.month);
+    }
+    function parseCrText(text) {
+      const csvRows = parseCsv(text);
+      if (csvRows.length) return csvRows;
+      const src = cleanText(text);
+      const operationalSrc = src.split(/\bLEGENDA\b/i)[0];
+      const rows = [];
+      for (const chunk of operationalSrc.split(/(?=DATA DI RIFERIMENTO:\s*[^\n]+)/i)) {
+        const dateMatch = chunk.match(/DATA DI RIFERIMENTO:\s*([^\n]+)/i);
+        const month = monthKey(dateMatch && dateMatch[1]);
+        if (!month) continue;
+        if (/Descrizione delle informazioni rilevate|Il prospetto della RILEVAZIONE/i.test(chunk)) continue;
+        const bankMatches = [...chunk.matchAll(/(?:^|\n|\s{2,})([^\n]{4,}?)\s*Intermediario:/g)];
+        for (let b = 0; b < bankMatches.length; b++) {
+          const bankMatch = bankMatches[b];
+          const bank = cleanupBankName(bankMatch[1].replace(/\s+/g, " ").trim().replace(/^[:\s-]+/, ""));
+          if (!bank || /^(Intermediario|RILEVAZIONI|RILEVAZIONE)$/i.test(bank)) continue;
+          const bodyStart = bankMatch.index + bankMatch[0].length;
+          const bodyEnd = b + 1 < bankMatches.length ? bankMatches[b + 1].index : chunk.length;
+          const body = chunk.slice(bodyStart, bodyEnd);
+          const pattern = /(RISCHI\s+(?:A\s+SCADENZA|A\s+REVOCA|AUTOLIQUIDANTI)|SOFFERENZE|GARANZIE\s+(?:CONNESSE|RICEVUTE))/gi;
+          const matches = [...body.matchAll(pattern)];
+          for (let i = 0; i < matches.length; i++) {
+            const start = matches[i].index;
+            const end = i + 1 < matches.length ? matches[i + 1].index : body.length;
+            const block = body.slice(start, end);
+            const blockLines = block.includes("\n")
+              ? block.split(/\n/)
+              : block.replace(/((?:\d{1,3}(?:\.\d{3})*(?:,\d+)?\s+){2,}\d{1,3}(?:\.\d{3})*(?:,\d+)?)/g, "\n$1\n").split(/\n/);
+            const moneyLine = blockLines
+              .map(line => line.trim().replace(/^[A-ZÀ-Ù'\/ ]+\s+(?=\d)/, ""))
+              .filter(line => {
+                const count = (line.match(/\b\d{1,3}(?:\.\d{3})*(?:,\d+)?\b/g) || []).length;
+                return count >= 3 && /^[\d\s.,]+$/.test(line) && !/[()]/.test(line);
+              })
+              .pop();
+            if (!moneyLine) continue;
+            const tail = [...moneyLine.matchAll(/\b\d{1,3}(?:\.\d{3})*(?:,\d+)?\b/g)]
+              .map(m => parseMoney(m[0]))
+              .filter(n => n >= 0);
+            if (tail.length < 3) continue;
+            const category = normalizeCategory(matches[i][0]);
+            let granted = 0, used = 0, average = 0, guaranteed = 0;
+            if (tail.length >= 4) {
+              granted = tail[tail.length - 3];
+              used = tail[tail.length - 2];
+              average = tail[tail.length - 1];
+              guaranteed = category === "Rischi a scadenza" ? average : 0;
+            } else {
+              granted = tail[0];
+              used = tail[tail.length - 1];
+            }
+            if (used === 0 && tail.length >= 1) used = tail[tail.length - 1];
+            if (granted > 99999999 || used > 99999999) continue;
+            rows.push(enrichRow({
+              month, bank, category, granted, used, average, guaranteed,
+              status: statusFromBlock(block),
+              tech: technicalFormFromBlock(block, category)
+            }));
+          }
+        }
+      }
+      return rows.length ? rows : parseCrLinearText(operationalSrc);
+    }
+    function parseCrLinearText(src) {
+      const rows = [];
+      const chunks = src.split(/(?=DATA DI RIFERIMENTO:\s*[^\n]+)/i);
+      for (const chunk of chunks) {
+        const dateMatch = chunk.match(/DATA DI RIFERIMENTO:\s*([^\n]+)/i);
+        const month = monthKey(dateMatch && dateMatch[1]);
+        if (!month) continue;
+        const compactChunk = chunk
+          .replace(/\n+/g, " ")
+          .replace(/\s+/g, " ")
+          .replace(/SCONFANTI/g, "SCONFINANTI");
+        const bankMatches = [...compactChunk.matchAll(/([^:]{4,}?)\s*Intermediario:/g)];
+        for (let b = 0; b < bankMatches.length; b++) {
+          const rawBank = bankMatches[b][1].replace(/\s+/g, " ").trim();
+          const bank = cleanupBankName(rawBank);
+          if (!bank) continue;
+          const bodyStart = bankMatches[b].index + bankMatches[b][0].length;
+          const bodyEnd = b + 1 < bankMatches.length ? bankMatches[b + 1].index : compactChunk.length;
+          const body = compactChunk.slice(bodyStart, bodyEnd);
+          const catPattern = /(RISCHI\s+A\s+SCADENZA|RISCHI\s+A\s+REVOCA|RISCHI\s+AUTOLIQUIDANTI|SOFFERENZE)/gi;
+          const cats = [...body.matchAll(catPattern)];
+          for (let i = 0; i < cats.length; i++) {
+            const start = cats[i].index;
+            const end = i + 1 < cats.length ? cats[i + 1].index : body.length;
+            const block = body.slice(start, end);
+            if (!/RAPPORTI NON CONTESTATI|SOFFERENZE/i.test(block)) continue;
+            const amountGroups = [...block.matchAll(/(?<![\d.,])(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d+)?(?:\s+(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d+)?){2,5}(?![\d.,])/g)]
+              .map(m => m[0])
+              .filter(group => !/[()]/.test(group));
+            if (!amountGroups.length) continue;
+            const numbers = [...amountGroups[amountGroups.length - 1].matchAll(/\d{1,3}(?:\.\d{3})*(?:,\d+)?|\d+/g)]
+              .map(m => parseMoney(m[0]))
+              .filter(n => n >= 0);
+            if (numbers.length < 3) continue;
+            const category = normalizeCategory(cats[i][0]);
+            const tail = numbers.slice(-4);
+            const granted = tail.length >= 4 ? tail[1] : tail[0];
+            const used = tail.length >= 4 ? tail[2] : tail[tail.length - 1];
+            const average = tail.length >= 4 ? tail[3] : 0;
+            if (granted > 99999999 || used > 99999999) continue;
+            rows.push(enrichRow({
+              month, bank, category, granted, used, average,
+              guaranteed: category === "Rischi a scadenza" ? average : 0,
+              status: statusFromBlock(block),
+              tech: technicalFormFromBlock(block, category)
+            }));
+          }
+        }
+      }
+      return rows;
+    }
+    function cleanupBankName(raw) {
+      const markers = [
+        "Le informazioni sono disponibili a far tempo dal",
+        "(... continua da pagina precedente)",
+        "Data di elaborazione del prospetto",
+        "RILEVAZIONI INFRAMENSILI",
+        "RILEVAZIONE MENSILE",
+        "FILIALE DI VERONA",
+        "Intestatario:"
+      ];
+      let bank = raw;
+      markers.forEach(marker => {
+        const idx = bank.lastIndexOf(marker);
+        if (idx >= 0) bank = bank.slice(idx + marker.length);
+      });
+      bank = bank
+        .replace(/.*DATA DI RIFERIMENTO:\s*[a-zàèéìòù]+\s+\d{4}\s+/i, "")
+        .replace(/Le informazioni sono disponibili a far tempo dal\s+\d{2}\/\d{2}\/\d{4}/i, "")
+        .replace(/DATA DI RIFERIMENTO:.*?Le informazioni sono disponibili a far tempo dal\s+\d{2}\/\d{2}\/\d{4}/i, "")
+        .replace(/\(\.\.\. continua da pagina precedente\)/gi, "")
+        .replace(/\b\d{1,2}\/\d{1,2}\/\d{4}\b/g, "")
+        .replace(/\b\d{2}:\d{2}(?::\d{2})?\b/g, "")
+        .replace(/^\s*[-:0-9\/.]+\s*/, "")
+        .replace(/\s+/g, " ")
+        .trim();
+      if (!bank || /^(Intermediario|RILEVAZIONI|RILEVAZIONE|Crediti per cassa)$/i.test(bank)) return "";
+      return bank;
+    }
+    function setRows(rows, message) {
+      state.rows = rows.map(enrichRow).sort((a, b) => a.month.localeCompare(b.month) || a.bank.localeCompare(b.bank));
+      log(message || `${state.rows.length} righe caricate.`);
+      refreshControls();
+      render();
+    }
+    function addRows(rows, message) {
+      const key = r => [r.month, r.bank, r.category, r.granted, r.used, r.status].join("|");
+      const existing = new Set(state.rows.map(key));
+      rows.forEach(r => { if (!existing.has(key(r))) state.rows.push(enrichRow(r)); });
+      state.rows.sort((a, b) => a.month.localeCompare(b.month) || a.bank.localeCompare(b.bank));
+      log(message || `${rows.length} righe importate.`);
+      refreshControls();
+      render();
+    }
+    function log(msg) {
+      state.messages.unshift(`${new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })} - ${msg}`);
+      els.log.innerHTML = state.messages.slice(0, 12).map(x => `<div>${escapeHtml(x)}</div>`).join("");
+    }
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
+    function refreshControls() {
+      const months = [...new Set(state.rows.map(r => r.month))].sort();
+      const banks = [...new Set(state.rows.map(r => r.bankGroup || bankFilterName(r.bank)))].sort();
+      fillSelect(els.fromMonth, months, false, months[0]);
+      fillSelect(els.toMonth, months, false, months[months.length - 1]);
+      fillSelect(els.bankFilter, banks, true, "");
+    }
+    function fillSelect(el, values, all, selected) {
+      const current = el.value || selected || "";
+      el.innerHTML = (all ? `<option value="">Tutti</option>` : "") +
+        values.map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v.includes("-") ? monthLabel(v) : v)}</option>`).join("");
+      el.value = values.includes(current) || (all && current === "") ? current : (selected || (all ? "" : values[0] || ""));
+    }
+    function filteredRows() {
+      const from = els.fromMonth.value || "0000-00";
+      const to = els.toMonth.value || "9999-99";
+      const bank = els.bankFilter.value;
+      return state.rows.filter(r => r.month >= from && r.month <= to && (!bank || (r.bankGroup || bankFilterName(r.bank)) === bank));
+    }
+    function periodRows() {
+      const from = els.fromMonth.value || "0000-00";
+      const to = els.toMonth.value || "9999-99";
+      return state.rows.filter(r => r.month >= from && r.month <= to);
+    }
+    function monthly(rows) {
+      const map = new Map();
+      rows.forEach(r => {
+        const item = map.get(r.month) || { month: r.month, granted: 0, used: 0, over: 0, critical: 0 };
+        item.granted += r.granted;
+        item.used += r.used;
+        item.over += r.over;
+        item.critical += r.critical ? 1 : 0;
+        map.set(r.month, item);
+      });
+      return [...map.values()].sort((a, b) => a.month.localeCompare(b.month));
+    }
+    function averageMonthlyValue(months, key) {
+      if (!months.length) return 0;
+      return months.reduce((s, m) => s + (m[key] || 0), 0) / months.length;
+    }
+    function render() {
+      const rows = filteredRows();
+      const months = monthly(rows);
+      const granted = averageMonthlyValue(months, "granted");
+      const used = averageMonthlyValue(months, "used");
+      const over = averageMonthlyValue(months, "over");
+      els.mGranted.textContent = fmt(granted);
+      els.mUsed.textContent = fmt(used);
+      els.mOver.textContent = fmt(over);
+      els.mRatio.textContent = pct(granted ? used / granted * 100 : 0);
+      els.mGrantedSub.textContent = `media su ${months.length} mesi`;
+      els.mUsedSub.textContent = `${new Set(rows.map(r => r.tech || r.category || "Rapporto")).size} forme tecniche`;
+      els.mOverSub.textContent = `media su ${months.length} mesi`;
+      els.rangeLabel.textContent = months.length ? `${monthLabel(months[0].month)} - ${monthLabel(months[months.length - 1].month)}` : "Nessun periodo selezionato";
+      els.rowsLabel.textContent = `${rows.length} righe`;
+      renderTable(rows);
+      renderTechnicalForms(rows);
+      drawMain(months);
+      drawMix(rows);
+    }
+    function renderTechnicalForms(rows) {
+      const selectedBank = els.bankFilter.value;
+      els.bankTechPanel.classList.toggle("hidden", !selectedBank);
+      if (!selectedBank) {
+        els.techRowsBody.innerHTML = "";
+        return;
+      }
+      els.bankTechLabel.textContent = selectedBank;
+      const map = new Map();
+      rows.forEach(r => {
+        const key = r.tech || r.category || "Rapporto";
+        const item = map.get(key) || { tech: key, months: new Set(), granted: 0, used: 0, over: 0 };
+        item.months.add(r.month);
+        item.granted += r.granted;
+        item.used += r.used;
+        item.over += r.over;
+        map.set(key, item);
+      });
+      els.techRowsBody.innerHTML = [...map.values()].sort((a, b) => b.used - a.used).map(item => `
+        <tr>
+          <td>${escapeHtml(item.tech)}</td>
+          <td>${item.months.size}</td>
+          <td>${fmt(item.granted)}</td>
+          <td>${fmt(item.used)}</td>
+          <td>${item.over > 0 ? `<span class="pill red">${fmt(item.over)}</span>` : `<span class="pill green">No</span>`}</td>
+        </tr>
+      `).join("");
+    }
+    function bankSummary(rows) {
+      const map = new Map();
+      rows.forEach(r => {
+        const item = map.get(r.bank) || { bank: r.bank, months: new Set(), granted: 0, used: 0, over: 0, criticalMonths: new Set(), maxOver: 0 };
+        item.months.add(r.month);
+        item.granted += r.granted;
+        item.used += r.used;
+        item.over += r.over;
+        if (r.critical) item.criticalMonths.add(r.month);
+        item.maxOver = Math.max(item.maxOver, r.over);
+        map.set(r.bank, item);
+      });
+      return [...map.values()].sort((a, b) => b.used - a.used);
+    }
+    function renderBankAnalysis(allPeriodRows, selectedRows) {
+      const summaries = bankSummary(allPeriodRows);
+      const selectedBank = els.bankFilter.value;
+      const totalUsed = allPeriodRows.reduce((s, r) => s + r.used, 0);
+      els.bankRowsBody.innerHTML = summaries.map(item => {
+        const active = selectedBank === item.bank;
+        const ratio = item.granted ? item.used / item.granted * 100 : 0;
+        return `
+          <tr>
+            <td><button class="link-btn bank-select" type="button" data-bank="${escapeHtml(item.bank)}">${escapeHtml(item.bank)}</button>${active ? ` <span class="pill">attivo</span>` : ""}</td>
+            <td>${item.months.size}</td>
+            <td>${fmt(item.granted)}</td>
+            <td>${fmt(item.used)}</td>
+            <td>${item.over > 0 ? `<span class="pill red">${fmt(item.over)}</span>` : `<span class="pill green">No</span>`}</td>
+            <td>${pct(ratio)}</td>
+          </tr>
+        `;
+      }).join("");
+      const activeRows = selectedBank ? selectedRows : allPeriodRows;
+      const activeUsed = activeRows.reduce((s, r) => s + r.used, 0);
+      const activeOver = activeRows.reduce((s, r) => s + r.over, 0);
+      const activeCriticalMonths = new Set(activeRows.filter(r => r.critical).map(r => r.month)).size;
+      const activeMaxOver = activeRows.reduce((m, r) => Math.max(m, r.over), 0);
+      els.bankName.textContent = selectedBank || "Tutti";
+      els.bankShare.textContent = pct(totalUsed ? activeUsed / totalUsed * 100 : 0);
+      els.bankCriticalMonths.textContent = String(activeCriticalMonths);
+      els.bankMaxOver.textContent = fmt(activeMaxOver || activeOver);
+      els.bankAnalysisLabel.textContent = selectedBank
+        ? `Analisi filtrata su ${selectedBank}`
+        : `${summaries.length} intermediari nel periodo selezionato`;
+    }
+    function renderTable(rows) {
+      els.rowsBody.innerHTML = rows.map(r => `
+        <tr>
+          <td>${escapeHtml(monthLabel(r.month))}</td>
+          <td>${escapeHtml(r.tech || r.category || "")}</td>
+          <td>${escapeHtml(r.category)}</td>
+          <td>${fmt(r.granted)}</td>
+          <td>${fmt(r.used)}</td>
+          <td>${fmt(r.average)}</td>
+          <td>${r.over > 0 ? `<span class="pill red">${fmt(r.over)}</span>` : `<span class="pill green">No</span>`}</td>
+          <td>${r.critical ? `<span class="pill amber">${escapeHtml(r.status || "Da verificare")}</span>` : `<span class="pill green">Regolare</span>`}</td>
+        </tr>
+      `).join("");
+    }
+    function setupCanvas(canvas) {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { ctx, w: rect.width, h: rect.height };
+    }
+    function drawAxes(ctx, w, h, max) {
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = "#d9e5ed";
+      ctx.lineWidth = 1;
+      ctx.font = "12px Segoe UI";
+      ctx.fillStyle = "#61798c";
+      const left = 58, right = 18, top = 20, bottom = 36;
+      for (let i = 0; i <= 4; i++) {
+        const y = top + (h - top - bottom) * i / 4;
+        ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(w - right, y); ctx.stroke();
+        const val = max * (1 - i / 4);
+        ctx.fillText(shortMoney(val), 4, y + 4);
+      }
+      return { left, right, top, bottom, innerW: w - left - right, innerH: h - top - bottom };
+    }
+    function shortMoney(n) {
+      if (n >= 1000000) return `${(n / 1000000).toLocaleString("it-IT", { maximumFractionDigits: 1 })}M`;
+      if (n >= 1000) return `${Math.round(n / 1000)}k`;
+      return `${Math.round(n)}`;
+    }
+    function drawMain(data) {
+      const { ctx, w, h } = setupCanvas(els.mainChart);
+      const max = Math.max(1, ...data.flatMap(d => [d.granted, d.used, d.over])) * 1.12;
+      const box = drawAxes(ctx, w, h, max);
+      if (!data.length) return emptyChart(ctx, w, h);
+      const colors = { granted: "#0076b6", used: "#227447", over: "#b73535" };
+      if (state.chartType === "bars") {
+        const group = box.innerW / data.length;
+        data.forEach((d, i) => {
+          ["granted", "used", "over"].forEach((k, j) => {
+            const bw = Math.max(6, group / 5);
+            const x = box.left + i * group + group / 2 - bw * 1.6 + j * bw * 1.1;
+            const bh = d[k] / max * box.innerH;
+            ctx.fillStyle = colors[k];
+            ctx.fillRect(x, box.top + box.innerH - bh, bw, bh);
+          });
+          labelMonth(ctx, d.month, box.left + i * group + group / 2, h - 12);
+        });
+      } else {
+        ["granted", "used", "over"].forEach(k => {
+          ctx.strokeStyle = colors[k];
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          data.forEach((d, i) => {
+            const x = box.left + (data.length === 1 ? box.innerW / 2 : i * box.innerW / (data.length - 1));
+            const y = box.top + box.innerH - d[k] / max * box.innerH;
+            i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+          });
+          ctx.stroke();
+        });
+        data.forEach((d, i) => {
+          const x = box.left + (data.length === 1 ? box.innerW / 2 : i * box.innerW / (data.length - 1));
+          labelMonth(ctx, d.month, x, h - 12);
+        });
+      }
+      legend(ctx, w - 260, 18, [["Accordato", colors.granted], ["Utilizzato", colors.used], ["Sconf.", colors.over]]);
+    }
+    function labelMonth(ctx, month, x, y) {
+      ctx.save();
+      ctx.fillStyle = "#61798c";
+      ctx.font = "12px Segoe UI";
+      ctx.textAlign = "center";
+      ctx.fillText(monthLabel(month), x, y);
+      ctx.restore();
+    }
+    function legend(ctx, x, y, items) {
+      ctx.font = "12px Segoe UI";
+      items.forEach((it, i) => {
+        ctx.fillStyle = it[1];
+        ctx.fillRect(x + i * 86, y, 12, 12);
+        ctx.fillStyle = "#61798c";
+        ctx.fillText(it[0], x + 18 + i * 86, y + 10);
+      });
+    }
+    function drawMix(rows) {
+      const { ctx, w, h } = setupCanvas(els.mixChart);
+      ctx.clearRect(0, 0, w, h);
+      if (!rows.length) return emptyChart(ctx, w, h);
+      const map = new Map();
+      rows.forEach(r => map.set(r.bank, (map.get(r.bank) || 0) + r.used));
+      const items = [...map.entries()].sort((a, b) => b[1] - a[1]).slice(0, 7);
+      const max = Math.max(...items.map(x => x[1]), 1);
+      const left = 12, top = 24, barH = 26, gap = 14;
+      ctx.font = "12px Segoe UI";
+      items.forEach((it, i) => {
+        const y = top + i * (barH + gap);
+        const bw = (w - 120) * it[1] / max;
+        ctx.fillStyle = "#e8f4fb";
+        ctx.fillRect(left, y, w - 118, barH);
+        ctx.fillStyle = i % 2 ? "#227447" : "#0076b6";
+        ctx.fillRect(left, y, bw, barH);
+        ctx.fillStyle = "#102436";
+        ctx.fillText(it[0].slice(0, 34), left, y - 5);
+        ctx.fillStyle = "#61798c";
+        ctx.textAlign = "right";
+        ctx.fillText(shortMoney(it[1]), w - 18, y + 18);
+        ctx.textAlign = "left";
+      });
+    }
+    function emptyChart(ctx, w, h) {
+      ctx.fillStyle = "#61798c";
+      ctx.font = "14px Segoe UI";
+      ctx.textAlign = "center";
+      ctx.fillText("Carica dati per visualizzare il grafico", w / 2, h / 2);
+      ctx.textAlign = "left";
+    }
+    async function handleFiles(files) {
+      for (const file of files) {
+        try {
+          let text = "";
+          if (/pdf$/i.test(file.name)) text = await extractPdfBestEffort(file);
+          else text = await file.text();
+          const rows = parseCrText(text);
+          const refs = (cleanText(text).match(/DATA DI RIFERIMENTO:/gi) || []).length;
+          const banks = (cleanText(text).match(/Intermediario:/gi) || []).length;
+          const diagnostic = rows.length
+            ? `${file.name}: ${rows.length} righe riconosciute.`
+            : `${file.name}: 0 righe riconosciute. Trovati ${refs} mesi/sezioni e ${banks} intermediari nel testo estratto.`;
+          addRows(rows, diagnostic);
+        } catch (err) {
+          log(`${file.name}: import non riuscito (${err.message}).`);
+        }
+      }
+    }
+    async function extractPdfBestEffort(file) {
+      const serverText = await extractPdfViaServer(file);
+      if (serverText) return serverText;
+      return extractPdf(file);
+    }
+    async function extractPdfViaServer(file) {
+      if (!/^https?:$/.test(location.protocol)) return "";
+      try {
+        const form = new FormData();
+        form.append("file", file, file.name);
+        const endpoint = window.CENTRALE_RISCHI_API || new URL("api/extract-pdf", location.href).pathname;
+        const res = await fetch(endpoint, { method: "POST", body: form });
+        if (!res.ok) return "";
+        const data = await res.json();
+        return data && data.text ? data.text : "";
+      } catch (err) {
+        return "";
+      }
+    }
+    async function extractPdf(file) {
+      if (!window.pdfjsLib) await loadPdfJs();
+      const ab = await file.arrayBuffer();
+      const pdf = await window.pdfjsLib.getDocument({ data: ab }).promise;
+      const pages = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        pages.push(content.items.map(item => item.str).join("\n"));
+      }
+      return pages.join("\n");
+    }
+    function loadPdfJs() {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+        script.onload = () => {
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+          resolve();
+        };
+        script.onerror = () => reject(new Error("pdf.js non disponibile: incolla il testo estratto o usa CSV"));
+        document.head.appendChild(script);
+      });
+    }
+    function exportCsv() {
+      const rows = filteredRows();
+      const head = ["mese", "formaTecnica", "categoria", "accordato", "utilizzato", "saldoMedio", "sconfinamento", "stato"];
+      const body = rows.map(r => [r.month, r.tech || r.category || "", r.category, r.granted, r.used, r.average, r.over, r.status]
+        .map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";"));
+      const blob = new Blob([[head.join(";"), ...body].join("\n")], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "centrale-rischi-storica.csv";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+    function buildPrintReport() {
+      const rows = filteredRows();
+      const months = monthly(rows);
+      const granted = averageMonthlyValue(months, "granted");
+      const used = averageMonthlyValue(months, "used");
+      const over = averageMonthlyValue(months, "over");
+      const bank = els.bankFilter.value || "Tutte le banche";
+      const from = els.fromMonth.value ? monthLabel(els.fromMonth.value) : "";
+      const to = els.toMonth.value ? monthLabel(els.toMonth.value) : "";
+      const generated = new Date().toLocaleString("it-IT");
+      const techRows = bank ? technicalSummaryRows(rows) : "";
+      els.printReport.innerHTML = `
+        <h1>Report Centrale Rischi</h1>
+        <div class="print-meta">Periodo: ${escapeHtml(from)} - ${escapeHtml(to)} · Banca: ${escapeHtml(bank)} · Generato: ${escapeHtml(generated)}</div>
+        <div class="print-kpis">
+          <div class="print-kpi"><span>Accordato operativo medio</span><strong>${fmt(granted)}</strong></div>
+          <div class="print-kpi"><span>Utilizzato medio</span><strong>${fmt(used)}</strong></div>
+          <div class="print-kpi"><span>Sconfinamento medio</span><strong>${fmt(over)}</strong></div>
+          <div class="print-kpi"><span>Utilizzo medio</span><strong>${pct(granted ? used / granted * 100 : 0)}</strong></div>
+        </div>
+        <h2 class="print-section-title">Andamento mensile</h2>
+        <table>
+          <thead><tr><th>Mese</th><th>Accordato</th><th>Utilizzato</th><th>Sconfinamento</th><th>Righe critiche</th></tr></thead>
+          <tbody>${months.map(m => `<tr><td>${escapeHtml(monthLabel(m.month))}</td><td>${fmt(m.granted)}</td><td>${fmt(m.used)}</td><td>${fmt(m.over)}</td><td>${m.critical}</td></tr>`).join("")}</tbody>
+        </table>
+        ${techRows}
+        <h2 class="print-section-title">Dettaglio segnalazioni</h2>
+        <table>
+          <thead><tr><th>Mese</th><th>Forma tecnica</th><th>Categoria</th><th>Accordato</th><th>Utilizzato</th><th>Sconfinamento</th><th>Stato</th></tr></thead>
+          <tbody>${rows.map(r => `<tr><td>${escapeHtml(monthLabel(r.month))}</td><td>${escapeHtml(r.tech || "")}</td><td>${escapeHtml(r.category)}</td><td>${fmt(r.granted)}</td><td>${fmt(r.used)}</td><td>${fmt(r.over)}</td><td>${escapeHtml(r.status || "")}</td></tr>`).join("")}</tbody>
+        </table>
+      `;
+    }
+    function technicalSummaryRows(rows) {
+      if (!els.bankFilter.value || !rows.length) return "";
+      const map = new Map();
+      rows.forEach(r => {
+        const key = r.tech || r.category || "Rapporto";
+        const item = map.get(key) || { tech: key, months: new Set(), granted: 0, used: 0, over: 0 };
+        item.months.add(r.month);
+        item.granted += r.granted;
+        item.used += r.used;
+        item.over += r.over;
+        map.set(key, item);
+      });
+      return `
+        <h2 class="print-section-title">Forme tecniche</h2>
+        <table>
+          <thead><tr><th>Forma tecnica</th><th>Mesi</th><th>Accordato</th><th>Utilizzato</th><th>Sconfinamento</th></tr></thead>
+          <tbody>${[...map.values()].sort((a, b) => b.used - a.used).map(i => `<tr><td>${escapeHtml(i.tech)}</td><td>${i.months.size}</td><td>${fmt(i.granted)}</td><td>${fmt(i.used)}</td><td>${fmt(i.over)}</td></tr>`).join("")}</tbody>
+        </table>
+      `;
+    }
+    function printCurrentReport() {
+      const rows = filteredRows();
+      if (!rows.length) {
+        log("Nessun dato da stampare per i filtri correnti.");
+        return;
+      }
+      buildPrintReport();
+      window.print();
+    }
+
+    els.fileInput.addEventListener("change", e => handleFiles(e.target.files));
+    els.parseTextBtn.addEventListener("click", () => addRows(parseCrText(els.pasteBox.value), "Testo analizzato."));
+    els.sampleBtn.addEventListener("click", () => setRows(demoRows, "Dati demo caricati dal prospetto febbraio 2026."));
+    els.clearBtn.addEventListener("click", () => setRows([], "Dati rimossi."));
+    els.exportBtn.addEventListener("click", exportCsv);
+    els.printReportBtn.addEventListener("click", printCurrentReport);
+    if (els.resetBankBtn) {
+      els.resetBankBtn.addEventListener("click", () => {
+        els.bankFilter.value = "";
+        render();
+      });
+    }
+    if (els.bankRowsBody) {
+      els.bankRowsBody.addEventListener("click", event => {
+        const btn = event.target.closest(".bank-select");
+        if (!btn) return;
+        els.bankFilter.value = btn.dataset.bank;
+        render();
+      });
+    }
+    [els.fromMonth, els.toMonth, els.bankFilter].forEach(el => el.addEventListener("change", render));
+    document.querySelectorAll(".tab").forEach(btn => btn.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.chartType = btn.dataset.chart;
+      render();
+    }));
+    ["dragenter", "dragover"].forEach(ev => els.dropZone.addEventListener(ev, e => {
+      e.preventDefault();
+      els.dropZone.style.borderColor = "#0076b6";
+    }));
+    ["dragleave", "drop"].forEach(ev => els.dropZone.addEventListener(ev, e => {
+      e.preventDefault();
+      els.dropZone.style.borderColor = "#9ab3c6";
+    }));
+    els.dropZone.addEventListener("drop", e => handleFiles(e.dataTransfer.files));
+    window.addEventListener("resize", render);
+    refreshControls();
+    render();
+  </script>
+</body>
+</html>

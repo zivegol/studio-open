@@ -1,0 +1,139 @@
+name: agora-ai
+
+services:
+  agora-db:
+    image: mariadb:11.4
+    environment:
+      MARIADB_DATABASE: agora_db
+      MARIADB_USER: agora_app
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    volumes: [agora_db:/var/lib/mysql]
+    restart: unless-stopped
+    networks: [agora_internal]
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+
+  minio:
+    image: minio/minio:RELEASE.2025-07-23T15-54-02Z
+    command: server /data
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes: [agora_objects:/data]
+    restart: unless-stopped
+    networks: [agora_internal]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+
+  minio-init:
+    image: minio/mc:RELEASE.2025-07-21T05-28-08Z
+    depends_on:
+      minio: { condition: service_healthy }
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["mc alias set local http://minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD && mc mb --ignore-existing local/$$S3_BUCKET && mc anonymous set none local/$$S3_BUCKET"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      S3_BUCKET: ${S3_BUCKET}
+    networks: [agora_internal]
+    restart: "no"
+
+  migrate:
+    build: { context: .., target: build }
+    env_file: ${AGORA_ENV_FILE}
+    command: ["pnpm", "exec", "drizzle-kit", "migrate", "--config", "drizzle.server.config.ts"]
+    depends_on:
+      agora-db: { condition: service_healthy }
+    networks: [agora_internal]
+    restart: "no"
+
+  agora-web:
+    build: ..
+    env_file: ${AGORA_ENV_FILE}
+    depends_on:
+      agora-db: { condition: service_healthy }
+      minio-init: { condition: service_completed_successfully }
+      migrate: { condition: service_completed_successfully }
+      authentik-server: { condition: service_healthy }
+    restart: unless-stopped
+    networks: [agora_internal, nextcloud_default]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 20s
+      timeout: 5s
+      retries: 9
+
+  authentik-postgresql:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: authentik
+      POSTGRES_USER: authentik
+      POSTGRES_PASSWORD: ${AUTHENTIK_PG_PASS}
+    volumes: [authentik_db:/var/lib/postgresql/data]
+    restart: unless-stopped
+    networks: [authentik_internal]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d authentik -U authentik"]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+
+  authentik-server:
+    image: ghcr.io/goauthentik/server:2026.8.0
+    command: server
+    env_file: ${AGORA_ENV_FILE}
+    environment:
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgresql
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_PG_PASS}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+    depends_on:
+      authentik-postgresql: { condition: service_healthy }
+    volumes: [authentik_data:/data]
+    restart: unless-stopped
+    shm_size: 512mb
+    networks: [authentik_internal, nextcloud_default]
+    healthcheck:
+      test: ["CMD", "ak", "healthcheck"]
+      interval: 20s
+      timeout: 10s
+      retries: 18
+
+  authentik-worker:
+    image: ghcr.io/goauthentik/server:2026.8.0
+    command: worker
+    env_file: ${AGORA_ENV_FILE}
+    environment:
+      AUTHENTIK_POSTGRESQL__HOST: authentik-postgresql
+      AUTHENTIK_POSTGRESQL__NAME: authentik
+      AUTHENTIK_POSTGRESQL__USER: authentik
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${AUTHENTIK_PG_PASS}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
+    depends_on:
+      authentik-postgresql: { condition: service_healthy }
+    volumes: [authentik_data:/data]
+    restart: unless-stopped
+    shm_size: 512mb
+    networks: [authentik_internal]
+
+volumes:
+  agora_db:
+  agora_objects:
+  authentik_db:
+  authentik_data:
+
+networks:
+  agora_internal:
+    internal: true
+  authentik_internal:
+    internal: true
+  nextcloud_default:
+    external: true

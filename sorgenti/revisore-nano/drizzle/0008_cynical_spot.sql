@@ -1,0 +1,1 @@
+ALTER TABLE `verifica_incassi_sessioni` ADD `movimentiBancariJson` text;

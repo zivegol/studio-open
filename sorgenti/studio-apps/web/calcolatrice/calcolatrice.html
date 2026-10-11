@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<!-- Calcolatrice con nastro. Copyright (C) 2026 zivegol and contributors.
+SPDX-License-Identifier: GPL-3.0-only
+Distributed without warranty. Full terms in the adjacent LICENSE file. -->
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calcolatrice Contabile con Nastro</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #e0e0e0;
+            display: flex;
+            flex-direction: column; /* Per far spazio al tasto back */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Pulsante Torna alle App */
+        .back-nav {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .btn-back {
+            background-color: #00457c;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .btn-back:hover { background-color: #0082c9; }
+
+        .container {
+            display: flex;
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 10px 10px 30px rgba(0,0,0,0.2);
+            gap: 20px;
+        }
+
+        /* Sezione Calcolatrice */
+        .calc-main { width: 300px; }
+
+        #display {
+            width: 100%;
+            height: 60px;
+            background: #97ad7c; 
+            border: inset 4px #7a8e63;
+            font-size: 2rem;
+            text-align: right;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 20px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #555;
+            color: white;
+            box-shadow: 0 4px #222;
+        }
+
+        button:active {
+            box-shadow: 0 0 #222;
+            transform: translateY(4px);
+        }
+
+        /* Colori pulsanti */
+        .op { background: #f39c12; } /* Operatori */
+        .eq { background: #27ae60; grid-column: span 2; } /* Invio */
+        .clear { background: #c0392b; grid-column: span 2; } /* Canc */
+
+        /* Sezione Nastro Contabile */
+        .paper-roll {
+            width: 200px;
+            background: #fff;
+            border-radius: 5px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .paper-roll h3 {
+            margin: 0 0 10px 0;
+            font-size: 0.9rem;
+            text-align: center;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 5px;
+        }
+
+        #history {
+            flex-grow: 1;
+            overflow-y: auto;
+            max-height: 300px;
+            font-size: 0.85rem;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .history-item {
+            border-bottom: 1px solid #eee;
+            padding: 5px 0;
+            text-align: right;
+        }
+
+        .btn-clear-history {
+            margin-top: 10px;
+            background: #eee;
+            color: #333;
+            font-size: 0.7rem;
+            padding: 5px;
+            box-shadow: none;
+        }
+        @media(max-width:620px) {
+            body { height:auto; min-height:100vh; padding:85px 12px 24px; box-sizing:border-box; }
+            .container { flex-direction:column; width:100%; max-width:360px; box-sizing:border-box; padding:16px; }
+            .calc-main,.paper-roll { width:100%; box-sizing:border-box; }
+            button { padding:16px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="back-nav">
+    <a href="../dashboard.html" class="btn-back">← Torna alle App</a>
+    <small><a href="LICENSE">GPLv3 · senza garanzia</a></small>
+</nav>
+
+<div class="container">
+    <div class="calc-main">
+        <input type="text" id="display" disabled placeholder="0">
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C (Esc)</button>
+            <button class="op" onclick="append('/')">÷</button>
+            <button class="op" onclick="append('*')">×</button>
+            
+            <button onclick="append('7')">7</button>
+            <button onclick="append('8')">8</button>
+            <button onclick="append('9')">9</button>
+            <button class="op" onclick="append('-')">-</button>
+            
+            <button onclick="append('4')">4</button>
+            <button onclick="append('5')">5</button>
+            <button onclick="append('6')">6</button>
+            <button class="op" onclick="append('+')">+</button>
+            
+            <button onclick="append('1')">1</button>
+            <button onclick="append('2')">2</button>
+            <button onclick="append('3')">3</button>
+            <button onclick="append('.')">.</button>
+            
+            <button onclick="append('0')">0</button>
+            <button class="eq" onclick="calculate()">INVIO (=)</button>
+        </div>
+    </div>
+
+    <div class="paper-roll">
+        <h3>NASTRO CONTABILE</h3>
+        <div id="history"></div>
+        <button class="btn-clear-history" onclick="clearHistory()">Svuota Nastro</button>
+    </div>
+</div>
+
+<script>
+    const display = document.getElementById('display');
+    const historyDiv = document.getElementById('history');
+
+    // Funzione per aggiungere caratteri
+    function append(char) {
+        display.value += char;
+    }
+
+    // Funzione per pulire
+    function clearDisplay() {
+        display.value = '';
+    }
+
+    function clearHistory() {
+        historyDiv.innerHTML = '';
+    }
+
+    // Gestione della tastiera fisica
+    document.addEventListener('keydown', function(event) {
+        const key = event.key;
+        
+        // Numeri e Operatori
+        if ("0123456789+-*/.".includes(key)) {
+            append(key);
+        } 
+        // Invio per calcolare
+        else if (key === "Enter") {
+            calculate();
+        } 
+        // Esc per pulire
+        else if (key === "Escape") {
+            clearDisplay();
+        } 
+        // Backspace per cancellare l'ultimo carattere
+        else if (key === "Backspace") {
+            display.value = display.value.slice(0, -1);
+        }
+    });
+
+    function evaluateExpression(expression) {
+        const source=expression.replace(/\s/g,'');
+        const tokens=source.match(/(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?|[+*/-]/g)||[];
+        if(!source||tokens.join('')!==source||tokens.length>500)throw Error('Espressione non valida');
+        let i=0;
+        function number(){let sign=1;while(tokens[i]==='+'||tokens[i]==='-'){if(tokens[i++]==='-')sign=-sign;}const token=tokens[i++];if(!token||!/^(?:\d|\.)/.test(token))throw Error('Numero mancante');return sign*Number(token);}
+        function term(){let value=number();while(tokens[i]==='*'||tokens[i]==='/'){const op=tokens[i++],right=number();if(op==='/'&&right===0)throw Error('Divisione per zero');value=op==='*'?value*right:value/right;}return value;}
+        let value=term();while(i<tokens.length){const op=tokens[i++];if(op!=='+'&&op!=='-')throw Error('Operatore non valido');const right=term();value=op==='+'?value+right:value-right;}
+        if(!Number.isFinite(value))throw Error('Risultato fuori intervallo');
+        return Number(value.toPrecision(14));
+    }
+
+    function calculate() {
+        const expression = display.value;
+        if (!expression) return;
+
+        try {
+            const result = evaluateExpression(expression);
+            
+            // Aggiungiamo al nastro contabile
+            const item = document.createElement('div');
+            item.className = 'history-item';
+            item.textContent = `${expression} = ${result}`;
+            
+            historyDiv.insertBefore(item, historyDiv.firstChild);
+            display.value = result;
+        } catch (e) {
+            display.value = 'Errore';
+            setTimeout(clearDisplay, 1500);
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulatore IRPEF 2024</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f2;--surface:#fff;--border:#e2e0d8;--border-s:#c8c5ba;
+  --text:#1a1917;--muted:#6b6860;--faint:#9c9a94;
+  --blue:#1e3a5f;--blue-l:#2e6da4;--blue-bg:#e6eef7;
+  --green:#1d6a45;--green-bg:#e8f4ee;
+  --amber:#8a4000;--amber-bg:#fdf0e4;
+  --red:#8a0000;--red-bg:#fdf0f0;
+  --mono:'IBM Plex Mono',monospace;--sans:'IBM Plex Sans',sans-serif;
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;padding:1.5rem 1rem}
+.layout{max-width:960px;margin:0 auto}
+header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1.5rem;border-bottom:1px solid var(--border);padding-bottom:1rem}
+header h1{font-family:var(--mono);font-size:18px;font-weight:500}
+.back-link{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none}
+.back-link:hover{color:var(--blue-l)}
+.anno-badge{font-family:var(--mono);font-size:11px;padding:3px 10px;border-radius:20px;background:var(--blue-bg);color:var(--blue-l);border:1px solid #b3c9e0;margin-left:10px}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1.25rem;margin-bottom:1rem}
+.card-title{font-family:var(--mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem}
+
+.sec-nav{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1rem;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px}
+.sec-btn{font-family:var(--mono);font-size:11px;padding:5px 11px;border:1px solid transparent;border-radius:4px;cursor:pointer;background:none;color:var(--muted);transition:all .15s;white-space:nowrap}
+.sec-btn.active{background:var(--blue);color:#fff}
+.sec-btn:hover:not(.active){background:var(--bg);border-color:var(--border-s)}
+.section{display:none}.section.active{display:block}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.field{margin-bottom:.75rem}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:4px}
+.field input,.field select{width:100%;padding:7px 10px;border:1px solid var(--border-s);border-radius:4px;font-family:var(--mono);font-size:13px;background:var(--bg);color:var(--text)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--blue-l)}
+.field .hint{font-size:11px;color:var(--faint);margin-top:3px}
+
+.btn{padding:8px 16px;border-radius:4px;font-family:var(--mono);font-size:12px;cursor:pointer;transition:all .15s;border:1px solid}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn-primary:hover{opacity:.88}
+.btn-secondary{background:var(--bg);color:var(--muted);border-color:var(--border-s)}.btn-secondary:hover{border-color:var(--blue-l);color:var(--blue-l)}
+.btn-row{display:flex;gap:8px;margin-top:.75rem;flex-wrap:wrap}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-bottom:1rem}
+@media(max-width:600px){.kpi-grid{grid-template-columns:1fr 1fr}.grid2,.grid3{grid-template-columns:1fr}}
+.kpi-card{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.875rem;text-align:center}
+.kpi-val{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--blue-l)}
+.kpi-lbl{font-size:11px;color:var(--faint);margin-top:4px}
+.kpi-card.debito .kpi-val{color:var(--amber)}
+.kpi-card.credito .kpi-val{color:var(--green)}
+.kpi-card.highlight{background:var(--blue-bg);border-color:#b3c9e0}
+
+.out-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:.5rem}
+.out-table th{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:6px 10px;border-bottom:1px solid var(--border);text-align:right;background:#f8f7f3}
+.out-table th:first-child{text-align:left}
+.out-table td{padding:5px 10px;border-bottom:1px solid var(--border);text-align:right;font-family:var(--mono);font-size:12px;white-space:nowrap}
+.out-table td:first-child{text-align:left;font-family:var(--sans);font-size:12px;color:var(--muted);white-space:normal}
+.out-table .ind td:first-child{padding-left:20px;font-size:11px}
+.out-table .sub td{background:#f0ede6;font-weight:500;font-family:var(--mono)}
+.out-table .sub td:first-child{font-family:var(--sans);font-weight:500;color:var(--text)}
+.out-table .tot td{background:var(--blue-bg);font-weight:500;color:var(--blue)}
+.out-table .tot td:first-child{color:var(--blue);font-family:var(--sans);font-weight:600}
+.out-table .hdr td{background:#e8e4dc;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:4px 10px;font-weight:500}
+.out-table tr:hover:not(.tot):not(.sub):not(.hdr) td{background:#faf9f6}
+.pos{color:var(--green)!important}.neg{color:var(--red)!important}
+
+.note-box{background:var(--amber-bg);border:1px solid #e0c070;border-radius:4px;padding:.75rem 1rem;font-size:12px;color:var(--amber);margin-top:.75rem;line-height:1.6}
+.info-box{background:var(--blue-bg);border:1px solid #b3c9e0;border-radius:4px;padding:.75rem 1rem;font-size:12px;color:var(--blue-l);margin-top:.75rem;line-height:1.6}
+
+.aliq-bar{height:12px;border-radius:3px;background:var(--border);overflow:hidden;margin-top:6px}
+.aliq-fill{height:100%;border-radius:3px;background:var(--blue-l)}
+</style>
+</head>
+<body>
+<div class="layout">
+<header>
+  <div style="display:flex;align-items:baseline;gap:8px">
+    <h1>Simulatore IRPEF</h1>
+    <span class="anno-badge">anno d'imposta 2024</span>
+  </div>
+  <a class="back-link" href="../dashboard.html">← App di Studio</a>
+</header>
+
+<div class="sec-nav">
+  <button class="sec-btn active" onclick="goSec(0)">1. Redditi</button>
+  <button class="sec-btn" onclick="goSec(1)">2. Deduzioni</button>
+  <button class="sec-btn" onclick="goSec(2)">3. Familiari</button>
+  <button class="sec-btn" onclick="goSec(3)">4. Oneri detraibili</button>
+  <button class="sec-btn" onclick="goSec(4)">5. Addizionali</button>
+  <button class="sec-btn" onclick="goSec(5)">6. Risultato</button>
+</div>
+
+<!-- 1. REDDITI -->
+<div class="section active">
+  <div class="card">
+    <div class="card-title">Redditi — anno d'imposta 2024</div>
+    <div class="grid2">
+      <div class="field">
+        <label>Reddito da lavoro dipendente (RAL lorda)</label>
+        <input type="number" id="r_dip" value="0" min="0" step="100">
+        <div class="hint">Reddito lordo annuo, incluse mensilità aggiuntive</div>
+      </div>
+      <div class="field">
+        <label>Reddito da pensione</label>
+        <input type="number" id="r_pens" value="0" min="0" step="100">
+      </div>
+      <div class="field">
+        <label>Reddito da lavoro autonomo (netto da spese e contributi)</label>
+        <input type="number" id="r_aut" value="0" min="0" step="100">
+        <div class="hint">Compensi meno spese deducibili e contributi INPS già dedotti</div>
+      </div>
+      <div class="field">
+        <label>Reddito d'impresa / partecipazione soc. persone</label>
+        <input type="number" id="r_imp" value="0" min="0" step="100">
+      </div>
+      <div class="field">
+        <label>Redditi da fabbricati (rendita catastale × 1,05)</label>
+        <input type="number" id="r_fabb" value="0" min="0" step="100">
+        <div class="hint">Inserire la rendita già rivalutata del 5%</div>
+      </div>
+      <div class="field">
+        <label>di cui: rendita abitazione principale (esclusa da IRPEF)</label>
+        <input type="number" id="r_abpr" value="0" min="0" step="100">
+        <div class="hint">Verrà sottratta dal reddito da fabbricati</div>
+      </div>
+      <div class="field">
+        <label>Redditi di capitale (solo quota IRPEF ordinaria)</label>
+        <input type="number" id="r_cap" value="0" min="0" step="100">
+        <div class="hint">Solo dividendi e interessi non soggetti a ritenuta definitiva</div>
+      </div>
+      <div class="field">
+        <label>Redditi diversi / altri redditi</label>
+        <input type="number" id="r_alt" value="0" min="0" step="100">
+      </div>
+    </div>
+    <div class="field" style="max-width:400px">
+      <label>Redditi da cedolare secca (informativo — non entra in IRPEF)</label>
+      <input type="number" id="r_ced" value="0" min="0" step="100">
+      <div class="hint">Tassati separatamente al 21% o 26%</div>
+    </div>
+  </div>
+  <div class="btn-row"><button class="btn btn-primary" onclick="goSec(1)">Avanti →</button></div>
+</div>
+
+<!-- 2. DEDUZIONI -->
+<div class="section">
+  <div class="card">
+    <div class="card-title">Deduzioni dal reddito complessivo</div>
+    <div class="grid2">
+      <div class="field">
+        <label>Contributi INPS (lav. autonomo / gestione separata)</label>
+        <input type="number" id="d_inps" value="0" min="0" step="100">
+        <div class="hint">Deducibili integralmente</div>
+      </div>
+      <div class="field">
+        <label>Previdenza complementare</label>
+        <input type="number" id="d_prev" value="0" min="0" step="100">
+        <div class="hint">Deducibile fino a € 5.164,57</div>
+      </div>
+      <div class="field">
+        <label>Assegno periodico al coniuge separato / divorziato</label>
+        <input type="number" id="d_ass" value="0" min="0" step="100">
+        <div class="hint">Solo quota mantenimento, non quella per i figli</div>
+      </div>
+      <div class="field">
+        <label>Erogazioni liberali a enti del Terzo Settore (deduzione)</label>
+        <input type="number" id="d_lib" value="0" min="0" step="100">
+        <div class="hint">Max 10% reddito complessivo e comunque ≤ € 70.000</div>
+      </div>
+      <div class="field">
+        <label>Rendita abitazione principale (deduzione dal RC)</label>
+        <input type="number" id="d_abpr" value="0" min="0" step="100">
+      </div>
+      <div class="field">
+        <label>Altre deduzioni</label>
+        <input type="number" id="d_alt" value="0" min="0" step="100">
+      </div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goSec(0)">← Indietro</button>
+    <button class="btn btn-primary" onclick="goSec(2)">Avanti →</button>
+  </div>
+</div>
+
+<!-- 3. FAMILIARI -->
+<div class="section">
+  <div class="card">
+    <div class="card-title">Familiari a carico</div>
+    <div class="info-box">
+      I figli under 21 non danno più detrazione IRPEF dal 2022 — sostituita dall'Assegno Unico Universale (INPS). Inserire qui solo figli di età ≥ 21 anni ancora a carico fiscalmente (reddito < € 2.840,51).
+    </div>
+    <div style="margin-top:1rem">
+      <div style="font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px">Coniuge / Unito civilmente</div>
+      <div class="grid3">
+        <div class="field"><label>A carico</label>
+          <select id="f_con"><option value="0">No</option><option value="1">Sì</option></select>
+        </div>
+        <div class="field"><label>Mesi a carico (max 12)</label>
+          <input type="number" id="f_con_m" value="12" min="1" max="12">
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:.75rem">
+      <div style="font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px">Figli ≥ 21 anni a carico</div>
+      <div class="grid3">
+        <div class="field"><label>Numero figli</label>
+          <input type="number" id="f_fig" value="0" min="0" max="20">
+        </div>
+        <div class="field"><label>di cui portatori di handicap</label>
+          <input type="number" id="f_fig_h" value="0" min="0" max="20">
+        </div>
+        <div class="field"><label>Percentuale a carico (%)</label>
+          <input type="number" id="f_fig_pct" value="100" min="1" max="100">
+          <div class="hint">50% se entrambi i genitori</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:.75rem">
+      <div style="font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px">Altri familiari a carico</div>
+      <div class="grid3">
+        <div class="field"><label>Numero altri familiari</label>
+          <input type="number" id="f_alt" value="0" min="0" max="10">
+        </div>
+        <div class="field"><label>Percentuale a carico (%)</label>
+          <input type="number" id="f_alt_pct" value="100" min="1" max="100">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goSec(1)">← Indietro</button>
+    <button class="btn btn-primary" onclick="goSec(3)">Avanti →</button>
+  </div>
+</div>
+
+<!-- 4. ONERI DETRAIBILI -->
+<div class="section">
+  <div class="card">
+    <div class="card-title">Oneri detraibili al 19% (art. 15 TUIR)</div>
+    <div class="grid2">
+      <div class="field">
+        <label>Spese sanitarie (franchigia € 129,11)</label>
+        <input type="number" id="on_san" value="0" min="0" step="10">
+      </div>
+      <div class="field">
+        <label>Spese sanitarie per familiari non a carico (patologie esenti)</label>
+        <input type="number" id="on_san_fam" value="0" min="0" step="10">
+        <div class="hint">Nessuna franchigia</div>
+      </div>
+      <div class="field">
+        <label>Interessi mutuo prima casa</label>
+        <input type="number" id="on_mut1" value="0" min="0" step="10">
+        <div class="hint">Max detraibile: € 4.000</div>
+      </div>
+      <div class="field">
+        <label>Interessi mutuo altri immobili</label>
+        <input type="number" id="on_mut2" value="0" min="0" step="10">
+        <div class="hint">Max detraibile: € 2.065,83</div>
+      </div>
+      <div class="field">
+        <label>Premi assicurazione vita / infortuni</label>
+        <input type="number" id="on_ass" value="0" min="0" step="10">
+        <div class="hint">Max € 530; rischio non autosufficienza max € 750</div>
+      </div>
+      <div class="field">
+        <label>Spese istruzione universitaria / scolastica paritaria</label>
+        <input type="number" id="on_istr" value="0" min="0" step="10">
+      </div>
+      <div class="field">
+        <label>Spese funebri</label>
+        <input type="number" id="on_fun" value="0" min="0" step="10">
+        <div class="hint">Max € 1.550 per evento</div>
+      </div>
+      <div class="field">
+        <label>Attività sportive ragazzi 5-18 anni</label>
+        <input type="number" id="on_spo" value="0" min="0" step="10">
+        <div class="hint">Max € 210 per ragazzo</div>
+      </div>
+      <div class="field">
+        <label>Spese veterinarie</label>
+        <input type="number" id="on_vet" value="0" min="0" step="10">
+        <div class="hint">Franchigia € 129,11 — max detraibile su € 550</div>
+      </div>
+      <div class="field">
+        <label>Altre spese detraibili al 19%</label>
+        <input type="number" id="on_alt19" value="0" min="0" step="10">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Erogazioni liberali (aliquote speciali)</div>
+    <div class="grid2">
+      <div class="field">
+        <label>Erogazioni a ONLUS / ETS (detrazione 35%)</label>
+        <input type="number" id="on_lib35" value="0" min="0" step="10">
+        <div class="hint">Max € 30.000</div>
+      </div>
+      <div class="field">
+        <label>Erogazioni a partiti politici (detrazione 26%)</label>
+        <input type="number" id="on_lib26" value="0" min="0" step="10">
+        <div class="hint">Min € 30 — max € 30.000</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Detrazioni ristrutturazioni e risparmio energetico (quota annuale)</div>
+    <div class="note-box" style="margin-bottom:.75rem;margin-top:0">Inserire la quota annuale già calcolata (spesa ÷ anni). Es. ristrutturazione da € 50.000: quota annuale = € 50.000 × 50% ÷ 10 = € 2.500.</div>
+    <div class="grid2">
+      <div class="field">
+        <label>Ristrutturazione edilizia 50% — quota annuale</label>
+        <input type="number" id="on_rist" value="0" min="0" step="10">
+      </div>
+      <div class="field">
+        <label>Ecobonus 65% — quota annuale</label>
+        <input type="number" id="on_eco" value="0" min="0" step="10">
+      </div>
+      <div class="field">
+        <label>Bonus mobili 50% — quota annuale</label>
+        <input type="number" id="on_mob" value="0" min="0" step="10">
+      </div>
+      <div class="field">
+        <label>Sismabonus — quota annuale</label>
+        <input type="number" id="on_sis" value="0" min="0" step="10">
+      </div>
+      <div class="field">
+        <label>Bonus verde 36% — quota annuale</label>
+        <input type="number" id="on_ver" value="0" min="0" step="10">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Crediti d'imposta e versamenti già effettuati</div>
+    <div class="grid2">
+      <div class="field">
+        <label>Credito per redditi prodotti all'estero (art. 165)</label>
+        <input type="number" id="cr_est" value="0" min="0" step="10">
+      </div>
+      <div class="field">
+        <label>Altri crediti d'imposta</label>
+        <input type="number" id="cr_alt" value="0" min="0" step="10">
+      </div>
+      <div class="field">
+        <label>Ritenute d'acconto subite</label>
+        <input type="number" id="cr_rit" value="0" min="0" step="10">
+      </div>
+      <div class="field">
+        <label>Acconti IRPEF già versati (giugno + novembre)</label>
+        <input type="number" id="cr_acc" value="0" min="0" step="10">
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goSec(2)">← Indietro</button>
+    <button class="btn btn-primary" onclick="goSec(4)">Avanti →</button>
+  </div>
+</div>
+
+<!-- 5. ADDIZIONALI -->
+<div class="section">
+  <div class="card">
+    <div class="card-title">Addizionale regionale IRPEF</div>
+    <div class="grid2">
+      <div class="field">
+        <label>Regione di residenza</label>
+        <select id="add_reg" onchange="setAliqReg()">
+          <option value="">-- seleziona --</option>
+          <option value="0.9">Abruzzo — 0,90%</option>
+          <option value="1.23">Basilicata — 1,23%</option>
+          <option value="1.8">Calabria — 1,80%</option>
+          <option value="2.03">Campania — 2,03%</option>
+          <option value="1.42">Emilia-Romagna — 1,42%</option>
+          <option value="1.22">Friuli-Venezia Giulia — 1,22%</option>
+          <option value="1.73">Lazio — 1,73%</option>
+          <option value="1.22">Liguria — 1,22%</option>
+          <option value="1.62">Lombardia — 1,62%</option>
+          <option value="1.5">Marche — 1,50%</option>
+          <option value="2.03">Molise — 2,03%</option>
+          <option value="1.22">Piemonte — 1,22%</option>
+          <option value="1.30">Puglia — 1,30%</option>
+          <option value="1.23">Sardegna — 1,23%</option>
+          <option value="1.23">Sicilia — 1,23%</option>
+          <option value="1.43">Toscana — 1,43%</option>
+          <option value="1.23">Veneto — 1,23%</option>
+          <option value="1.22">Valle d'Aosta — 1,22%</option>
+          <option value="1.22">Umbria — 1,22%</option>
+          <option value="1.22">P.A. Bolzano — 1,22%</option>
+          <option value="1.22">P.A. Trento — 1,22%</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Aliquota regionale % (modificabile)</label>
+        <input type="number" id="add_reg_aliq" value="1.23" min="0" max="5" step="0.01">
+        <div class="hint">Alcune regioni hanno aliquote differenziate per scaglioni — inserire quella applicabile</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">Addizionale comunale IRPEF</div>
+    <div class="grid3">
+      <div class="field">
+        <label>Comune di residenza</label>
+        <input type="text" id="add_com_nome" placeholder="es. Verona">
+      </div>
+      <div class="field">
+        <label>Aliquota comunale %</label>
+        <input type="number" id="add_com_aliq" value="0.5" min="0" max="1.6" step="0.01">
+        <div class="hint">Max 0,80% — verifica sul sito del Comune o MEF</div>
+      </div>
+      <div class="field">
+        <label>Soglia di esenzione (€)</label>
+        <input type="number" id="add_com_esenz" value="0" min="0" step="100">
+        <div class="hint">Se il RC è inferiore a questa soglia l'addizionale non è dovuta</div>
+      </div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goSec(3)">← Indietro</button>
+    <button class="btn btn-primary" onclick="calcAndShow()">Calcola →</button>
+  </div>
+</div>
+
+<!-- 6. RISULTATO -->
+<div class="section">
+  <div id="outputDiv"></div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goSec(4)">← Modifica</button>
+    <button class="btn btn-primary" onclick="calcAndShow()">Ricalcola</button>
+  </div>
+</div>
+
+</div><!-- layout -->
+<script>
+// ── Nav ───────────────────────────────────────────────────────────────────
+const secs=document.querySelectorAll('.section');
+const btns=document.querySelectorAll('.sec-btn');
+function goSec(i){
+  secs.forEach((s,j)=>s.classList.toggle('active',i===j));
+  btns.forEach((b,j)=>b.classList.toggle('active',i===j));
+  window.scrollTo(0,0);
+}
+function setAliqReg(){
+  const v=document.getElementById('add_reg').value;
+  if(v) document.getElementById('add_reg_aliq').value=v;
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+const g=id=>parseFloat(document.getElementById(id)?.value)||0;
+const fmt=(x,d=2)=>(x||0).toLocaleString('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fE=(x,d=2)=>'€ '+fmt(x,d);
+
+// ── Scaglioni IRPEF 2024 (L. 213/2023 — Legge Bilancio 2024) ─────────────
+// 3 scaglioni: fino 28.000 → 23%; da 28.001 a 50.000 → 35%; oltre 50.000 → 43%
+const SCAGL=[
+  {da:0,      a:28000,   aliq:0.23},
+  {da:28000,  a:50000,   aliq:0.35},
+  {da:50000,  a:Infinity,aliq:0.43},
+];
+
+function irpefLorda(imponibile){
+  let tot=0;
+  for(const s of SCAGL){
+    if(imponibile<=s.da) break;
+    tot+=(Math.min(imponibile,s.a)-s.da)*s.aliq;
+  }
+  return Math.max(0,tot);
+}
+
+// ── Detrazione lavoro dipendente 2024 (art. 13 co. 1 TUIR) ───────────────
+function detrDip(rc){
+  // Solo se esiste reddito da lavoro dipendente
+  if(g('r_dip')<=0) return 0;
+  if(rc<=0) return 0;
+  let d=0;
+  if(rc<=15000)       d=Math.max(1880, 1880*(rc/15000));  // garantita min 690 se RC>0
+  else if(rc<=28000)  d=1910+(28000-rc)*(1190/13000);
+  else if(rc<=50000)  d=1910*((50000-rc)/22000);
+  else                d=0;
+  // Tranche aggiuntiva 2024: +65€ per RC 25.001–35.000
+  if(rc>25000 && rc<=35000) d+=65;
+  return Math.max(0,d);
+}
+
+// ── Detrazione pensione (art. 13 co. 3 TUIR) ─────────────────────────────
+function detrPens(rc){
+  if(g('r_pens')<=0) return 0;  // SOLO se esiste reddito da pensione
+  if(rc<=0) return 0;
+  let d=0;
+  if(rc<=8500)        d=1955;
+  else if(rc<=28000)  d=700+((28000-rc)/19500)*1255;
+  else if(rc<=50000)  d=700*((50000-rc)/22000);
+  else                d=0;
+  return Math.max(0,d);
+}
+
+// ── Detrazione lavoro autonomo (art. 13 co. 5 TUIR) ──────────────────────
+function detrAut(rc){
+  if(g('r_aut')+g('r_imp')<=0) return 0;  // SOLO se esiste reddito autonomo/impresa
+  if(rc<=0) return 0;
+  let d=0;
+  if(rc<=5500)        d=1265;
+  else if(rc<=28000)  d=500+((28000-rc)/22500)*765;
+  else if(rc<=50000)  d=500*((50000-rc)/22000);
+  else                d=0;
+  return Math.max(0,d);
+}
+
+// ── Detrazione coniuge a carico (art. 12 co. 1 lett. a TUIR) ─────────────
+function detrConiuge(rc){
+  if(parseInt(document.getElementById('f_con').value||0)===0) return 0;
+  const mesi=Math.min(12,Math.max(1,g('f_con_m')));
+  if(rc<=0) return 0;
+  let d=0;
+  if(rc<=15000)       d=800-(110*(rc/15000));
+  else if(rc<=40000)  d=690;
+  else if(rc<=80000)  d=690*((80000-rc)/40000);
+  else                d=0;
+  // Maggiorazioni particolari (semplificato)
+  return Math.max(0,d)*(mesi/12);
+}
+
+// ── Detrazione figli ≥ 21 a carico ────────────────────────────────────────
+function detrFigli(rc){
+  const nFig=g('f_fig');
+  if(nFig<=0) return 0;
+  const nH=Math.min(g('f_fig_h'),nFig);
+  const pct=g('f_fig_pct')/100;
+  // 950 base + 200 se handicap; riduzione progressiva oltre 80.000
+  let d=(950*nFig + 200*nH)*pct;
+  if(rc>80000) d=d*Math.max(0,(120000-rc)/40000);
+  return Math.max(0,d);
+}
+
+// ── Detrazione altri familiari ─────────────────────────────────────────────
+function detrAltriFam(rc){
+  const nAlt=g('f_alt');
+  if(nAlt<=0) return 0;
+  const pct=g('f_alt_pct')/100;
+  let d=750*nAlt*pct;
+  if(rc>80000) d=d*Math.max(0,(120000-rc)/40000);
+  return Math.max(0,d);
+}
+
+// ── Riduzione detrazioni 19% per redditi > 50.000 (art. 15 co. 3-bis) ────
+// Dal 2020: detrazioni 19% ridotte del 50% per RC > 50.000
+function fattore19(rc){
+  if(rc>120000) return 0;
+  if(rc>50000)  return 0.5;
+  return 1;
+}
+
+// ── CALCOLO PRINCIPALE ────────────────────────────────────────────────────
+function calcAndShow(){
+  // 1. Redditi
+  const rDip  = g('r_dip');
+  const rPens = g('r_pens');
+  const rAut  = g('r_aut');
+  const rImp  = g('r_imp');
+  const rFabb = g('r_fabb');
+  const rAbpr = g('r_abpr');
+  const rCap  = g('r_cap');
+  const rAlt  = g('r_alt');
+  const rCed  = g('r_ced');
+
+  const rFabbNet = Math.max(0, rFabb - rAbpr);
+  const rComp    = rDip + rPens + rAut + rImp + rFabbNet + rCap + rAlt;
+
+  // 2. Deduzioni
+  const dInps = g('d_inps');
+  const dPrev = Math.min(g('d_prev'), 5164.57);
+  const dAss  = g('d_ass');
+  const dLib  = g('d_lib') > 0 ? Math.min(g('d_lib'), Math.min(rComp * 0.10, 70000)) : 0;
+  const dAbpr = g('d_abpr');
+  const dAlt  = g('d_alt');
+  const totDed = dInps + dPrev + dAss + dLib + dAbpr + dAlt;
+  const rImp2 = Math.max(0, rComp - totDed);  // reddito imponibile
+
+  // 3. IRPEF lorda
+  const lorda = irpefLorda(rImp2);
+
+  // 4. Detrazioni per tipo di reddito (calcolate sul reddito imponibile)
+  const dDetDip  = detrDip(rImp2);
+  const dDetPens = detrPens(rImp2);
+  const dDetAut  = detrAut(rImp2);
+  const dDetCon  = detrConiuge(rImp2);
+  const dDetFig  = detrFigli(rImp2);
+  const dDetAltF = detrAltriFam(rImp2);
+
+  // 5. Oneri detraibili 19% — solo se importo > 0
+  const f19 = fattore19(rImp2);
+
+  const oSan    = g('on_san')  > 0 ? Math.max(0, g('on_san') - 129.11) * 0.19 * f19 : 0;
+  const oSanF   = g('on_san_fam') > 0 ? g('on_san_fam') * 0.19 * f19 : 0;
+  const oMut1   = g('on_mut1') > 0 ? Math.min(g('on_mut1'), 4000) * 0.19 * f19 : 0;
+  const oMut2   = g('on_mut2') > 0 ? Math.min(g('on_mut2'), 2065.83) * 0.19 * f19 : 0;
+  const oAss    = g('on_ass')  > 0 ? Math.min(g('on_ass'), 530) * 0.19 * f19 : 0;
+  const oIstr   = g('on_istr') > 0 ? g('on_istr') * 0.19 * f19 : 0;
+  const oFun    = g('on_fun')  > 0 ? Math.min(g('on_fun'), 1550) * 0.19 * f19 : 0;
+  const oSpo    = g('on_spo')  > 0 ? Math.min(g('on_spo'), 210) * 0.19 * f19 : 0;
+  const oVet    = g('on_vet')  > 0 ? Math.max(0, Math.min(g('on_vet'), 550) - 129.11) * 0.19 * f19 : 0;
+  const oAlt19  = g('on_alt19')> 0 ? g('on_alt19') * 0.19 * f19 : 0;
+
+  // Erogazioni liberali — solo se importo > 0
+  const oLib35  = g('on_lib35')> 0 ? Math.min(g('on_lib35'), 30000) * 0.35 : 0;
+  const oLib26  = g('on_lib26')> 0 ? Math.min(Math.max(g('on_lib26'), 30), 30000) * 0.26 : 0;
+
+  // Ristrutturazioni — quote annuali già calcolate, detratte direttamente
+  const oRist = g('on_rist');
+  const oEco  = g('on_eco');
+  const oMob  = g('on_mob');
+  const oSis  = g('on_sis');
+  const oVer  = g('on_ver');
+
+  const totDet = dDetDip + dDetPens + dDetAut + dDetCon + dDetFig + dDetAltF
+               + oSan + oSanF + oMut1 + oMut2 + oAss + oIstr + oFun + oSpo + oVet + oAlt19
+               + oLib35 + oLib26
+               + oRist + oEco + oMob + oSis + oVer;
+
+  // 6. Crediti
+  const crEst = g('cr_est');
+  const crAlt = g('cr_alt');
+  const totCr = crEst + crAlt;
+
+  // 7. IRPEF netta
+  const netta = Math.max(0, lorda - totDet - totCr);
+
+  // 8. Addizionali
+  const aliqReg = g('add_reg_aliq') / 100;
+  const aliqCom = g('add_com_aliq') / 100;
+  const esCom   = g('add_com_esenz');
+  const addReg  = rImp2 > 0 ? rImp2 * aliqReg : 0;
+  const addCom  = rImp2 > esCom ? rImp2 * aliqCom : 0;
+  const totAdd  = addReg + addCom;
+
+  // 9. Liquidazione
+  const totDovuto = netta + totAdd;
+  const ritenute  = g('cr_rit');
+  const acconti   = g('cr_acc');
+  const saldo     = totDovuto - ritenute - acconti;
+
+  // 10. KPI
+  const aliqMed  = rImp2 > 0 ? (netta / rImp2) * 100 : 0;
+  const aliqMarg = rImp2 > 50000 ? 43 : (rImp2 > 28000 ? 35 : 23);
+  const accFut   = netta; // acconto anno prossimo 100% metodo storico
+
+  // ── Render ────────────────────────────────────────────────────────────
+  // Riga tabella: mostra SOLO se valore != 0
+  function rr(lbl, val, cls='', ind=false){
+    if(val===0 || val===null || val===undefined) return '';
+    const neg = val < 0;
+    return `<tr class="${cls}"><td${ind?' style="padding-left:20px;font-size:11px"':''}>${lbl}</td>
+      <td class="${neg?'neg':''}">${fE(val)}</td></tr>`;
+  }
+  function rSub(lbl,val){ return `<tr class="sub"><td>${lbl}</td><td class="${val<0?'neg':''}">${fE(val)}</td></tr>`; }
+  function rTot(lbl,val){ return `<tr class="tot"><td>${lbl}</td><td class="${val<0?'neg':''}">${fE(val)}</td></tr>`; }
+  function rHdr(lbl){ return `<tr class="hdr"><td colspan="2">${lbl}</td></tr>`; }
+
+  let out = `<div class="kpi-grid">
+    <div class="kpi-card highlight">
+      <div class="kpi-val">${fE(netta,0)}</div>
+      <div class="kpi-lbl">IRPEF netta</div>
+    </div>
+    <div class="kpi-card highlight">
+      <div class="kpi-val">${fE(totDovuto,0)}</div>
+      <div class="kpi-lbl">Totale imposte (IRPEF + add.)</div>
+    </div>
+    <div class="kpi-card ${saldo>0?'debito':'credito'}">
+      <div class="kpi-val">${saldo>0?'+':''}${fE(Math.abs(saldo),0)}</div>
+      <div class="kpi-lbl">${saldo>0?'A debito — da versare':'A credito — rimborso'}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val">${fE(rImp2,0)}</div>
+      <div class="kpi-lbl">Reddito imponibile</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val">${fmt(aliqMed,2)} %</div>
+      <div class="kpi-lbl">Aliquota media effettiva</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val">${aliqMarg} %</div>
+      <div class="kpi-lbl">Aliquota marginale</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Dettaglio calcolo IRPEF</div>
+    <table class="out-table"><thead><tr><th>Voce</th><th>Importo</th></tr></thead><tbody>`;
+
+  // Redditi
+  out += rHdr('REDDITI');
+  out += rr('Reddito da lavoro dipendente', rDip, 'ind', true);
+  out += rr('Reddito da pensione', rPens, 'ind', true);
+  out += rr('Reddito da lavoro autonomo', rAut, 'ind', true);
+  out += rr("Reddito d'impresa / partecipazione", rImp, 'ind', true);
+  out += rr('Redditi da fabbricati (netto ab. principale)', rFabbNet, 'ind', true);
+  out += rr('Redditi di capitale', rCap, 'ind', true);
+  out += rr('Altri redditi', rAlt, 'ind', true);
+  out += rSub('Reddito complessivo', rComp);
+
+  // Deduzioni — solo quelle > 0
+  const hasDed = totDed > 0;
+  if(hasDed){
+    out += rHdr('DEDUZIONI');
+    out += rr('Contributi INPS', -dInps, 'ind', true);
+    out += rr('Previdenza complementare', -dPrev, 'ind', true);
+    out += rr('Assegno mantenimento coniuge', -dAss, 'ind', true);
+    out += rr('Erogazioni liberali (deduzione)', -dLib, 'ind', true);
+    out += rr('Rendita ab. principale', -dAbpr, 'ind', true);
+    out += rr('Altre deduzioni', -dAlt, 'ind', true);
+    out += rSub('Totale deduzioni', -totDed);
+  }
+  out += rTot('Reddito imponibile', rImp2);
+
+  // IRPEF lorda per scaglioni
+  out += rHdr('IRPEF LORDA — scaglioni 2024');
+  for(const s of SCAGL){
+    if(rImp2 <= s.da) break;
+    const fetta = Math.min(rImp2, s.a) - s.da;
+    const tax   = fetta * s.aliq;
+    out += rr(
+      `${fmt(s.da,0)} – ${s.a===Infinity?'oltre':fmt(s.a,0)} € → ${s.aliq*100}%`,
+      tax, 'ind', true
+    );
+  }
+  out += rSub('IRPEF lorda', lorda);
+
+  // Detrazioni — solo quelle > 0
+  out += rHdr('DETRAZIONI');
+  out += rr('Detrazione lavoro dipendente', -dDetDip, 'ind', true);
+  out += rr('Detrazione pensione', -dDetPens, 'ind', true);
+  out += rr('Detrazione lavoro autonomo / impresa', -dDetAut, 'ind', true);
+  out += rr('Detrazione coniuge a carico', -dDetCon, 'ind', true);
+  out += rr('Detrazione figli ≥ 21 a carico', -dDetFig, 'ind', true);
+  out += rr('Detrazione altri familiari a carico', -dDetAltF, 'ind', true);
+  // Oneri 19%
+  if(f19 < 1) out += `<tr class="ind"><td colspan="2" style="font-size:11px;color:var(--amber);padding-left:20px">Oneri al 19% ridotti al ${f19*100}% (RC > € 50.000)</td></tr>`;
+  out += rr('Spese sanitarie (netto franchigia)', -oSan, 'ind', true);
+  out += rr('Spese sanitarie familiari non a carico', -oSanF, 'ind', true);
+  out += rr('Interessi mutuo prima casa', -oMut1, 'ind', true);
+  out += rr('Interessi mutuo altri immobili', -oMut2, 'ind', true);
+  out += rr('Assicurazioni vita / infortuni', -oAss, 'ind', true);
+  out += rr('Spese istruzione', -oIstr, 'ind', true);
+  out += rr('Spese funebri', -oFun, 'ind', true);
+  out += rr('Attività sportive ragazzi', -oSpo, 'ind', true);
+  out += rr('Spese veterinarie', -oVet, 'ind', true);
+  out += rr('Altre detrazioni 19%', -oAlt19, 'ind', true);
+  out += rr('Erogazioni liberali ONLUS/ETS (35%)', -oLib35, 'ind', true);
+  out += rr('Erogazioni liberali partiti (26%)', -oLib26, 'ind', true);
+  out += rr('Ristrutturazione edilizia 50%', -oRist, 'ind', true);
+  out += rr('Ecobonus 65%', -oEco, 'ind', true);
+  out += rr('Bonus mobili 50%', -oMob, 'ind', true);
+  out += rr('Sismabonus', -oSis, 'ind', true);
+  out += rr('Bonus verde 36%', -oVer, 'ind', true);
+  if(totDet > 0) out += rSub('Totale detrazioni', -totDet);
+  if(totCr > 0){
+    out += rr('Crediti redditi esteri', -crEst, 'ind', true);
+    out += rr('Altri crediti d\'imposta', -crAlt, 'ind', true);
+  }
+  out += rTot('IRPEF NETTA', netta);
+
+  // Addizionali
+  out += rHdr('ADDIZIONALI');
+  out += rr(`Addizionale regionale (${fmt(g('add_reg_aliq'),2)}%)`, addReg, 'ind', true);
+  out += rr(`Addizionale comunale${g('add_com_aliq')>0?' ('+fmt(g('add_com_aliq'),2)+'%)':''}`, addCom, 'ind', true);
+  if(totAdd > 0) out += rSub('Totale addizionali', totAdd);
+  out += rTot('TOTALE IMPOSTE', totDovuto);
+
+  // Liquidazione
+  out += rHdr('LIQUIDAZIONE');
+  out += rr('Ritenute d\'acconto subite', -ritenute, 'ind', true);
+  out += rr('Acconti IRPEF versati', -acconti, 'ind', true);
+  out += `<tr class="tot ${saldo>0?'':'credito'}"><td>${saldo>0?'SALDO A DEBITO (da versare)':'SALDO A CREDITO (rimborso)'}</td>
+    <td class="${saldo>0?'neg':'pos'}">${fE(Math.abs(saldo))}</td></tr>`;
+
+  out += `</tbody></table></div>`;
+
+  // Acconto prossimo anno
+  if(netta > 51.65){
+    out += `<div class="card"><div class="card-title">Acconto anno successivo — metodo storico (100% IRPEF netta)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem">
+        <div class="kpi-card"><div class="kpi-val">${fE(accFut*0.4,0)}</div><div class="kpi-lbl">1ª rata 40% — entro 30 giugno</div></div>
+        <div class="kpi-card"><div class="kpi-val">${fE(accFut*0.6,0)}</div><div class="kpi-lbl">2ª rata 60% — entro 30 novembre</div></div>
+        <div class="kpi-card highlight"><div class="kpi-val">${fE(accFut,0)}</div><div class="kpi-lbl">Totale acconto</div></div>
+      </div>
+      <div class="note-box">Prima rata non dovuta se inferiore a € 257,52. L'acconto può essere calcolato anche con metodo previsionale se si prevede una riduzione del reddito.</div>
+    </div>`;
+  }
+
+  // Cedolare secca informativa
+  if(rCed > 0){
+    const impCed = rCed * 0.21;
+    out += `<div class="info-box">Cedolare secca: reddito € ${fmt(rCed,0)} — imposta stimata al 21%: <strong>${fE(impCed,0)}</strong> (non inclusa nel calcolo IRPEF sopra).</div>`;
+  }
+
+  // Rappresentazione aliquote
+  out += `<div class="card"><div class="card-title">Composizione del carico fiscale</div>
+    <table class="out-table"><thead><tr><th>Scaglione</th><th>Aliquota</th><th>Reddito in scaglione</th><th>Imposta</th></tr></thead><tbody>`;
+  for(const s of SCAGL){
+    if(rImp2 <= s.da) break;
+    const fetta=(Math.min(rImp2,s.a)-s.da);
+    out+=`<tr><td>${fmt(s.da,0)} – ${s.a===Infinity?'oltre':fmt(s.a,0)} €</td><td>${s.aliq*100}%</td><td>${fE(fetta,0)}</td><td>${fE(fetta*s.aliq,0)}</td></tr>`;
+  }
+  out+=`</tbody></table>
+    <div style="margin-top:1rem">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:5px">Aliquota media effettiva sul reddito imponibile</div>
+      <div class="aliq-bar"><div class="aliq-fill" style="width:${Math.min(aliqMed/43*100,100).toFixed(1)}%"></div></div>
+      <div style="font-family:var(--mono);font-size:12px;color:var(--blue-l);margin-top:5px">${fmt(aliqMed,2)}% media — ${aliqMarg}% marginale</div>
+    </div>
+  </div>`;
+
+  document.getElementById('outputDiv').innerHTML = out;
+  goSec(5);
+}
+
+function calcAndShow(){ calcAndShow_inner(); }
+// alias
+const calcAndShow_inner = calcAndShow;
+// Fix: ridefiniamo correttamente
+(function(){
+  const _calc = function(){
+    const g=id=>parseFloat(document.getElementById(id)?.value)||0;
+    const fmt=(x,d=2)=>(x||0).toLocaleString('it-IT',{minimumFractionDigits:d,maximumFractionDigits:d});
+    const fE=(x,d=2)=>'€ '+fmt(x,d);
+    const SCAGL=[{da:0,a:28000,aliq:0.23},{da:28000,a:50000,aliq:0.35},{da:50000,a:Infinity,aliq:0.43}];
+    function irpefL(imp){let t=0;for(const s of SCAGL){if(imp<=s.da)break;t+=(Math.min(imp,s.a)-s.da)*s.aliq;}return Math.max(0,t);}
+    function dDip(rc){if(g('r_dip')<=0)return 0;if(rc<=0)return 0;let d=0;if(rc<=15000)d=Math.max(1880,1880*(rc/15000));else if(rc<=28000)d=1910+(28000-rc)*(1190/13000);else if(rc<=50000)d=1910*((50000-rc)/22000);if(rc>25000&&rc<=35000)d+=65;return Math.max(0,d);}
+    function dPens(rc){if(g('r_pens')<=0)return 0;if(rc<=0)return 0;let d=0;if(rc<=8500)d=1955;else if(rc<=28000)d=700+((28000-rc)/19500)*1255;else if(rc<=50000)d=700*((50000-rc)/22000);return Math.max(0,d);}
+    function dAut(rc){if(g('r_aut')+g('r_imp')<=0)return 0;if(rc<=0)return 0;let d=0;if(rc<=5500)d=1265;else if(rc<=28000)d=500+((28000-rc)/22500)*765;else if(rc<=50000)d=500*((50000-rc)/22000);return Math.max(0,d);}
+    function dCon(rc){if(parseInt(document.getElementById('f_con').value||0)===0)return 0;const m=Math.min(12,Math.max(1,g('f_con_m')));let d=0;if(rc<=15000)d=800-(110*(rc/15000));else if(rc<=40000)d=690;else if(rc<=80000)d=690*((80000-rc)/40000);return Math.max(0,d)*(m/12);}
+    function dFig(rc){const n=g('f_fig');if(n<=0)return 0;const h=Math.min(g('f_fig_h'),n);const p=g('f_fig_pct')/100;let d=(950*n+200*h)*p;if(rc>80000)d=d*Math.max(0,(120000-rc)/40000);return Math.max(0,d);}
+    function dAltF(rc){const n=g('f_alt');if(n<=0)return 0;const p=g('f_alt_pct')/100;let d=750*n*p;if(rc>80000)d=d*Math.max(0,(120000-rc)/40000);return Math.max(0,d);}
+    function f19(rc){if(rc>120000)return 0;if(rc>50000)return 0.5;return 1;}
+
+    const rDip=g('r_dip'),rPens=g('r_pens'),rAut=g('r_aut'),rImp2b=g('r_imp');
+    const rFabb=g('r_fabb'),rAbpr=g('r_abpr'),rCap=g('r_cap'),rAlt=g('r_alt'),rCed=g('r_ced');
+    const rFabbN=Math.max(0,rFabb-rAbpr);
+    const rComp=rDip+rPens+rAut+rImp2b+rFabbN+rCap+rAlt;
+    const dInps=g('d_inps'),dPrev=Math.min(g('d_prev'),5164.57),dAss=g('d_ass');
+    const dLib=g('d_lib')>0?Math.min(g('d_lib'),Math.min(rComp*.10,70000)):0;
+    const dAbp=g('d_abpr'),dAltD=g('d_alt');
+    const totDed=dInps+dPrev+dAss+dLib+dAbp+dAltD;
+    const rImpN=Math.max(0,rComp-totDed);
+    const lorda=irpefL(rImpN);
+    const detDip=dDip(rImpN),detPens=dPens(rImpN),detAut=dAut(rImpN);
+    const detCon=dCon(rImpN),detFig=dFig(rImpN),detAltF2=dAltF(rImpN);
+    const ft=f19(rImpN);
+    const oSan=g('on_san')>0?Math.max(0,g('on_san')-129.11)*.19*ft:0;
+    const oSanF=g('on_san_fam')>0?g('on_san_fam')*.19*ft:0;
+    const oMut1=g('on_mut1')>0?Math.min(g('on_mut1'),4000)*.19*ft:0;
+    const oMut2=g('on_mut2')>0?Math.min(g('on_mut2'),2065.83)*.19*ft:0;
+    const oAss=g('on_ass')>0?Math.min(g('on_ass'),530)*.19*ft:0;
+    const oIstr=g('on_istr')>0?g('on_istr')*.19*ft:0;
+    const oFun=g('on_fun')>0?Math.min(g('on_fun'),1550)*.19*ft:0;
+    const oSpo=g('on_spo')>0?Math.min(g('on_spo'),210)*.19*ft:0;
+    const oVet=g('on_vet')>0?Math.max(0,Math.min(g('on_vet'),550)-129.11)*.19*ft:0;
+    const oAlt19=g('on_alt19')>0?g('on_alt19')*.19*ft:0;
+    const oLib35=g('on_lib35')>0?Math.min(g('on_lib35'),30000)*.35:0;
+    const oLib26=g('on_lib26')>0?Math.min(Math.max(g('on_lib26'),30),30000)*.26:0;
+    const oRist=g('on_rist'),oEco=g('on_eco'),oMob=g('on_mob'),oSis=g('on_sis'),oVer=g('on_ver');
+    const totDet=detDip+detPens+detAut+detCon+detFig+detAltF2+oSan+oSanF+oMut1+oMut2+oAss+oIstr+oFun+oSpo+oVet+oAlt19+oLib35+oLib26+oRist+oEco+oMob+oSis+oVer;
+    const crEst=g('cr_est'),crAlt=g('cr_alt'),totCr=crEst+crAlt;
+    const netta=Math.max(0,lorda-totDet-totCr);
+    const aliqReg=g('add_reg_aliq')/100,aliqCom=g('add_com_aliq')/100,esCom=g('add_com_esenz');
+    const addReg=rImpN>0?rImpN*aliqReg:0;
+    const addCom=rImpN>esCom?rImpN*aliqCom:0;
+    const totAdd=addReg+addCom;
+    const totDov=netta+totAdd;
+    const rit=g('cr_rit'),acc=g('cr_acc');
+    const saldo=totDov-rit-acc;
+    const aliqMed=rImpN>0?(netta/rImpN)*100:0;
+    const aliqMarg=rImpN>50000?43:(rImpN>28000?35:23);
+
+    function rr(lbl,val,cls='',ind=false){
+      if(val===0||val===null||val===undefined||isNaN(val))return '';
+      return `<tr class="${cls}"><td${ind?' style="padding-left:20px;font-size:11px"':''}>${lbl}</td><td class="${val<0?'neg':''}">${fE(val)}</td></tr>`;
+    }
+    function rSub(l,v){return `<tr class="sub"><td>${l}</td><td class="${v<0?'neg':''}">${fE(v)}</td></tr>`;}
+    function rTot(l,v){return `<tr class="tot"><td>${l}</td><td class="${v<0?'neg':''}">${fE(v)}</td></tr>`;}
+    function rHdr(l){return `<tr class="hdr"><td colspan="2">${l}</td></tr>`;}
+
+    let out=`<div class="kpi-grid">
+      <div class="kpi-card highlight"><div class="kpi-val">${fE(netta,0)}</div><div class="kpi-lbl">IRPEF netta</div></div>
+      <div class="kpi-card highlight"><div class="kpi-val">${fE(totDov,0)}</div><div class="kpi-lbl">Totale imposte</div></div>
+      <div class="kpi-card ${saldo>0?'debito':'credito'}"><div class="kpi-val">${saldo>0?'+':''}${fE(Math.abs(saldo),0)}</div><div class="kpi-lbl">${saldo>0?'A debito':'A credito'}</div></div>
+      <div class="kpi-card"><div class="kpi-val">${fE(rImpN,0)}</div><div class="kpi-lbl">Reddito imponibile</div></div>
+      <div class="kpi-card"><div class="kpi-val">${fmt(aliqMed,2)} %</div><div class="kpi-lbl">Aliquota media effettiva</div></div>
+      <div class="kpi-card"><div class="kpi-val">${aliqMarg} %</div><div class="kpi-lbl">Aliquota marginale</div></div>
+    </div>
+    <div class="card"><div class="card-title">Dettaglio calcolo</div>
+    <table class="out-table"><thead><tr><th>Voce</th><th>Importo</th></tr></thead><tbody>`;
+
+    out+=rHdr('REDDITI');
+    out+=rr('Reddito da lavoro dipendente',rDip,'ind',true);
+    out+=rr('Reddito da pensione',rPens,'ind',true);
+    out+=rr('Reddito da lavoro autonomo',rAut,'ind',true);
+    out+=rr("Reddito d'impresa / partecipazione",rImp2b,'ind',true);
+    out+=rr('Redditi da fabbricati (netto ab. principale)',rFabbN,'ind',true);
+    out+=rr('Redditi di capitale',rCap,'ind',true);
+    out+=rr('Altri redditi',rAlt,'ind',true);
+    out+=rSub('Reddito complessivo',rComp);
+    if(totDed>0){
+      out+=rHdr('DEDUZIONI');
+      out+=rr('Contributi INPS',-dInps,'ind',true);
+      out+=rr('Previdenza complementare',-dPrev,'ind',true);
+      out+=rr('Assegno mantenimento coniuge',-dAss,'ind',true);
+      out+=rr('Erogazioni liberali (deduzione)',-dLib,'ind',true);
+      out+=rr('Rendita ab. principale',-dAbp,'ind',true);
+      out+=rr('Altre deduzioni',-dAltD,'ind',true);
+      out+=rSub('Totale deduzioni',-totDed);
+    }
+    out+=rTot('Reddito imponibile',rImpN);
+    out+=rHdr('IRPEF LORDA — scaglioni 2024');
+    for(const s of SCAGL){
+      if(rImpN<=s.da)break;
+      const fetta=Math.min(rImpN,s.a)-s.da;
+      out+=rr(`${fmt(s.da,0)} – ${s.a===Infinity?'oltre':fmt(s.a,0)} € → ${s.aliq*100}%`,fetta*s.aliq,'ind',true);
+    }
+    out+=rSub('IRPEF lorda',lorda);
+    out+=rHdr('DETRAZIONI');
+    out+=rr('Detrazione lavoro dipendente',-detDip,'ind',true);
+    out+=rr('Detrazione pensione',-detPens,'ind',true);
+    out+=rr('Detrazione lavoro autonomo / impresa',-detAut,'ind',true);
+    out+=rr('Detrazione coniuge a carico',-detCon,'ind',true);
+    out+=rr('Detrazione figli ≥ 21 a carico',-detFig,'ind',true);
+    out+=rr('Detrazione altri familiari',-detAltF2,'ind',true);
+    if(ft<1)out+=`<tr class="ind"><td colspan="2" style="font-size:11px;color:var(--amber);padding-left:20px">Oneri 19% ridotti al ${ft*100}% — RC > € 50.000</td></tr>`;
+    out+=rr('Spese sanitarie (netto franchigia € 129,11)',-oSan,'ind',true);
+    out+=rr('Spese sanitarie familiari non a carico',-oSanF,'ind',true);
+    out+=rr('Interessi mutuo prima casa (max € 4.000)',-oMut1,'ind',true);
+    out+=rr('Interessi mutuo altri immobili (max € 2.065,83)',-oMut2,'ind',true);
+    out+=rr('Premi assicurazione vita/infortuni',-oAss,'ind',true);
+    out+=rr('Spese istruzione',-oIstr,'ind',true);
+    out+=rr('Spese funebri',-oFun,'ind',true);
+    out+=rr('Attività sportive ragazzi',-oSpo,'ind',true);
+    out+=rr('Spese veterinarie',-oVet,'ind',true);
+    out+=rr('Altre detrazioni 19%',-oAlt19,'ind',true);
+    out+=rr('Erogazioni liberali ONLUS/ETS (35%)',-oLib35,'ind',true);
+    out+=rr('Erogazioni liberali partiti (26%)',-oLib26,'ind',true);
+    out+=rr('Ristrutturazione edilizia 50%',-oRist,'ind',true);
+    out+=rr('Ecobonus 65%',-oEco,'ind',true);
+    out+=rr('Bonus mobili 50%',-oMob,'ind',true);
+    out+=rr('Sismabonus',-oSis,'ind',true);
+    out+=rr('Bonus verde 36%',-oVer,'ind',true);
+    if(totDet>0)out+=rSub('Totale detrazioni',-totDet);
+    out+=rr('Crediti redditi esteri',-crEst,'ind',true);
+    out+=rr("Altri crediti d'imposta",-crAlt,'ind',true);
+    out+=rTot('IRPEF NETTA',netta);
+    out+=rHdr('ADDIZIONALI');
+    out+=rr(`Addizionale regionale (${fmt(g('add_reg_aliq'),2)}%)`,addReg,'ind',true);
+    out+=rr(`Addizionale comunale (${fmt(g('add_com_aliq'),2)}%)`,addCom,'ind',true);
+    if(totAdd>0)out+=rSub('Totale addizionali',totAdd);
+    out+=rTot('TOTALE IMPOSTE',totDov);
+    out+=rHdr('LIQUIDAZIONE');
+    out+=rr("Ritenute d'acconto subite",-rit,'ind',true);
+    out+=rr('Acconti IRPEF versati',-acc,'ind',true);
+    out+=`<tr class="tot"><td>${saldo>0?'SALDO A DEBITO':'SALDO A CREDITO'}</td><td class="${saldo>0?'neg':'pos'}">${fE(Math.abs(saldo))}</td></tr>`;
+    out+=`</tbody></table></div>`;
+
+    if(netta>51.65){
+      out+=`<div class="card"><div class="card-title">Acconto anno successivo — metodo storico</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem">
+          <div class="kpi-card"><div class="kpi-val">${fE(netta*.4,0)}</div><div class="kpi-lbl">1ª rata 40% — giugno</div></div>
+          <div class="kpi-card"><div class="kpi-val">${fE(netta*.6,0)}</div><div class="kpi-lbl">2ª rata 60% — novembre</div></div>
+          <div class="kpi-card highlight"><div class="kpi-val">${fE(netta,0)}</div><div class="kpi-lbl">Totale acconto</div></div>
+        </div>
+        <div class="note-box">Prima rata non dovuta se < € 257,52. Acconto non dovuto se IRPEF netta < € 51,65.</div>
+      </div>`;
+    }
+    if(rCed>0){
+      out+=`<div class="info-box">Cedolare secca: reddito € ${fmt(rCed,0)} — imposta stimata al 21%: <strong>${fE(rCed*.21,0)}</strong> (non inclusa nel calcolo IRPEF).</div>`;
+    }
+    out+=`<div class="card"><div class="card-title">Scaglioni IRPEF applicati</div>
+      <table class="out-table"><thead><tr><th>Scaglione</th><th>Aliquota</th><th>Imponibile in scaglione</th><th>Imposta</th></tr></thead><tbody>`;
+    for(const s of SCAGL){
+      if(rImpN<=s.da)break;
+      const f=Math.min(rImpN,s.a)-s.da;
+      out+=`<tr><td>${fmt(s.da,0)} – ${s.a===Infinity?'oltre':fmt(s.a,0)} €</td><td>${s.aliq*100}%</td><td>${fE(f,0)}</td><td>${fE(f*s.aliq,0)}</td></tr>`;
+    }
+    out+=`</tbody></table>
+      <div style="margin-top:.75rem">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:5px">Aliquota media sul reddito imponibile</div>
+        <div class="aliq-bar"><div class="aliq-fill" style="width:${Math.min(aliqMed/43*100,100).toFixed(1)}%"></div></div>
+        <div style="font-family:var(--mono);font-size:12px;color:var(--blue-l);margin-top:5px">${fmt(aliqMed,2)}% media — ${aliqMarg}% marginale</div>
+      </div>
+    </div>`;
+
+    document.getElementById('outputDiv').innerHTML=out;
+    goSec(5);
+  };
+  window.calcAndShow = _calc;
+})();
+</script>
+</body>
+</html>

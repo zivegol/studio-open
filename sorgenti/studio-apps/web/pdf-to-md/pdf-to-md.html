@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF → Markdown</title>
+<script src="vendor/pdfjs/pdf.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f7f6f2;--surface:#fff;--border:#e2e0d8;--border-s:#c8c5ba;
+  --text:#1a1917;--muted:#6b6860;--faint:#9c9a94;
+  --blue:#1e3a5f;--blue-l:#2e6da4;--blue-bg:#e6eef7;
+  --green:#1d6a45;--green-bg:#e8f4ee;--green-l:#2e9e68;
+  --amber:#8a4000;--amber-bg:#fdf0e4;
+  --red:#8a0000;--red-bg:#fdf0f0;
+  --mono:Consolas,'Courier New',monospace;--sans:Arial,Helvetica,sans-serif;
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;padding:1.5rem 1rem}
+.layout{max-width:1300px;margin:0 auto}
+
+header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1.5rem;border-bottom:1px solid var(--border);padding-bottom:1rem}
+header h1{font-family:var(--mono);font-size:18px;font-weight:500}
+.back-link{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none}
+.back-link:hover{color:var(--blue-l)}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1.25rem;margin-bottom:1rem}
+.card-title{font-family:var(--mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
+
+/* Drop zone */
+.dropzone{border:2px dashed var(--border-s);border-radius:6px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);position:relative}
+.dropzone.drag{border-color:var(--blue-l);background:var(--blue-bg)}
+.dropzone.has-files{border-color:var(--green-l);background:var(--green-bg)}
+.dropzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop-icon{font-size:32px;margin-bottom:.75rem;color:var(--faint)}
+.drop-title{font-family:var(--mono);font-size:14px;color:var(--muted);margin-bottom:.25rem}
+.drop-sub{font-size:12px;color:var(--faint)}
+
+/* File queue */
+.file-list{display:flex;flex-direction:column;gap:6px;margin-top:1rem}
+.file-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:4px;font-size:12px}
+.file-item .fname{font-family:var(--mono);font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-item .fsize{font-size:11px;color:var(--faint);white-space:nowrap}
+.file-item .fstatus{font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.status-wait{background:var(--bg);border:1px solid var(--border-s);color:var(--muted)}
+.status-proc{background:var(--amber-bg);color:var(--amber)}
+.status-done{background:var(--green-bg);color:var(--green)}
+.status-err{background:var(--red-bg);color:var(--red)}
+.file-item .del-btn{background:none;border:none;color:var(--faint);cursor:pointer;font-size:14px;padding:0 4px}
+.file-item .del-btn:hover{color:var(--red)}
+
+/* Progress bar */
+.prog-bar-wrap{height:3px;background:var(--border);border-radius:2px;margin:2px 0;overflow:hidden;width:80px}
+.prog-bar{height:100%;background:var(--blue-l);border-radius:2px;transition:width .2s}
+
+/* Options */
+.options-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.field{margin-bottom:0}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;padding:7px 10px;border:1px solid var(--border-s);border-radius:4px;font-family:var(--mono);font-size:13px;background:var(--bg);color:var(--text)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--blue-l)}
+.toggle-row{display:flex;align-items:center;gap:8px;font-size:13px}
+.toggle-row input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--blue-l)}
+
+/* Layout principale */
+.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.panel-label{font-family:var(--mono);font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+
+/* Textarea preview */
+.md-preview{width:100%;height:480px;padding:10px 12px;border:1px solid var(--border-s);border-radius:4px;font-family:var(--mono);font-size:12px;background:var(--bg);color:var(--text);resize:vertical;line-height:1.6}
+.md-preview:focus{outline:none;border-color:var(--blue-l)}
+
+/* Rendered preview */
+.rendered-preview{width:100%;height:480px;padding:12px 16px;border:1px solid var(--border-s);border-radius:4px;background:var(--surface);overflow-y:auto;font-size:13px;line-height:1.7}
+.rendered-preview h1{font-size:18px;font-weight:500;margin:0 0 .75rem;border-bottom:1px solid var(--border);padding-bottom:.4rem}
+.rendered-preview h2{font-size:15px;font-weight:500;margin:1rem 0 .4rem;color:var(--blue)}
+.rendered-preview h3{font-size:13px;font-weight:500;margin:.75rem 0 .3rem;color:var(--muted)}
+.rendered-preview p{margin-bottom:.6rem}
+.rendered-preview ul,.rendered-preview ol{margin:0 0 .6rem 1.2rem}
+.rendered-preview li{margin-bottom:.2rem}
+.rendered-preview code{font-family:var(--mono);font-size:11px;background:var(--bg);padding:1px 4px;border-radius:2px}
+.rendered-preview blockquote{border-left:3px solid var(--border-s);padding-left:.75rem;color:var(--muted);margin:.5rem 0}
+.rendered-preview hr{border:none;border-top:1px solid var(--border);margin:1rem 0}
+.rendered-preview table{width:100%;border-collapse:collapse;margin:.5rem 0;font-size:12px}
+.rendered-preview th{background:var(--bg);padding:4px 8px;border:1px solid var(--border);text-align:left;font-weight:500}
+.rendered-preview td{padding:4px 8px;border:1px solid var(--border)}
+
+/* Risultati batch */
+.results-list{display:flex;flex-direction:column;gap:6px}
+.result-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:4px}
+.result-item .rname{font-family:var(--mono);font-size:12px;flex:1}
+.result-item .rstats{font-size:11px;color:var(--faint);margin:0 12px}
+
+/* Bottoni */
+.btn{padding:7px 14px;border-radius:4px;font-family:var(--mono);font-size:12px;cursor:pointer;transition:all .15s;border:1px solid}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn-primary:hover{opacity:.88}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-secondary{background:var(--bg);color:var(--muted);border-color:var(--border-s)}.btn-secondary:hover{border-color:var(--blue-l);color:var(--blue-l)}
+.btn-green{background:var(--green);color:#fff;border-color:var(--green)}.btn-green:hover{opacity:.88}
+.btn-sm{padding:4px 10px;font-size:11px}
+.btn-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* Tabs file risultati */
+.file-tabs{display:flex;gap:4px;margin-bottom:.75rem;flex-wrap:wrap}
+.ftab{font-family:var(--mono);font-size:11px;padding:4px 10px;border:1px solid var(--border-s);border-radius:4px;cursor:pointer;color:var(--muted);background:var(--bg);transition:all .15s;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ftab.active{border-color:var(--blue-l);background:var(--blue-bg);color:var(--blue-l)}
+
+/* KPI strip */
+.kpi-strip{display:flex;gap:8px;margin-bottom:1rem}
+.kpi{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 12px;text-align:center}
+.kpi-val{font-family:var(--mono);font-size:16px;font-weight:500;color:var(--blue-l)}
+.kpi-lbl{font-size:10px;color:var(--faint);margin-top:2px}
+
+.hidden{display:none}
+.scroll-x{overflow-x:auto}
+</style>
+</head>
+<body>
+<div class="layout">
+<header>
+  <h1>PDF → Markdown</h1>
+  <a class="back-link" href="/apps/external/2/">← App di Studio</a>
+</header>
+
+<!-- OPZIONI -->
+<div class="card">
+  <div class="card-title">Opzioni di conversione</div>
+  <div class="options-grid">
+    <div class="field">
+      <label>Prefisso frontmatter YAML</label>
+      <select id="opt_frontmatter">
+        <option value="full">Completo (titolo, data, fonte, tag)</option>
+        <option value="minimal">Minimale (titolo, data)</option>
+        <option value="none">Nessuno</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Rilevamento intestazioni</label>
+      <select id="opt_headings">
+        <option value="auto">Automatico (font-size euristico)</option>
+        <option value="caps">Solo MAIUSCOLO → H2</option>
+        <option value="none">Nessuna conversione</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Pulizia testo</label>
+      <select id="opt_clean">
+        <option value="aggressive">Aggressiva (rimuovi header/footer ripetuti)</option>
+        <option value="normal">Normale</option>
+        <option value="none">Nessuna</option>
+      </select>
+    </div>
+    <div>
+      <label style="display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:8px">Opzioni extra</label>
+      <div class="toggle-row"><input type="checkbox" id="opt_tables" checked> Prova a ricostruire le tabelle</div>
+      <div class="toggle-row" style="margin-top:6px"><input type="checkbox" id="opt_pagenums"> Includi numero pagina come commento</div>
+      <div class="toggle-row" style="margin-top:6px"><input type="checkbox" id="opt_chunks" checked> Aggiungi marker chunk RAG</div>
+    </div>
+    <div>
+      <label style="display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:8px">Dimensione chunk</label>
+      <div class="toggle-row"><input type="number" id="opt_chunksize" value="800" min="200" max="3000" style="width:80px;padding:4px 8px;border:1px solid var(--border-s);border-radius:4px;font-family:var(--mono);font-size:12px;background:var(--bg)"> caratteri per chunk</div>
+      <div style="font-size:11px;color:var(--faint);margin-top:6px">Consigliato: 500–1000 per RAG fiscale</div>
+    </div>
+    <div>
+      <label style="display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:8px">Tag categoria (frontmatter)</label>
+      <input type="text" id="opt_tags" placeholder="es. normativa, ade, irpef" style="padding:7px 10px;border:1px solid var(--border-s);border-radius:4px;font-family:var(--mono);font-size:12px;background:var(--bg);width:100%">
+      <div style="font-size:11px;color:var(--faint);margin-top:6px">Separati da virgola — utili per filtrare nel RAG</div>
+    </div>
+  </div>
+</div>
+
+<!-- DROP ZONE -->
+<div class="card">
+  <div class="card-title">
+    Carica PDF
+    <span id="queue-count" style="font-size:11px;color:var(--faint)"></span>
+  </div>
+  <div class="dropzone" id="dropzone">
+    <input type="file" id="file-input" accept=".pdf" multiple>
+    <div class="drop-icon">⬇</div>
+    <div class="drop-title">Trascina qui i PDF o clicca per selezionare</div>
+    <div class="drop-sub">Supporta più file contemporaneamente · Solo PDF con testo nativo (non scansioni)</div>
+  </div>
+  <div class="file-list" id="file-list"></div>
+  <div class="btn-row" style="margin-top:1rem">
+    <button class="btn btn-primary" id="btn-convert" onclick="convertAll()" disabled>Converti tutti →</button>
+    <button class="btn btn-secondary btn-sm" onclick="clearAll()">Svuota lista</button>
+    <span id="global-status" style="font-family:var(--mono);font-size:11px;color:var(--muted)"></span>
+  </div>
+</div>
+
+<!-- ANTEPRIMA + OUTPUT -->
+<div id="output-section" class="hidden">
+  <!-- KPI -->
+  <div class="kpi-strip">
+    <div class="kpi"><div class="kpi-val" id="kpi-files">0</div><div class="kpi-lbl">File convertiti</div></div>
+    <div class="kpi"><div class="kpi-val" id="kpi-pages">0</div><div class="kpi-lbl">Pagine totali</div></div>
+    <div class="kpi"><div class="kpi-val" id="kpi-chars">0</div><div class="kpi-lbl">Caratteri MD</div></div>
+    <div class="kpi"><div class="kpi-val" id="kpi-chunks">0</div><div class="kpi-lbl">Chunk RAG stimati</div></div>
+  </div>
+
+  <!-- Tabs file -->
+  <div class="file-tabs" id="file-tabs"></div>
+
+  <!-- Preview griglia -->
+  <div class="main-grid">
+    <div class="card" style="margin-bottom:0">
+      <div class="panel-head">
+        <div class="panel-label">Markdown grezzo (modificabile)</div>
+        <div class="btn-row">
+          <button class="btn btn-sm btn-secondary" onclick="copyMD()">Copia</button>
+          <button class="btn btn-sm btn-green" onclick="downloadCurrentMD()">↓ Scarica .md</button>
+        </div>
+      </div>
+      <textarea class="md-preview" id="md-raw" oninput="updateRendered()"></textarea>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="panel-head">
+        <div class="panel-label">Anteprima renderizzata</div>
+        <button class="btn btn-sm btn-secondary" onclick="toggleView()">Vedi sorgente</button>
+      </div>
+      <div class="rendered-preview" id="md-rendered"></div>
+    </div>
+  </div>
+
+  <!-- Download batch -->
+  <div class="card" style="margin-top:1rem">
+    <div class="card-title">
+      Download batch
+      <button class="btn btn-sm btn-green" onclick="downloadAll()">↓ Scarica tutti i .md</button>
+    </div>
+    <div class="results-list" id="results-list"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'vendor/pdfjs/pdf.worker.min.js';
+
+let files = [];
+let results = {};
+let currentFile = null;
+
+// ── Drop zone ────────────────────────────────────────────────────────────────
+const dz = document.getElementById('dropzone');
+const fi = document.getElementById('file-input');
+
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag');
+  addFiles([...e.dataTransfer.files].filter(f => f.type === 'application/pdf'));
+});
+fi.addEventListener('change', () => { addFiles([...fi.files]); fi.value = ''; });
+
+function addFiles(newFiles) {
+  newFiles.forEach(f => {
+    if (!files.find(x => x.name === f.name && x.size === f.size)) {
+      files.push({ file: f, id: Date.now() + Math.random(), status: 'wait' });
+    }
+  });
+  renderQueue();
+}
+
+function renderQueue() {
+  const list = document.getElementById('file-list');
+  const btn = document.getElementById('btn-convert');
+  document.getElementById('queue-count').textContent = files.length ? `${files.length} file in coda` : '';
+  dz.classList.toggle('has-files', files.length > 0);
+  btn.disabled = files.length === 0;
+
+  list.innerHTML = files.map(f => `
+    <div class="file-item" id="item-${f.id}">
+      <span class="fname" title="${escapeHtml(f.file.name)}">${escapeHtml(f.file.name)}</span>
+      <span class="fsize">${(f.file.size/1024).toFixed(0)} KB</span>
+      <div class="prog-bar-wrap" id="prog-${f.id}" style="display:none"><div class="prog-bar" id="pb-${f.id}" style="width:0%"></div></div>
+      <span class="fstatus status-${f.status}" id="stat-${f.id}">${statusLabel(f.status)}</span>
+      <button class="del-btn" onclick="removeFile('${f.id}')">✕</button>
+    </div>`).join('');
+}
+
+function statusLabel(s) {
+  return { wait: 'in attesa', proc: 'conversione…', done: 'pronto', err: 'errore' }[s] || s;
+}
+
+function removeFile(id) {
+  files = files.filter(f => f.id != id);
+  delete results[id];
+  renderQueue();
+  if (currentFile == id) { currentFile = null; renderTabs(); }
+}
+
+function clearAll() {
+  files = []; results = {}; currentFile = null;
+  renderQueue();
+  document.getElementById('output-section').classList.add('hidden');
+  document.getElementById('file-tabs').innerHTML = '';
+}
+
+// ── Conversione ──────────────────────────────────────────────────────────────
+async function convertAll() {
+  document.getElementById('btn-convert').disabled = true;
+  document.getElementById('global-status').textContent = 'Conversione in corso…';
+
+  for (const f of files) {
+    if (f.status === 'done') continue;
+    await convertFile(f);
+  }
+
+  document.getElementById('global-status').textContent = `Completato — ${files.filter(f=>f.status==='done').length} file convertiti`;
+  document.getElementById('btn-convert').disabled = false;
+  document.getElementById('output-section').classList.remove('hidden');
+  updateKPI();
+  renderTabs();
+  renderResultsList();
+}
+
+async function convertFile(f) {
+  setStatus(f, 'proc');
+  setProgress(f.id, 0);
+  try {
+    const buf = await f.file.arrayBuffer();
+    const sourceHash = await sha256Buffer(buf);
+    const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+    const numPages = pdf.numPages;
+    const pagesData = [];
+
+    for (let i = 1; i <= numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent({ includeMarkedContent: false });
+      pagesData.push({ pageNum: i, items: content.items });
+      setProgress(f.id, Math.round(i / numPages * 80));
+    }
+
+    const pageChars = pagesData.map(page => extractPageText(page).length);
+    const lowTextPages = pageChars.map((chars, index) => chars < 50 ? index + 1 : null).filter(Boolean);
+    const quality = { characterCount: pageChars.reduce((sum, value) => sum + value, 0), lowTextPages, requiresReview: lowTextPages.length > 0 };
+    const md = buildMarkdown(f.file.name, pagesData, { sourceHash, quality });
+    results[f.id] = { md, pages: numPages, name: f.file.name, sourceHash, quality, parserVersion: 'pdfjs-browser-2.0' };
+    f.status = 'done';
+    setProgress(f.id, 100);
+    setStatus(f, 'done');
+    if (!currentFile) { currentFile = f.id; }
+  } catch(e) {
+    f.status = 'err';
+    setStatus(f, 'err');
+    console.error(e);
+  }
+}
+
+async function sha256Buffer(buffer) {
+  const digest = await crypto.subtle.digest('SHA-256', buffer);
+  return Array.from(new Uint8Array(digest)).map(value => value.toString(16).padStart(2, '0')).join('');
+}
+
+function setStatus(f, s) {
+  f.status = s;
+  const el = document.getElementById('stat-' + f.id);
+  if (el) { el.className = 'fstatus status-' + s; el.textContent = statusLabel(s); }
+}
+function setProgress(id, pct) {
+  const pw = document.getElementById('prog-' + id);
+  const pb = document.getElementById('pb-' + id);
+  if (pw) pw.style.display = pct < 100 ? 'block' : 'none';
+  if (pb) pb.style.width = pct + '%';
+}
+
+// ── Builder Markdown ─────────────────────────────────────────────────────────
+function buildMarkdown(filename, pagesData, provenance = {}) {
+  const opts = getOpts();
+  const baseName = filename.replace(/\.pdf$/i, '');
+  const today = new Date().toISOString().split('T')[0];
+  const tags = opts.tags ? opts.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+  let lines = [];
+
+  // Frontmatter
+  if (opts.frontmatter !== 'none') {
+    lines.push('---');
+    lines.push(`titolo: "${baseName}"`);
+    lines.push(`data_conversione: ${today}`);
+    if (opts.frontmatter === 'full') {
+      lines.push(`fonte: "${filename}"`);
+      lines.push(`pagine: ${pagesData.length}`);
+      lines.push(`sha256_originale: ${provenance.sourceHash || 'non_disponibile'}`);
+      lines.push(`parser: pdfjs-browser-2.0`);
+      lines.push(`caratteri_estratti: ${provenance.quality?.characterCount || 0}`);
+      lines.push(`pagine_bassa_confidenza: [${(provenance.quality?.lowTextPages || []).join(', ')}]`);
+      lines.push(`richiede_revisione: ${provenance.quality?.requiresReview ? 'true' : 'false'}`);
+      if (tags.length) lines.push(`tag: [${tags.map(t=>`"${t}"`).join(', ')}]`);
+      lines.push(`modello_rag: true`);
+    }
+    lines.push('---');
+    lines.push('');
+  }
+
+  // Titolo principale
+  lines.push(`# ${baseName}`);
+  lines.push('');
+
+  // Raccolta testo per pulizia header/footer
+  const allPageTexts = pagesData.map(p => extractPageLines(p).join('\n'));
+  const headerFooterPatterns = opts.clean === 'aggressive' ? detectHeaderFooter(allPageTexts) : new Set();
+
+  let allText = [];
+  pagesData.forEach((pageData, pi) => {
+    const pageLines = extractPageLines(pageData);
+    const filtered = opts.clean !== 'none'
+      ? pageLines.filter(l => !headerFooterPatterns.has(normalizeForHF(l)))
+      : pageLines;
+
+    if ((opts.pagenums || opts.frontmatter === 'full') && filtered.length) {
+      allText.push(`<!-- pagina ${pageData.pageNum} -->`);
+    }
+    allText.push(...filtered);
+  });
+
+  // Conversione in blocchi MD
+  const mdBlocks = textToMarkdown(allText, opts);
+  lines.push(...mdBlocks);
+
+  // Marker chunk RAG
+  if (opts.chunks) {
+    const fullText = lines.join('\n');
+    return insertChunkMarkers(fullText, opts.chunksize);
+  }
+
+  return lines.join('\n');
+}
+
+function extractPageLines(pageData) {
+  // Raggruppa item per riga (stesso Y approssimativo)
+  const rows = {};
+  pageData.items.forEach(item => {
+    if (!item.str || !item.str.trim()) return;
+    const y = Math.round(item.transform[5] / 3) * 3;
+    if (!rows[y]) rows[y] = [];
+    rows[y].push({ str: item.str, x: item.transform[4], h: item.height || 0 });
+  });
+
+  return Object.keys(rows)
+    .sort((a, b) => b - a)
+    .map(y => rows[y].sort((a, b) => a.x - b.x).map(i => i.str).join(' ').trim())
+    .filter(l => l.length > 0);
+}
+
+function extractPageText(pageData) {
+  return pageData.items.map(i => i.str || '').join(' ').trim();
+}
+
+function normalizeForHF(s) { return s.toLowerCase().replace(/\s+/g, ' ').trim(); }
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function detectHeaderFooter(pageTexts) {
+  // Righe che appaiono in molte pagine sono probabilmente header/footer
+  const freq = {};
+  pageTexts.forEach(pt => {
+    const lines = pt.split('\n');
+    lines.slice(0, 3).concat(lines.slice(-3)).forEach(l => {
+      const k = normalizeForHF(l);
+      if (k.length > 3 && k.length < 120) freq[k] = (freq[k] || 0) + 1;
+    });
+  });
+  const threshold = Math.max(2, Math.floor(pageTexts.length * 0.4));
+  return new Set(Object.entries(freq).filter(([, v]) => v >= threshold).map(([k]) => k));
+}
+
+function textToMarkdown(lines, opts) {
+  const out = [];
+  let prevBlank = false;
+
+  lines.forEach((line, i) => {
+    const trimmed = line.trim();
+    if (!trimmed) { if (!prevBlank) out.push(''); prevBlank = true; return; }
+    prevBlank = false;
+
+    // Rilevamento intestazioni
+    if (opts.headings === 'auto' || opts.headings === 'caps') {
+      if (isHeading(trimmed, opts.headings)) {
+        // H2 se corto, H3 se più lungo (euristica)
+        const level = trimmed.length < 60 ? '##' : '###';
+        out.push(''); out.push(`${level} ${trimmed}`); out.push('');
+        return;
+      }
+    }
+
+    // Liste (righe che iniziano con •, -, *, numeri)
+    if (/^[•·\-\*]\s/.test(trimmed)) {
+      out.push(`- ${trimmed.replace(/^[•·\-\*]\s+/, '')}`);
+      return;
+    }
+    if (/^\d+[.)]\s/.test(trimmed)) {
+      out.push(`${trimmed}`);
+      return;
+    }
+
+    // Tentativo ricostruzione tabelle
+    if (opts.tables && looksLikeTableRow(trimmed, lines[i+1])) {
+      out.push(trimmed);
+      return;
+    }
+
+    out.push(trimmed);
+  });
+
+  // Pulizia righe bianche multiple
+  const cleaned = [];
+  let blanks = 0;
+  out.forEach(l => {
+    if (l === '') { blanks++; if (blanks <= 1) cleaned.push(''); }
+    else { blanks = 0; cleaned.push(l); }
+  });
+
+  return cleaned;
+}
+
+function isHeading(line, mode) {
+  if (line.length > 150) return false;
+  if (mode === 'caps') return line === line.toUpperCase() && line.length > 3 && /[A-ZÀ-Ú]/.test(line);
+  // Auto: tutto maiuscolo, o parole chiave tipiche di normativa
+  if (line === line.toUpperCase() && line.length > 3 && /[A-ZÀ-Ú]/.test(line)) return true;
+  if (/^(art\.|articolo|capitolo|sezione|titolo|allegato)\s/i.test(line)) return true;
+  if (/^\d+\.\s+[A-ZÀÈÉÌÒÙ]/.test(line) && line.length < 80) return true;
+  return false;
+}
+
+function looksLikeTableRow(line, next) {
+  const cols = line.split(/\s{3,}/);
+  if (cols.length < 2) return false;
+  if (next) {
+    const nextCols = next.split(/\s{3,}/);
+    if (nextCols.length >= 2) return true;
+  }
+  return cols.length >= 3;
+}
+
+function insertChunkMarkers(text, chunkSize) {
+  const paragraphs = text.split(/\n\n+/);
+  let result = '';
+  let currentChunk = '';
+  let chunkNum = 0;
+
+  paragraphs.forEach(para => {
+    if (currentChunk.length + para.length > chunkSize && currentChunk.length > 0) {
+      chunkNum++;
+      result += `\n\n<!-- CHUNK_${chunkNum}_START -->\n${currentChunk}\n<!-- CHUNK_${chunkNum}_END -->`;
+      currentChunk = para;
+    } else {
+      currentChunk += (currentChunk ? '\n\n' : '') + para;
+    }
+  });
+  if (currentChunk) {
+    chunkNum++;
+    result += `\n\n<!-- CHUNK_${chunkNum}_START -->\n${currentChunk}\n<!-- CHUNK_${chunkNum}_END -->`;
+  }
+
+  // Reinserisci frontmatter prima dei chunk
+  const fmMatch = text.match(/^---[\s\S]*?---\n\n# .+\n/);
+  if (fmMatch) return fmMatch[0] + result.trimStart();
+  return result.trimStart();
+}
+
+function getOpts() {
+  return {
+    frontmatter: document.getElementById('opt_frontmatter').value,
+    headings: document.getElementById('opt_headings').value,
+    clean: document.getElementById('opt_clean').value,
+    tables: document.getElementById('opt_tables').checked,
+    pagenums: document.getElementById('opt_pagenums').checked,
+    chunks: document.getElementById('opt_chunks').checked,
+    chunksize: parseInt(document.getElementById('opt_chunksize').value) || 800,
+    tags: document.getElementById('opt_tags').value,
+  };
+}
+
+// ── UI ───────────────────────────────────────────────────────────────────────
+function renderTabs() {
+  const container = document.getElementById('file-tabs');
+  const done = files.filter(f => f.status === 'done');
+  container.innerHTML = done.map(f => `
+    <div class="ftab ${f.id == currentFile ? 'active' : ''}" onclick="selectFile('${f.id}')" title="${escapeHtml(f.file.name)}">
+      ${escapeHtml(f.file.name.replace(/\.pdf$/i, ''))}
+    </div>`).join('');
+  if (currentFile && results[currentFile]) showMD(results[currentFile].md);
+}
+
+function selectFile(id) {
+  currentFile = id;
+  renderTabs();
+}
+
+function showMD(md) {
+  document.getElementById('md-raw').value = md;
+  updateRendered();
+}
+
+function updateRendered() {
+  const raw = document.getElementById('md-raw').value;
+  document.getElementById('md-rendered').innerHTML = simpleMarkdownRender(raw);
+}
+
+function simpleMarkdownRender(md) {
+  return md
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^---[\s\S]*?---\n/m, '<div style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:8px 12px;font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:1rem">frontmatter YAML</div>\n')
+    .replace(/^# (.+)$/mg, '<h1>$1</h1>')
+    .replace(/^## (.+)$/mg, '<h2>$1</h2>')
+    .replace(/^### (.+)$/mg, '<h3>$1</h3>')
+    .replace(/^- (.+)$/mg, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/<!--.+?-->/g, '')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^(?!<[hul])(.+)$/mg, '<p>$1</p>')
+    .replace(/\n\n+/g, '\n')
+    .replace(/<\/ul>\n<ul>/g, '');
+}
+
+function updateKPI() {
+  const done = files.filter(f => f.status === 'done');
+  const totalPages = done.reduce((a, f) => a + (results[f.id]?.pages || 0), 0);
+  const totalChars = done.reduce((a, f) => a + (results[f.id]?.md.length || 0), 0);
+  const chunkSize = parseInt(document.getElementById('opt_chunksize').value) || 800;
+  document.getElementById('kpi-files').textContent = done.length;
+  document.getElementById('kpi-pages').textContent = totalPages;
+  document.getElementById('kpi-chars').textContent = (totalChars / 1000).toFixed(1) + 'k';
+  document.getElementById('kpi-chunks').textContent = Math.ceil(totalChars / chunkSize);
+}
+
+function renderResultsList() {
+  const list = document.getElementById('results-list');
+  const done = files.filter(f => f.status === 'done');
+  list.innerHTML = done.map(f => {
+    const r = results[f.id];
+    const mdName = f.file.name.replace(/\.pdf$/i, '.md');
+    return `<div class="result-item">
+      <span class="rname">${escapeHtml(mdName)}</span>
+      <span class="rstats">${r.pages} pag. · ${(r.md.length/1000).toFixed(1)}k caratteri · ${r.quality?.requiresReview ? 'da verificare' : 'qualità OK'}</span>
+      <button class="btn btn-sm btn-secondary" onclick="downloadMD('${f.id}')">↓ .md</button>
+    </div>`;
+  }).join('');
+}
+
+function copyMD() {
+  const raw = document.getElementById('md-raw').value;
+  navigator.clipboard.writeText(raw).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = 'Copiato!';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+function downloadCurrentMD() {
+  if (!currentFile || !results[currentFile]) return;
+  downloadMD(currentFile);
+}
+
+function downloadMD(id) {
+  const f = files.find(f => f.id == id);
+  const r = results[id];
+  if (!f || !r) return;
+  const blob = new Blob([r.md], { type: 'text/markdown;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = f.file.name.replace(/\.pdf$/i, '.md');
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function downloadAll() {
+  const done = files.filter(f => f.status === 'done');
+  // Download sequenziale con piccolo delay
+  done.forEach((f, i) => setTimeout(() => downloadMD(f.id), i * 200));
+}
+
+let renderedView = true;
+function toggleView() {
+  renderedView = !renderedView;
+  document.getElementById('md-rendered').style.display = renderedView ? 'block' : 'none';
+  document.getElementById('md-raw').style.display = renderedView ? 'none' : 'block';
+  event.target.textContent = renderedView ? 'Vedi sorgente' : 'Vedi anteprima';
+}
+</script>
+</body>
+</html>

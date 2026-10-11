@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `hard_budget_usd` double;

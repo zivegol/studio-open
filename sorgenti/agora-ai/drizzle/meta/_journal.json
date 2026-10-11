@@ -1,0 +1,125 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1787083283310,
+      "tag": "0000_crazy_hardball",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1787083748392,
+      "tag": "0001_confused_preak",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1787088352813,
+      "tag": "0002_pink_cammi",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1787088765567,
+      "tag": "0003_lying_sage",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1787089113612,
+      "tag": "0004_third_colossus",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1787090965025,
+      "tag": "0005_redundant_goblin_queen",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1787091070552,
+      "tag": "0006_happy_starfox",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1787092121685,
+      "tag": "0007_modern_catseye",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1787095410696,
+      "tag": "0008_burly_warbird",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1787130377901,
+      "tag": "0009_soft_proteus",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1787131442212,
+      "tag": "0010_tired_vargas",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1787142663227,
+      "tag": "0011_flippant_betty_ross",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1787144427658,
+      "tag": "0012_jittery_kronos",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "5",
+      "when": 1787150222549,
+      "tag": "0013_fat_baron_zemo",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "5",
+      "when": 1787164800452,
+      "tag": "0014_brief_bruce_banner",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "5",
+      "when": 1787212738571,
+      "tag": "0015_clean_ricochet",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "5",
+      "when": 1787396400000,
+      "tag": "0016_self_hosted_oidc_documents",
+      "breakpoints": true
+    }
+  ]
+}

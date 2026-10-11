@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:studio-example:studio-core:schema:v1:analysis-run",
+  "title": "AnalysisRun v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "analysisId", "appId", "appVersion", "startedAt", "status", "inputs", "parameters", "outputs"],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "analysisId": {"type": "string", "format": "uuid"},
+    "appId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,63}$"},
+    "appVersion": {"type": "string", "minLength": 1},
+    "startedAt": {"type": "string", "format": "date-time"},
+    "completedAt": {"type": ["string", "null"], "format": "date-time"},
+    "status": {"enum": ["draft", "running", "completed", "failed", "approved", "rejected"]},
+    "inputs": {"type": "array", "items": {"type": "string", "format": "uuid"}},
+    "parameters": {"type": "object"},
+    "outputs": {"type": "array", "items": {"$ref": "#/$defs/output"}},
+    "ruleSetId": {"type": ["string", "null"]},
+    "approval": {"type": ["object", "null"]}
+  },
+  "$defs": {
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fileId", "etag", "type"],
+      "properties": {
+        "fileId": {"type": "string", "minLength": 1},
+        "etag": {"type": "string", "minLength": 1},
+        "type": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

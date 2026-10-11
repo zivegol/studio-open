@@ -1,0 +1,1 @@
+ALTER TABLE `api_credentials` ADD `api_channel` varchar(32) DEFAULT 'direct' NOT NULL;

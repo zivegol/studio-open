@@ -1,0 +1,78 @@
+# Rete "nextcloud": adattare al nome della rete del tuo stack Nextcloud/reverse proxy.
+# Rete "segreti": creata da vault/docker-compose.vault.yml.
+x-app: &app
+  build: .
+  restart: unless-stopped
+  read_only: true
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: [ALL]
+  environment: &env
+    PGHOST: db
+    PGDATABASE: cassetto
+    NC_URL: http://nextcloud
+    DOWNLOADER_MODE: mock          # passare a "reale" solo dopo aver collegato i downloader
+
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: cassetto
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_admin
+    volumes:
+      - db-data:/var/lib/postgresql/data      # su disco cifrato (LUKS)
+      - ./sql/001_schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
+      - ./sql/002_correzioni_permessi.sql:/docker-entrypoint-initdb.d/002_correzioni_permessi.sql:ro
+      - ./sql/003_ruoli.sh:/docker-entrypoint-initdb.d/003_ruoli.sh:ro
+      - ./sql/004_recovery_state.sql:/docker-entrypoint-initdb.d/004_recovery_state.sql:ro
+      - ./sql/005_remote_catalog.sql:/docker-entrypoint-initdb.d/005_remote_catalog.sql:ro
+    secrets: [pg_admin, pg_orchestratore, pg_worker, pg_auditor]
+    networks: [interna]
+
+  api:
+    <<: *app
+    environment:
+      <<: *env
+      ROLE: api
+      PGUSER: app_orchestratore
+      PGPASSWORD_FILE: /run/secrets/pg_orchestratore
+      ALLOWED_GROUPS: admin          # gruppi Nextcloud autorizzati (virgola per più gruppi)
+    secrets: [pg_orchestratore]
+    networks: [interna, nextcloud]   # nessuna uscita verso internet
+    depends_on: [db]
+
+  worker:
+    <<: *app
+    environment:
+      <<: *env
+      ROLE: worker
+      PGUSER: app_worker
+      PGPASSWORD_FILE: /run/secrets/pg_worker
+      NC_USER: ${NC_USER:-}
+      NC_APP_PASSWORD_FILE: /run/secrets/nc_app_password
+      VAULT_ADDR: https://vault:8200
+      NODE_EXTRA_CA_CERTS: /run/secrets/vault_ca
+      PAUSA_MIN_MS: 5000             # in produzione: 20000-90000 o più
+      PAUSA_MAX_MS: 15000
+    secrets: [pg_worker, nc_app_password, vault_role_id, vault_secret_id, vault_ca]
+    networks: [interna, nextcloud, segreti, uscita]
+    depends_on: [db]
+
+secrets:
+  pg_admin:         { file: ./secrets/pg_admin }
+  pg_orchestratore: { file: ./secrets/pg_orchestratore }
+  pg_worker:        { file: ./secrets/pg_worker }
+  pg_auditor:       { file: ./secrets/pg_auditor }
+  nc_app_password:  { file: ./secrets/nc_app_password }
+  vault_role_id:    { file: ./secrets/vault_role_id }
+  vault_secret_id:  { file: ./secrets/vault_secret_id }
+  vault_ca:         { file: ./secrets/vault_ca.crt }
+
+volumes:
+  db-data:
+
+networks:
+  interna: { internal: true }
+  uscita: {}
+  segreti: { external: true, name: segreti }
+  nextcloud: { external: true, name: nextcloud_default }

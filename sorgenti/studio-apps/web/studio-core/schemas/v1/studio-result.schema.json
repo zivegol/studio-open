@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:studio-example:studio-core:schema:v1:studio-result",
+  "title": "StudioResult v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "resultId", "dossierId", "resultType", "status", "provenance", "createdBy", "createdAt"],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "resultId": {"type": "string", "format": "uuid"},
+    "jobId": {"type": ["string", "null"], "format": "uuid"},
+    "dossierId": {"type": "string", "format": "uuid"},
+    "resultType": {"type": "string", "minLength": 1},
+    "status": {"enum": ["draft", "completed", "approved", "rejected"]},
+    "payload": {"type": ["object", "null"]},
+    "provenance": {"type": "object"},
+    "createdBy": {"type": "string", "minLength": 1},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  }
+}
