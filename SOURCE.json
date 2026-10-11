@@ -1,0 +1,29 @@
+{
+  "version": "0.1.0",
+  "sourceProject": "studio-apps",
+  "sourceCommit": "ed1bbd66cfd3b93ec3a4bc85f8cb69adbd009fc1",
+  "sourceFilesModifiedAfterCommit": false,
+  "license": "GPL-3.0-only",
+  "files": [
+    {
+      "path": "calcolatrice/calcolatrice.html",
+      "sha256": "4f0a29bf5ccf5a0be48bdbe7f46cd2497a142f83030fa37368f0c5953ebfb20b"
+    },
+    {
+      "path": "calcolatrice/LICENSE",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    {
+      "path": "giochi/forza4_neon.html",
+      "sha256": "fe81cb7cde29fc1548bffb003c13b27668110966d61f6e88b73d0a7a639508da"
+    },
+    {
+      "path": "giochi/LICENSE",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    }
+  ]
+}
